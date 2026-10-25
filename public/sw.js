@@ -1,9 +1,11 @@
-const CACHE = 'uton-v4';
+const CACHE = 'uton-v5';
 const ASSETS = [
     '/',
     '/css/app.css',
     '/js/app.js',
     '/manifest.webmanifest',
+    '/apple-touch-icon-alzafutar-v5.png',
+    '/apple-touch-icon.png',
     '/favicon.ico',
     '/favicon.svg',
     '/icons/android/launchericon-192x192.png',
