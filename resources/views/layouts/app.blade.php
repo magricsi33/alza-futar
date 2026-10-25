@@ -12,8 +12,8 @@
         <title>Úton · Futár címkezelő</title>
 
         <link rel="manifest" href="/manifest.webmanifest">
-        <link rel="icon" href="/icons/ios/32.png" type="image/png" sizes="32x32">
-        <link rel="icon" href="/icons/android/launchericon-192x192.png" type="image/png" sizes="192x192">
+        <link rel="icon" href="/favicon.ico?v=4" type="image/x-icon" sizes="48x48">
+        <link rel="icon" href="/favicon.svg?v=4" type="image/svg+xml" sizes="any">
         <link rel="apple-touch-icon" href="/icons/ios/180.png" sizes="180x180">
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 

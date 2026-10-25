@@ -1,9 +1,11 @@
-const CACHE = 'uton-v3';
+const CACHE = 'uton-v4';
 const ASSETS = [
     '/',
     '/css/app.css',
     '/js/app.js',
     '/manifest.webmanifest',
+    '/favicon.ico',
+    '/favicon.svg',
     '/icons/android/launchericon-192x192.png',
     '/icons/android/launchericon-512x512.png',
     '/icons/ios/32.png',
