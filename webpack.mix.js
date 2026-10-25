@@ -1,5 +1,4 @@
 const mix = require('laravel-mix');
-const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 mix.js('resources/js/app.js', 'public/js')
    .postCss('resources/css/app.css', 'public/css', [
@@ -7,7 +6,11 @@ mix.js('resources/js/app.js', 'public/js')
        require('autoprefixer'),
    ])
    .browserSync({
-       proxy: '127.0.0.1:8000',
+       proxy: '127.0.0.1:' + (process.env.FUTAR_SERVER_PORT || '8000'),
+       port: Number(process.env.FUTAR_SYNC_PORT || 3000),
+       listen: '127.0.0.1',
+       host: '127.0.0.1',
+       ui: false,
        open: false,
        notify: false,
    });

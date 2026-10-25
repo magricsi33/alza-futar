@@ -7,6 +7,9 @@ Ezek keresőrobotoknak szóló jelzések, nem hozzáférés-védelem. A robots.t
 Mobilra optimalizált Laravel 8 alkalmazás, felhasználó és adatbázis nélkül.
 
 ## Indítás
+Windows alatt a `start-all.bat` indítja a Laravel szervert és a buildfigyelőt a háttérben. A foglalt portokat kihagyja, és kiírja a tényleges elérési címet (alapból 127.0.0.1:3000). Csak működő HTTP-válasz után jelez sikert. Ismételt indításkor a saját, már működő példányt használja. Leállítás: `stop-all.bat`. Naplók: `storage/logs/local-*.log`. A `scripts/local-dev.ps1` végzi az indítást; a PHP és Node legyen elérhető a PATH-ban.
+Az önálló `start-server.bat` továbbra is a 8000-es portot használja; foglalt portnál hibával megáll. A `start-watch.bat` ehhez a porthoz kapcsolódik. Automatikus portválasztáshoz mindig a `start-all.bat` fájlt használd.
+
 A meglévő függőségekkel: npm run production, majd php artisan serve.
 A helyi cím: http://127.0.0.1:8000. A webszerver dokumentumgyökere élesben a public könyvtár legyen.
 
