@@ -1,2 +1,430 @@
-/*! For license information please see app.js.LICENSE.txt */
-(()=>{"use strict";var e,t={598:()=>{var e=[{id:"S",name:"Budapest S",stops:[["AB9087","Király u. 8–10","1061 Budapest","Central Passage"],["AB9815","Kis Diófa u. 8","1076 Budapest","BoxHub"],["AB9682","Király u. 73","1077 Budapest","AlzaBox Budapest VII."],["AB9828","Szondi utca 22","1067 Budapest","AlzaBox Budapest VI."],["AB9251","Zichy Jenő u. 36","1066 Budapest","AlzaBox Budapest VI."],["AB9796","Felsőerdősor u. 5","1068 Budapest","BOXHUB"],["AB9792","Dob utca 100","1073 Budapest","Vendobox"],["AB9811","Dembinszky u. 41","1071 Budapest","Box Office"],["AB9377","Hungária krt. 175–177","1146 Budapest","OMV"],["AB9619","Nagy Lajos király útja 186","1149 Budapest","Vendobox"],["AB9193","Béke u. 2","2145 Kerepes","COOP"],["AB9074","Gödöllői út 244","2146 Mogyoród","CBA"]]},{id:"V",name:"Budapest V",stops:[]}];function t(){var e,r,o="function"==typeof Symbol?Symbol:{},a=o.iterator||"@@iterator",i=o.toStringTag||"@@toStringTag";function u(t,o,a,i){var u=o&&o.prototype instanceof l?o:l,s=Object.create(u.prototype);return n(s,"_invoke",function(t,n,o){var a,i,u,l=0,s=o||[],d=!1,f={p:0,n:0,v:e,a:p,f:p.bind(e,4),d:function(t,n){return a=t,i=0,u=e,f.n=n,c}};function p(t,n){for(i=t,u=n,r=0;!d&&l&&!o&&r<s.length;r++){var o,a=s[r],p=f.p,m=a[2];t>3?(o=m===n)&&(u=a[(i=a[4])?5:(i=3,3)],a[4]=a[5]=e):a[0]<=p&&((o=t<2&&p<a[1])?(i=0,f.v=n,f.n=a[1]):p<m&&(o=t<3||a[0]>n||n>m)&&(a[4]=t,a[5]=n,f.n=m,i=0))}if(o||t>1)return c;throw d=!0,n}return function(o,s,m){if(l>1)throw TypeError("Generator is already running");for(d&&1===s&&p(s,m),i=s,u=m;(r=i<2?e:u)||!d;){a||(i?i<3?(i>1&&(f.n=-1),p(i,u)):f.n=u:f.v=u);try{if(l=2,a){if(i||(o="next"),r=a[o]){if(!(r=r.call(a,u)))throw TypeError("iterator result is not an object");if(!r.done)return r;u=r.value,i<2&&(i=0)}else 1===i&&(r=a.return)&&r.call(a),i<2&&(u=TypeError("The iterator does not provide a '"+o+"' method"),i=1);a=e}else if((r=(d=f.n<0)?u:t.call(n,f))!==c)break}catch(t){a=e,i=1,u=t}finally{l=1}}return{value:r,done:d}}}(t,a,i),!0),s}var c={};function l(){}function s(){}function d(){}r=Object.getPrototypeOf;var f=[][a]?r(r([][a]())):(n(r={},a,function(){return this}),r),p=d.prototype=l.prototype=Object.create(f);function m(e){return Object.setPrototypeOf?Object.setPrototypeOf(e,d):(e.__proto__=d,n(e,i,"GeneratorFunction")),e.prototype=Object.create(p),e}return s.prototype=d,n(p,"constructor",d),n(d,"constructor",s),s.displayName="GeneratorFunction",n(d,i,"GeneratorFunction"),n(p),n(p,i,"Generator"),n(p,a,function(){return this}),n(p,"toString",function(){return"[object Generator]"}),(t=function(){return{w:u,m}})()}function n(e,t,r,o){var a=Object.defineProperty;try{a({},"",{})}catch(e){a=0}n=function(e,t,r,o){function i(t,r){n(e,t,function(e){return this._invoke(t,r,e)})}t?a?a(e,t,{value:r,enumerable:!o,configurable:!o,writable:!o}):e[t]=r:(i("next",0),i("throw",1),i("return",2))},n(e,t,r,o)}function r(e,t,n,r,o,a,i){try{var u=e[a](i),c=u.value}catch(e){return void n(e)}u.done?t(c):Promise.resolve(c).then(r,o)}function o(e){return function(){var t=this,n=arguments;return new Promise(function(o,a){var i=e.apply(t,n);function u(e){r(i,o,a,u,c,"next",e)}function c(e){r(i,o,a,u,c,"throw",e)}u(void 0)})}}function a(e,t){return function(e){if(Array.isArray(e))return e}(e)||function(e,t){var n=null==e?null:"undefined"!=typeof Symbol&&e[Symbol.iterator]||e["@@iterator"];if(null!=n){var r,o,a,i,u=[],c=!0,l=!1;try{if(a=(n=n.call(e)).next,0===t){if(Object(n)!==n)return;c=!1}else for(;!(c=(r=a.call(n)).done)&&(u.push(r.value),u.length!==t);c=!0);}catch(e){l=!0,o=e}finally{try{if(!c&&null!=n.return&&(i=n.return(),Object(i)!==i))return}finally{if(l)throw o}}return u}}(e,t)||c(e,t)||function(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function i(e){return function(e){if(Array.isArray(e))return l(e)}(e)||function(e){if("undefined"!=typeof Symbol&&null!=e[Symbol.iterator]||null!=e["@@iterator"])return Array.from(e)}(e)||c(e)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function u(e,t){var n="undefined"!=typeof Symbol&&e[Symbol.iterator]||e["@@iterator"];if(!n){if(Array.isArray(e)||(n=c(e))||t&&e&&"number"==typeof e.length){n&&(e=n);var r=0,o=function(){};return{s:o,n:function(){return r>=e.length?{done:!0}:{done:!1,value:e[r++]}},e:function(e){throw e},f:o}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var a,i=!0,u=!1;return{s:function(){n=n.call(e)},n:function(){var e=n.next();return i=e.done,e},e:function(e){u=!0,a=e},f:function(){try{i||null==n.return||n.return()}finally{if(u)throw a}}}}function c(e,t){if(e){if("string"==typeof e)return l(e,t);var n={}.toString.call(e).slice(8,-1);return"Object"===n&&e.constructor&&(n=e.constructor.name),"Map"===n||"Set"===n?Array.from(e):"Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)?l(e,t):void 0}}function l(e,t){(null==t||t>e.length)&&(t=e.length);for(var n=0,r=Array(t);n<t;n++)r[n]=e[n];return r}function s(e){return s="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},s(e)}var d="uton-state-v1",f=function(e){return document.getElementById(e)},p={tour:"S",remainingOnly:!1,completed:{}};try{var m=JSON.parse(localStorage.getItem(d));if(m&&"object"===s(m)){e.some(function(e){return e.id===m.tour})&&(p.tour=m.tour),p.remainingOnly=!0===m.remainingOnly;var y,v=u(e);try{var h=function(){var e,t=y.value,n=null===(e=m.completed)||void 0===e?void 0:e[t.id];p.completed[t.id]=Array.isArray(n)?i(new Set(n.filter(function(e){return t.stops.some(function(t){return t[0]===e})}))):[]};for(v.s();!(y=v.n()).done;)h()}catch(e){v.e(e)}finally{v.f()}}}catch(e){}function g(){try{localStorage.setItem(d,JSON.stringify(p)),f("save-note").textContent="✓ A haladásod automatikusan mentve ezen az eszközön."}catch(e){f("save-note").textContent="A böngésző nem engedi a mentést. A haladás most csak a lap bezárásáig marad meg."}}function b(){var t=e.find(function(e){return e.id===p.tour}),n=p.completed[t.id]||[],r=n.length,o=t.stops.length;f("tour").value=t.id,f("remaining-only").checked=p.remainingOnly,f("remaining-count").textContent=o-r,f("done-count").textContent=r,f("total-count").textContent=o,f("progress").max=o||1,f("progress").value=r,f("progress-percent").textContent=(o?Math.round(r/o*100):0)+"%",f("progress-text").textContent=o?r===o?"Minden cím kész. Szép munka!":r?"Jól haladsz, csak így tovább!":"Kezdődjön a túra!":"A címlista még feltöltésre vár",f("reset").disabled=0===r;var u=f("stops");u.replaceChildren(),t.stops.forEach(function(e,r){var o=a(e,4),c=o[0],l=o[1],s=o[2],d=o[3],m=n.includes(c);if(!p.remainingOnly||!m){var y=document.createElement("li");y.className="stop"+(m?" is-done":""),y.dataset.stop=c;var v=document.createElement("label");v.className="stop-check";var h=document.createElement("input");h.type="checkbox",h.checked=m,h.setAttribute("aria-label",r+1+". "+l+" teljesítve"),h.addEventListener("change",function(){var e=new Set(p.completed[t.id]||[]);h.checked?e.add(c):e.delete(c),p.completed[t.id]=i(e),g(),b(),(document.querySelector('[data-stop="'+c+'"] input')||u.querySelector("input")||f("remaining-only")).focus({preventScroll:!0})}),v.append(h);var A=document.createElement("span");A.className="stop-number",A.textContent=String(r+1).padStart(2,"0");var k=document.createElement("a");k.className="stop-link",k.href="https://waze.com/ul?q="+encodeURIComponent(l.replace(/–/g,"-")+", "+s+", Magyarország")+"&navigate=yes",k.target="_blank",k.rel="noopener noreferrer",k.setAttribute("aria-label",l+", "+s+" — megnyitás Waze-ben");var w=document.createElement("span"),O=document.createElement("strong");O.textContent=l;var S=document.createElement("span");S.className="stop-city",S.textContent=s;var x=document.createElement("span");x.className="stop-meta",x.textContent=c+" · "+d,w.append(O,S,x);var B=document.createElement("span");B.className="navigate",B.setAttribute("aria-hidden","true"),B.textContent="↗",k.append(w,B),y.append(v,A,k),u.append(y)}}),f("list-count").textContent=u.children.length,f("empty").hidden=u.children.length>0,f("empty").textContent=o?"✓ Minden megálló teljesítve! A szűrő kikapcsolásával újra láthatod a címeket.":"Ehhez a túrához még nincs címlista megadva."}var A,k,w,O=u(e);try{for(O.s();!(A=O.n()).done;){var S=A.value;f("tour").add(new Option(S.name,S.id))}}catch(e){O.e(e)}finally{O.f()}function x(){f("connection").textContent=navigator.onLine?"Helyi mentés":"Offline mód"}f("tour").addEventListener("change",function(e){p.tour=e.target.value,g(),b()}),f("remaining-only").addEventListener("change",function(e){p.remainingOnly=e.target.checked,g(),b()}),f("reset").addEventListener("click",function(){k=p.tour,f("reset-description").textContent="A "+e.find(function(e){return e.id===k}).name+" túra összes pipáját töröljük. A többi túra haladása megmarad.",f("reset-dialog").showModal()}),f("reset-dialog").addEventListener("close",function(){"confirm"===f("reset-dialog").returnValue&&(p.completed[k]=[],g(),b())}),window.addEventListener("beforeinstallprompt",function(e){e.preventDefault(),w=e}),f("install").addEventListener("click",o(t().m(function e(){return t().w(function(e){for(;;)switch(e.n){case 0:if(!w){e.n=3;break}return e.n=1,w.prompt();case 1:return e.n=2,w.userChoice;case 2:w=null,e.n=4;break;case 3:f("install-help").textContent="iPhone: Safari → Megosztás → Főképernyőhöz adás. Android: böngészőmenü → Alkalmazás telepítése vagy Hozzáadás a kezdőképernyőhöz.";case 4:return e.a(2)}},e)}))),window.addEventListener("online",x),window.addEventListener("offline",x),(window.matchMedia("(display-mode: standalone)").matches||navigator.standalone)&&(document.querySelector(".install-panel").hidden=!0),window.addEventListener("appinstalled",function(){document.querySelector(".install-panel").hidden=!0}),"serviceWorker"in navigator&&window.addEventListener("load",function(){return navigator.serviceWorker.register("/sw.js").catch(function(){f("connection").textContent="Offline mód nem elérhető"})}),b(),g(),x()},662:()=>{}},n={};function r(e){var o=n[e];if(void 0!==o)return o.exports;var a=n[e]={exports:{}};return t[e](a,a.exports,r),a.exports}r.m=t,e=[],r.O=(t,n,o,a)=>{if(!n){var i=1/0;for(s=0;s<e.length;s++){for(var[n,o,a]=e[s],u=!0,c=0;c<n.length;c++)(!1&a||i>=a)&&Object.keys(r.O).every(e=>r.O[e](n[c]))?n.splice(c--,1):(u=!1,a<i&&(i=a));if(u){e.splice(s--,1);var l=o();void 0!==l&&(t=l)}}return t}a=a||0;for(var s=e.length;s>0&&e[s-1][2]>a;s--)e[s]=e[s-1];e[s]=[n,o,a]},r.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),(()=>{var e={773:0,170:0};r.O.j=t=>0===e[t];var t=(t,n)=>{var o,a,[i,u,c]=n,l=0;if(i.some(t=>0!==e[t])){for(o in u)r.o(u,o)&&(r.m[o]=u[o]);if(c)var s=c(r)}for(t&&t(n);l<i.length;l++)a=i[l],r.o(e,a)&&e[a]&&e[a][0](),e[a]=0;return r.O(s)},n=self.webpackChunk=self.webpackChunk||[];n.forEach(t.bind(null,0)),n.push=t.bind(null,n.push.bind(n))})(),r.O(void 0,[170],()=>r(598));var o=r.O(void 0,[170],()=>r(662));o=r.O(o)})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./resources/js/app.js":
+/*!*****************************!*\
+  !*** ./resources/js/app.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _tours__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tours */ "./resources/js/tours.js");
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+
+var key = 'uton-state-v1';
+var $ = function $(id) {
+  return document.getElementById(id);
+};
+var state = {
+  tour: 'S',
+  remainingOnly: false,
+  completed: {}
+};
+try {
+  var saved = JSON.parse(localStorage.getItem(key));
+  if (saved && _typeof(saved) === 'object') {
+    if (_tours__WEBPACK_IMPORTED_MODULE_0__.tours.some(function (t) {
+      return t.id === saved.tour;
+    })) state.tour = saved.tour;
+    state.remainingOnly = saved.remainingOnly === true;
+    var _iterator = _createForOfIteratorHelper(_tours__WEBPACK_IMPORTED_MODULE_0__.tours),
+      _step;
+    try {
+      var _loop = function _loop() {
+        var _saved$completed;
+        var tour = _step.value;
+        var ids = (_saved$completed = saved.completed) === null || _saved$completed === void 0 ? void 0 : _saved$completed[tour.id];
+        state.completed[tour.id] = Array.isArray(ids) ? _toConsumableArray(new Set(ids.filter(function (id) {
+          return tour.stops.some(function (s) {
+            return s[0] === id;
+          });
+        }))) : [];
+      };
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        _loop();
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  }
+} catch (_unused) {/* Invalid or unavailable storage: use a clean state. */}
+function save() {
+  try {
+    localStorage.setItem(key, JSON.stringify(state));
+    $('save-note').textContent = '✓ A haladásod automatikusan mentve ezen az eszközön.';
+  } catch (_unused2) {
+    $('save-note').textContent = 'A böngésző nem engedi a mentést. A haladás most csak a lap bezárásáig marad meg.';
+  }
+}
+function render() {
+  var tour = _tours__WEBPACK_IMPORTED_MODULE_0__.tours.find(function (t) {
+    return t.id === state.tour;
+  });
+  var completed = state.completed[tour.id] || [];
+  var count = completed.length,
+    total = tour.stops.length;
+  $('tour').value = tour.id;
+  $('remaining-only').checked = state.remainingOnly;
+  $('remaining-count').textContent = total - count;
+  $('done-count').textContent = count;
+  $('total-count').textContent = total;
+  $('progress').max = total || 1;
+  $('progress').value = count;
+  $('progress-percent').textContent = (total ? Math.round(count / total * 100) : 0) + '%';
+  $('progress-text').textContent = !total ? 'A címlista még feltöltésre vár' : count === total ? 'Minden cím kész. Szép munka!' : count ? 'Jól haladsz, csak így tovább!' : 'Kezdődjön a túra!';
+  $('reset').disabled = count === 0;
+  var list = $('stops');
+  list.replaceChildren();
+  tour.stops.forEach(function (_ref, index) {
+    var _ref2 = _slicedToArray(_ref, 4),
+      id = _ref2[0],
+      address = _ref2[1],
+      city = _ref2[2],
+      location = _ref2[3];
+    var done = completed.includes(id);
+    if (state.remainingOnly && done) return;
+    var row = document.createElement('li');
+    row.className = 'stop' + (done ? ' is-done' : '');
+    row.dataset.stop = id;
+    var label = document.createElement('label');
+    label.className = 'stop-check';
+    var checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = done;
+    checkbox.setAttribute('aria-label', index + 1 + '. ' + address + ' teljesítve');
+    checkbox.addEventListener('change', function () {
+      var ids = new Set(state.completed[tour.id] || []);
+      checkbox.checked ? ids.add(id) : ids["delete"](id);
+      state.completed[tour.id] = _toConsumableArray(ids);
+      save();
+      render();
+      var next = document.querySelector('[data-stop="' + id + '"] input') || list.querySelector('input') || $('remaining-only');
+      next.focus({
+        preventScroll: true
+      });
+    });
+    label.append(checkbox);
+    var number = document.createElement('span');
+    number.className = 'stop-number';
+    number.textContent = String(index + 1).padStart(2, '0');
+    var link = document.createElement('a');
+    link.className = 'stop-link';
+    link.href = 'https://waze.com/ul?q=' + encodeURIComponent(address.replace(/–/g, '-') + ', ' + city + ', Magyarország') + '&navigate=yes';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.setAttribute('aria-label', address + ', ' + city + ' — megnyitás Waze-ben');
+    var text = document.createElement('span');
+    var title = document.createElement('strong');
+    title.textContent = address;
+    var subtitle = document.createElement('span');
+    subtitle.className = 'stop-city';
+    subtitle.textContent = city;
+    var meta = document.createElement('span');
+    meta.className = 'stop-meta';
+    meta.textContent = id + ' · ' + location;
+    text.append(title, subtitle, meta);
+    var arrow = document.createElement('span');
+    arrow.className = 'navigate';
+    arrow.setAttribute('aria-hidden', 'true');
+    arrow.textContent = '↗';
+    link.append(text, arrow);
+    row.append(label, number, link);
+    list.append(row);
+  });
+  $('list-count').textContent = list.children.length;
+  $('empty').hidden = list.children.length > 0;
+  $('empty').textContent = !total ? 'Ehhez a túrához még nincs címlista megadva.' : '✓ Minden megálló teljesítve! A szűrő kikapcsolásával újra láthatod a címeket.';
+}
+var _iterator2 = _createForOfIteratorHelper(_tours__WEBPACK_IMPORTED_MODULE_0__.tours),
+  _step2;
+try {
+  for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+    var tour = _step2.value;
+    $('tour').add(new Option(tour.name, tour.id));
+  }
+} catch (err) {
+  _iterator2.e(err);
+} finally {
+  _iterator2.f();
+}
+$('tour').addEventListener('change', function (e) {
+  state.tour = e.target.value;
+  save();
+  render();
+});
+$('remaining-only').addEventListener('change', function (e) {
+  state.remainingOnly = e.target.checked;
+  save();
+  render();
+});
+var resetTour;
+$('reset').addEventListener('click', function () {
+  resetTour = state.tour;
+  $('reset-description').textContent = 'A ' + _tours__WEBPACK_IMPORTED_MODULE_0__.tours.find(function (t) {
+    return t.id === resetTour;
+  }).name + ' túra összes pipáját töröljük. A többi túra haladása megmarad.';
+  $('reset-dialog').showModal();
+});
+$('reset-dialog').addEventListener('close', function () {
+  if ($('reset-dialog').returnValue === 'confirm') {
+    state.completed[resetTour] = [];
+    save();
+    render();
+  }
+});
+var installPrompt;
+window.addEventListener('beforeinstallprompt', function (event) {
+  event.preventDefault();
+  installPrompt = event;
+});
+$('install').addEventListener('click', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+  return _regenerator().w(function (_context) {
+    while (1) switch (_context.n) {
+      case 0:
+        if (!installPrompt) {
+          _context.n = 3;
+          break;
+        }
+        _context.n = 1;
+        return installPrompt.prompt();
+      case 1:
+        _context.n = 2;
+        return installPrompt.userChoice;
+      case 2:
+        installPrompt = null;
+        _context.n = 4;
+        break;
+      case 3:
+        $('install-help').textContent = 'iPhone: Safari → Megosztás → Főképernyőhöz adás. Android: böngészőmenü → Alkalmazás telepítése vagy Hozzáadás a kezdőképernyőhöz.';
+      case 4:
+        return _context.a(2);
+    }
+  }, _callee);
+})));
+function connection() {
+  $('connection').textContent = navigator.onLine ? 'Helyi mentés' : 'Offline mód';
+}
+window.addEventListener('online', connection);
+window.addEventListener('offline', connection);
+if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) document.querySelector('.install-panel').hidden = true;
+window.addEventListener('appinstalled', function () {
+  document.querySelector('.install-panel').hidden = true;
+});
+if ('serviceWorker' in navigator) window.addEventListener('load', function () {
+  return navigator.serviceWorker.register('/sw.js')["catch"](function () {
+    $('connection').textContent = 'Offline mód nem elérhető';
+  });
+});
+render();
+save();
+connection();
+
+/***/ }),
+
+/***/ "./resources/js/tours.js":
+/*!*******************************!*\
+  !*** ./resources/js/tours.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "tours": () => (/* binding */ tours)
+/* harmony export */ });
+var tours = [{
+  id: 'S',
+  name: 'Budapest S',
+  stops: [['AB9087', 'Király u. 8–10', '1061 Budapest', 'Central Passage'], ['AB9815', 'Kis Diófa u. 8', '1076 Budapest', 'BoxHub'], ['AB9682', 'Király u. 73', '1077 Budapest', 'AlzaBox Budapest VII.'], ['AB9828', 'Szondi utca 22', '1067 Budapest', 'AlzaBox Budapest VI.'], ['AB9251', 'Zichy Jenő u. 36', '1066 Budapest', 'AlzaBox Budapest VI.'], ['AB9796', 'Felsőerdősor u. 5', '1068 Budapest', 'BOXHUB'], ['AB9792', 'Dob utca 100', '1073 Budapest', 'Vendobox'], ['AB9811', 'Dembinszky u. 41', '1071 Budapest', 'Box Office'], ['AB9377', 'Hungária krt. 175–177', '1146 Budapest', 'OMV'], ['AB9619', 'Nagy Lajos király útja 186', '1149 Budapest', 'Vendobox'], ['AB9193', 'Béke u. 2', '2145 Kerepes', 'COOP'], ['AB9074', 'Gödöllői út 244', '2146 Mogyoród', 'CBA']]
+}, {
+  id: 'V',
+  name: 'Budapest V',
+  stops: []
+}];
+
+/***/ }),
+
+/***/ "./resources/css/app.css":
+/*!*******************************!*\
+  !*** ./resources/css/app.css ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/chunk loaded */
+/******/ 	(() => {
+/******/ 		var deferred = [];
+/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
+/******/ 			if(chunkIds) {
+/******/ 				priority = priority || 0;
+/******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
+/******/ 				deferred[i] = [chunkIds, fn, priority];
+/******/ 				return;
+/******/ 			}
+/******/ 			var notFulfilled = Infinity;
+/******/ 			for (var i = 0; i < deferred.length; i++) {
+/******/ 				var [chunkIds, fn, priority] = deferred[i];
+/******/ 				var fulfilled = true;
+/******/ 				for (var j = 0; j < chunkIds.length; j++) {
+/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
+/******/ 						chunkIds.splice(j--, 1);
+/******/ 					} else {
+/******/ 						fulfilled = false;
+/******/ 						if(priority < notFulfilled) notFulfilled = priority;
+/******/ 					}
+/******/ 				}
+/******/ 				if(fulfilled) {
+/******/ 					deferred.splice(i--, 1)
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
+/******/ 				}
+/******/ 			}
+/******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		// no baseURI
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"/js/app": 0,
+/******/ 			"css/app": 0
+/******/ 		};
+/******/ 		
+/******/ 		// no chunk on demand loading
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
+/******/ 		
+/******/ 		// install a JSONP callback for chunk loading
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
+/******/ 			var [chunkIds, moreModules, runtime] = data;
+/******/ 			// add "moreModules" to the modules object,
+/******/ 			// then flag all "chunkIds" as loaded and fire callback
+/******/ 			var moduleId, chunkId, i = 0;
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 				for(moduleId in moreModules) {
+/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 					}
+/******/ 				}
+/******/ 				if(runtime) var result = runtime(__webpack_require__);
+/******/ 			}
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
+/******/ 			for(;i < chunkIds.length; i++) {
+/******/ 				chunkId = chunkIds[i];
+/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
+/******/ 					installedChunks[chunkId][0]();
+/******/ 				}
+/******/ 				installedChunks[chunkId] = 0;
+/******/ 			}
+/******/ 			return __webpack_require__.O(result);
+/******/ 		}
+/******/ 		
+/******/ 		var chunkLoadingGlobal = self["webpackChunk"] = self["webpackChunk"] || [];
+/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
+/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
+/******/ 	__webpack_require__.O(undefined, ["css/app"], () => (__webpack_require__("./resources/js/app.js")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["css/app"], () => (__webpack_require__("./resources/css/app.css")))
+/******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
+/******/ 	
+/******/ })()
+;
