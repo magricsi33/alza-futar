@@ -14,7 +14,11 @@ A meglévő függőségekkel: npm run production, majd php artisan serve.
 A helyi cím: http://127.0.0.1:8000. A webszerver dokumentumgyökere élesben a public könyvtár legyen.
 
 ## Címek és mentés
-A resources/js/tours.js tartalmazza a túrákat. S: a kapott kép 12 címe, eredeti sorrendben. V: üres helyőrző, a címlista még nincs megadva.
+### Beosztás
+A `resources/js/schedule.js` tartalmazza a kiadott időszak dátumait és a 18 személy sorait. Jelenleg 2026. október 23–30. szerepel (a kapott kép 8 dátumoszlopa). Új heti beosztáskor a dátumlistát és a személyek napi celláit együtt kell frissíteni, az állandó személyazonosítókat megőrizve, majd `npm run production` szükséges. Az üres cella hiányzó adat, a PIHEN pihenőnap; a többi cellában az első betű az útvonal, a négy betűből és három számból álló rész a rendszám. A fennmaradó jelölések megjegyzésként jelennek meg. Nem generálunk beosztást a kiadott időszakon kívül.
+A személyválasztást a böngésző `alzafutar-person-v1` localStorage kulcsa menti, az útvonal haladásától külön. Ez kényelmi választó, nem bejelentkezés. A Telepítés blokk mindkét nézet legalján található.
+
+A resources/js/tours.js tartalmazza a képekről rögzített 12 túrát, összesen 189 megállóval: A (16), B (18), C (18), D (16), E (13), F (18), O (22), Q (18), S (12), T (14), U (13), V (11). A túrák betűrendben, megállóik a képek szerinti sorrendben jelennek meg. A kétszer beküldött U túra egyszer szerepel. A címek a jobb oldali címoszlopot követik; az O túra AB9264 megállójánál a forrásban csak „2823/1, 2730 Albertirsa” szerepel, ezért annak Waze-találata külön ellenőrzendő. A C túra forrásában szereplő Kistarcsa/Kerepes irányítószámokat változatlanul megőriztük.
 Minden cím adatai: azonosító, utca/házszám, irányítószám/település, helyszín neve. Módosítás után npm run production szükséges.
 A pipák túránként, a kiválasztott túra és a fennmaradó-szűrő a localStorage uton-state-v1 kulcsába kerülnek. Az adatok ezen az eszközön és böngészőben maradnak. Böngészőadatok törlése törli a haladást. Az újrakezdés megerősítés után csak a kiválasztott túrát nullázza.
 A címek Waze keresési/navigációs linkek, nem ellenőrzött GPS-koordináták.
