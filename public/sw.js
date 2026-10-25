@@ -1,4 +1,4 @@
-const CACHE = 'uton-v1';
+const CACHE = 'uton-v2';
 const ASSETS = ['/', '/css/app.css', '/js/app.js', '/manifest.webmanifest', '/icons/icon.svg', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/icon-maskable.png'];
 self.addEventListener('install', event => {
     event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));

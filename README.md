@@ -1,5 +1,9 @@
 # Úton – futár címkezelő
 
+## Belső használat és keresőrobotok
+A robots.txt minden útvonal feltérképezését tiltja. A HTML robots metát, a Laravel válaszok X-Robots-Tag fejlécet kapnak (noindex, nofollow, noarchive, nosnippet, noimageindex). Apache mod_headers és IIS alatt a statikus fájlokra is be van állítva a fejléc. Nginx esetén a szerverkonfigurációban is szükséges: `add_header X-Robots-Tag "noindex, nofollow, noarchive, nosnippet, noimageindex" always;`.
+Ezek keresőrobotoknak szóló jelzések, nem hozzáférés-védelem. A robots.txt tiltása miatt a kereső nem feltétlenül tudja kiolvasni a noindex jelzést; egy máshonnan ismert URL ettől még megjelenhet a találatokban. Korábban indexelt oldal eltávolítását külön kell intézni. Valóban belső eléréshez a tárhelyen VPN/IP-korlátozás vagy HTTP-hitelesítés szükséges. A Referrer-Policy megakadályozza az oldal címének továbbküldését külső navigációkor.
+
 Mobilra optimalizált Laravel 8 alkalmazás, felhasználó és adatbázis nélkül.
 
 ## Indítás

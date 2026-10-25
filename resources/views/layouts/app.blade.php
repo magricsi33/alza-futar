@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="hu"><head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#142f29">
 <meta name="apple-mobile-web-app-capable" content="yes">
