@@ -1,1 +1,31 @@
-{"id":"/","name":"Úton · Futár címkezelő","short_name":"Úton","lang":"hu","start_url":"/","scope":"/","display":"standalone","background_color":"#f5f6f2","theme_color":"#142f29","icons":[{"src":"/icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"/icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},{"src":"/icons/icon-maskable.png","sizes":"512x512","type":"image/png","purpose":"maskable"}]}
+{
+  "id": "/",
+  "name": "Úton · Futár címkezelő",
+  "short_name": "Úton",
+  "lang": "hu",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#00275B",
+  "theme_color": "#00275B",
+  "icons": [
+    {
+      "sizes": "192x192",
+      "purpose": "any",
+      "src": "/icons/android/launchericon-192x192.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "512x512",
+      "purpose": "any",
+      "src": "/icons/android/launchericon-512x512.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "any",
+      "purpose": "maskable",
+      "src": "/icons/maskable.svg",
+      "type": "image/svg+xml"
+    }
+  ]
+}

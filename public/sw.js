@@ -1,5 +1,15 @@
-const CACHE = 'uton-v2';
-const ASSETS = ['/', '/css/app.css', '/js/app.js', '/manifest.webmanifest', '/icons/icon.svg', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/icon-maskable.png'];
+const CACHE = 'uton-v3';
+const ASSETS = [
+    '/',
+    '/css/app.css',
+    '/js/app.js',
+    '/manifest.webmanifest',
+    '/icons/android/launchericon-192x192.png',
+    '/icons/android/launchericon-512x512.png',
+    '/icons/ios/32.png',
+    '/icons/ios/180.png',
+    '/icons/maskable.svg',
+];
 self.addEventListener('install', event => {
     event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
 });
