@@ -1,25 +1,28 @@
-export const scheduleDays = Array.from({ length: 8 }, (_, i) => '2026-10-' + (23 + i));
+export const scheduleDays = [
+    '2026-10-28', '2026-10-29', '2026-10-30', '2026-10-31', '2026-11-01',
+];
 // Üres cella: nincs adat. Az extra jelöléseket a forrás szerint őrizzük meg.
 export const schedulePeople = [
-    ['takacs-istvan', 'Takács István', 'PIHEN|V AOBL104|V AOBL104|D AOGG683|D AOGG683|Q AADV156|B AABZ272|A AAIJ346'],
-    ['kollar-janos', 'Kollár János', 'D AOGG683|D AOGG683|D AOGG683|PIHEN|PIHEN|D AOGG683|D AOGG683|D AOGG683'],
-    ['balla-laszlo', 'Balla László', 'S AICD394|PIHEN|PIHEN|PIHEN|PIHEN|U AICD597|U AICD597|S AICD394'],
-    ['vegh-krisztian', 'Végh Krisztián', 'U AICD597|U AICD597|U AICD597|U AICD597|U AICD597|||U AICD597'],
-    ['szikszai-bettina', 'Szikszai Bettina', 'E AADN204 + TÉ|E AADN204 + TÉ|T csak éjszaka|E AADN204 + TÉ|E AADN204 + TÉ|E AADN204 + TÉ|E AADN204|E AADN204'],
-    ['bartos-laszlo', 'Bartos László', 'A AAIJ346|A AAIJ346|A AAIJ346|||||'],
-    ['joszkin-kevin', 'Joszkin Kevin', 'PIHEN|Q AADV156|E AADN204|A AAIJ346|A AAIJ346|A AAIJ346|A AAIJ346|PIHEN'],
-    ['szalai-zsolt', 'Szalai Zsolt', 'V AOBL104|S AICD394|S AICD394|V AOBL104|V AOBL104|V AOBL104|O AOTI174|O AOTI174'],
-    ['fekete-gergely', 'Fekete Gergely', 'Q AADV156|PIHEN|PIHEN|PIHEN|B AABZ272|S AICD394|PIHEN|Q AADV156'],
-    ['toth-boglarka', 'Tóth Boglárka', 'O AOTI174|O AOTI174|O AOTI174|O AOTI174|O AOTI174|O AOTI174|V AOBL104 + TÉ|PIHEN'],
-    ['mag-richard', 'Mag Richárd', 'PIHEN|PIHEN|PIHEN|S AICD394|S AICD394|PIHEN|S AICD394|V AOBL104'],
-    ['horvath-angela', 'Horváth Angéla', 'B AABZ272|B AABZ272|B AABZ272|B AABZ272|PIHEN|B AABZ272|PIHEN|B AABZ272'],
-    ['utto-norbert', 'Uttó Norbert', '||Q AADV156|Q AADV156|Q AADV156|PIHEN|Q AADV156|PIHEN'],
-    ['kiss-daniel', 'Kiss Dániel', 'F + É|F + É|F + É|F + É|F + É|F É|F É|T + FÉ'],
-    ['hanuszka-daniel', 'Hanuszka Dániel', 'C|C|C|PIHEN|PIHEN|T|T|F'],
-    ['pokorny-patrik', 'Pokorny Patrik', 'T|T|T|C|C|F|F|C'],
-    ['csolle-daniel', 'Csölle Dániel', 'PIHEN|PIHEN|PIHEN|T|T|C|C|PIHEN'],
-    ['miklos-daniel', 'Miklós Dániel', '|||||||'],
+    ['takacs-istvan', 'Takács István', 'Q AOTI174|B AABZ272|A AAIJ346|PIHEN|PIHEN'],
+    ['kollar-janos', 'Kollár János', 'D AOGG683|D AOGG683|D AOGG683|D AOGG683|D AOGG683'],
+    ['balla-laszlo', 'Balla László', 'U AICD597|U AICD597|S AICD394|PIHEN|S AICD394'],
+    ['vegh-krisztian', 'Végh Krisztián', '||U AICD597|U AICD597|U AICD597'],
+    ['szikszai-bettina', 'Szikszai Bettina', 'E AADN204 + TÉ|E AADN204|E AADN204 + TÉ|E AADN204|E AADN204'],
+    ['bartos-laszlo', 'Bartos László', '|||A AAIJ346|A AAIJ346'],
+    ['joszkin-kevin', 'Joszkin Kevin', 'A AAIJ346|A AAIJ346|PIHEN|PIHEN|PIHEN'],
+    ['szalai-zsolt', 'Szalai Zsolt', 'V AOBL104|O AOTI174|O AOTI174|O AOTI174|O AOTI174'],
+    ['fekete-gergely', 'Fekete Gergely', 'S AICD394|PIHEN|Q AADV156|Q AADV156|PIHEN'],
+    ['toth-boglarka', 'Tóth Boglárka', 'O AADV156|V AOFP411 + TÉ|PIHEN|V AOFP411 + TÉ|V AOFP411 + TÉ'],
+    ['mag-richard', 'Mag Richárd', 'PIHEN|S AICD394|V AOFP411|S AICD394|PIHEN'],
+    ['horvath-angela', 'Horváth Angéla', 'B AABZ272|PIHEN|B AABZ272|B AABZ272|B AABZ272'],
+    ['utto-norbert', 'Uttó Norbert', 'PIHEN|Q AADV156|PIHEN|PIHEN|Q AADV156'],
+    ['kiss-daniel', 'Kiss Dániel', 'F É|F É|F + É|F + É|F + É'],
+    ['hanuszka-daniel', 'Hanuszka Dániel', 'C|C|C|C|C'],
+    ['pokorny-patrik', 'Pokorny Patrik', 'T|T|T|T|T'],
+    ['csolle-daniel', 'Csölle Dániel', 'F|F|PIHEN|PIHEN|PIHEN'],
+    ['miklos-daniel', 'Miklós Dániel', '||||'],
 ].map(([id, name, cells]) => ({ id, name, cells: cells.split('|') }));
+
 
 export function parseShift(cell) {
     if (!cell) return { status: 'unknown' };

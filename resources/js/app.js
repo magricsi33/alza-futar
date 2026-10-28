@@ -4,13 +4,15 @@ const key = 'uton-state-v1';
 const $ = id => document.getElementById(id);
 // A megadott táblázat értékei, átszámítás nélkül.
 const fuelData = {
-    A: { code: 'HU14A', km: 289, liters: 35, amount: 22476 },
-    B: { code: 'HU15B', km: 237, liters: 26, amount: 18431 },
-    D: { code: 'HU17D', km: 257, liters: 32, amount: 19987 },
-    E: { code: 'HU18E', km: 137, liters: 15, amount: 10654 },
-    S: { code: 'HU32S', km: 106, liters: 11, amount: 8244 },
-    U: { code: 'HU34U', km: 69, liters: 8, amount: 5366 },
-    V: { code: 'HU35V', km: 44, liters: 8, amount: 3422 },
+    A: { code: 'HU14A', km: 289, liters: 31, amount: 21454 },
+    B: { code: 'HU15B', km: 237, liters: 26, amount: 17594 },
+    D: { code: 'HU17D', km: 257, liters: 28, amount: 19078 },
+    E: { code: 'HU18E', km: 137, liters: 15, amount: 10170 },
+    S: { code: 'HU32S', km: 106, liters: 12, amount: 7869 },
+    U: { code: 'HU34U', km: 69, liters: 8, amount: 5122 },
+    V: { code: 'HU35V', km: 44, liters: 5, amount: 3266 },
+    O: { code: 'HU22O', km: 316, liters: 35, amount: 23458 },
+    Q: { code: 'HU18Q', km: 306, liters: 34, amount: 22716 },
 };
 const fuelIntervals = { V: 5, U: 3, S: 2, E: 2 };
 const formatNumber = new Intl.NumberFormat('hu-HU');
