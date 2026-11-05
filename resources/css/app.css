@@ -233,3 +233,63 @@ input[type=checkbox]:checked:after { font-size: 20px; }
     .schedule-heading .ramp-button { max-width: none; }
     .stop-number { margin-right: 8px; }
 }
+
+/* Címinformációk, fotók és mentesítés */
+.route-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 12px; }
+.section-heading { flex-wrap: wrap; gap: 0 12px; }
+.stop-info-button {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    margin-left: 7px;
+    border: 1px solid #d6dfcc;
+    border-radius: 10px;
+    background: #f2f5ed;
+    color: #203b33;
+    font-size: 25px;
+}
+.stop.is-exempt { background: #eef0eb; }
+.stop.is-exempt .stop-link > span:first-child > strong,
+.stop.is-exempt .stop-city,
+.stop.is-exempt .stop-number { opacity: .5; }
+.exempt-badge {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 7px;
+    border-radius: 5px;
+    background: #dce4d2;
+    color: #445539;
+    font-size: 11px;
+    font-weight: 650;
+}
+.exempt-summary { margin: 12px 0 0; font-size: 12px; color: #d5ef8a; }
+.exempt-summary:empty { display: none; }
+#info-dialog { width: calc(100% - 24px); max-width: 560px; max-height: 90dvh; overflow-y: auto; padding: 22px; }
+#info-title { overflow-wrap: anywhere; }
+#info-dialog .info-meta { padding: 10px; background: #edf1e4; border-radius: 8px; color: #203b33; font-weight: 600; }
+#info-note {
+    display: block; width: 100%; margin: 8px 0 12px; padding: 12px;
+    border: 1px solid #b9c7b0; border-radius: 8px; font: inherit; font-size: 16px; resize: vertical;
+}
+#info-dialog h3 { font-size: 17px; margin: 25px 0 12px; }
+.photo-inputs { display: grid; gap: 14px; }
+.photo-inputs label { display: block; font-size: 14px; font-weight: 600; }
+.photo-inputs input { display: block; max-width: 100%; margin-top: 8px; font-size: 13px; min-height: 44px; }
+.photo-inputs input::file-selector-button { min-height: 44px; border: 1px solid #cbd6bf; border-radius: 8px; padding: 8px 12px; background: #edf1e4; color: #203b33; }
+#info-dialog .info-storage { font-size: 12px; line-height: 1.6; }
+.info-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.info-gallery figure { margin: 0; min-width: 0; }
+.info-gallery a { display: block; color: #203b33; text-decoration: none; }
+.info-gallery img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; }
+.info-gallery figcaption { font-size: 11px; overflow-wrap: anywhere; margin: 6px 0; }
+.info-gallery button { width: 100%; border: 1px solid #d8dccc; border-radius: 7px; background: white; color: #6f392e; font-size: 12px; }
+.exemption-action { width: 100%; margin-top: 12px; background: #edf1e4; }
+#info-status { min-height: 1.5em; }
+button:disabled, input:disabled { cursor: not-allowed; opacity: .55; }
+@media (max-width: 540px) {
+    .stop { padding-right: 6px; padding-left: 2px; }
+    .stop-number { margin-right: 8px; }
+    .stop-link { gap: 4px; }
+    .stop-link .navigate { display: none; }
+    .stop-info-button { margin-left: 4px; }
+}

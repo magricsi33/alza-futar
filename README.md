@@ -14,6 +14,11 @@ A meglévő függőségekkel: npm run production, majd php artisan serve.
 A helyi cím: http://127.0.0.1:8000. A webszerver dokumentumgyökere élesben a public könyvtár legyen.
 
 ## Címek és mentés
+### Címinformációk és mentesítés
+A címsor jobb szélén lévő információ gomb megnyitja a cím adatait, az AB-azonosítót és a helyszín nevét. A megjegyzés a Mentés gombbal menthető. A képkiválasztás és a telefonos Fotó készítése mező automatikusan menti a kiválasztott képeket és az aktuális megjegyzést. A kamera megnyitását a telefon böngészője kezeli; asztali böngészőben fájlválasztó jelenhet meg. Címenként legfeljebb 12, egyenként 20 MB-os kép tárolható. Nem támogatott képformátumnál az előnézet helyett a fájl megnyitása érhető el.
+A képek és megjegyzések az `alzafutar-address-info` IndexedDB-adatbázis `addresses` tárolójában, AB-azonosító szerint maradnak az adott böngészőben. Nincs szerveres feltöltés vagy más eszközökkel szinkronizálás. A böngészőadatok törlése ezeket is törli. Sikertelen írásnál hibaüzenet jelenik meg, a megjegyzés szövege kimásolható marad.
+A mentesítések útvonalanként az eddigi localStorage állapot `exempt` mezőjébe kerülnek. A mentesített cím halványan, Mentesítve jelzéssel látszik, és a fennmaradó szűrőből, illetve a hátralévő darabszámból kimarad. A haladás a teljesített és mentesített címek együttes számát mutatja, dupla számolás nélkül. Az Újrakezdés csak a pipákat törli; a Mentesítés törlése megerősítés után csak az aktuális útvonal mentesítéseit törli. A megjegyzések és képek mindkét esetben megmaradnak.
+
 ### Beosztás
 A `resources/js/schedule.js` tartalmazza a kiadott időszak dátumait és a 18 személy sorait. Jelenleg 2026. október 28.–november 1. szerepel (a kapott kép 5 dátumoszlopa). Új heti beosztáskor a dátumlistát és a személyek napi celláit együtt kell frissíteni, az állandó személyazonosítókat megőrizve, majd `npm run production` szükséges. Az üres cella hiányzó adat, a PIHEN pihenőnap; a többi cellában az első betű az útvonal, a négy betűből és három számból álló rész a rendszám. A fennmaradó jelölések megjegyzésként jelennek meg. Nem generálunk beosztást a kiadott időszakon kívül.
 A személyválasztást a böngésző `alzafutar-person-v1` localStorage kulcsa menti, az útvonal haladásától külön. Ez kényelmi választó, nem bejelentkezés. A Telepítés blokk mindkét nézet legalján található.

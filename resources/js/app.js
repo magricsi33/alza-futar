@@ -1,4 +1,5 @@
 import { initSchedule } from './schedule';
+import { initStopInfo } from './stop-info';
 import { tours } from './tours';
 const key = 'uton-state-v1';
 const $ = id => document.getElementById(id);
@@ -44,7 +45,7 @@ const rampAssignments = {
     O: { ramp: null, departure: '05:30' },
     Q: { ramp: null, departure: '05:30' },
 };
-let state = { tour: 'S', remainingOnly: false, completed: {} };
+let state = { tour: 'S', remainingOnly: false, completed: {}, exempt: {} };
 try {
     const saved = JSON.parse(localStorage.getItem(key));
     if (saved && typeof saved === 'object') {
@@ -53,6 +54,8 @@ try {
         for (const tour of tours) {
             const ids = saved.completed?.[tour.id];
             state.completed[tour.id] = Array.isArray(ids) ? [...new Set(ids.filter(id => tour.stops.some(s => s[0] === id)))] : [];
+            const exempt = saved.exempt?.[tour.id];
+            state.exempt[tour.id] = Array.isArray(exempt) ? [...new Set(exempt.filter(id => tour.stops.some(s => s[0] === id)))] : [];
         }
     }
 } catch { /* Invalid or unavailable storage: use a clean state. */ }
@@ -64,24 +67,30 @@ function render() {
     const tour = tours.find(t => t.id === state.tour);
     renderFuel(tour);
     const completed = state.completed[tour.id] || [];
-    const count = completed.length, total = tour.stops.length;
+    const exempt = state.exempt[tour.id] || [];
+    const resolved = new Set([...completed, ...exempt]).size;
+    const count = completed.filter(id => !exempt.includes(id)).length, total = tour.stops.length;
     $('tour').value = tour.id;
     $('remaining-only').checked = state.remainingOnly;
-    $('remaining-count').textContent = total - count;
+    $('remaining-count').textContent = total - resolved;
     $('done-count').textContent = count;
     $('total-count').textContent = total;
     $('progress').max = total || 1;
-    $('progress').value = count;
-    $('progress-percent').textContent = (total ? Math.round(count / total * 100) : 0) + '%';
-    $('progress-text').textContent = !total ? 'A címlista még feltöltésre vár' : count === total ? 'Minden cím kész. Szép munka!' : count ? 'Jól haladsz, csak így tovább!' : 'Kezdődjön az útvonal!';
-    $('reset').disabled = count === 0;
+    $('progress').value = resolved;
+    $('progress-percent').textContent = (total ? Math.round(resolved / total * 100) : 0) + '%';
+    $('progress-text').textContent = !total ? 'A címlista még feltöltésre vár' : resolved === total ? 'Nincs hátralévő cím. Szép munka!' : resolved ? 'Jól haladsz, csak így tovább!' : 'Kezdődjön az útvonal!';
+    $('exempt-summary').textContent = exempt.length ? exempt.length + ' cím mentesítve' : '';
+    $('reset').disabled = completed.length === 0;
+    $('clear-exempt').disabled = exempt.length === 0;
     const list = $('stops'); list.replaceChildren();
     tour.stops.forEach(([id, address, city, location], index) => {
         const done = completed.includes(id);
-        if (state.remainingOnly && done) return;
-        const row = document.createElement('li'); row.className = 'stop' + (done ? ' is-done' : ''); row.dataset.stop = id;
+        const waived = exempt.includes(id);
+        if (state.remainingOnly && (done || waived)) return;
+        const row = document.createElement('li'); row.className = 'stop' + (done ? ' is-done' : '') + (waived ? ' is-exempt' : ''); row.dataset.stop = id;
         const label = document.createElement('label'); label.className = 'stop-check';
         const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.checked = done;
+        checkbox.disabled = waived;
         checkbox.setAttribute('aria-label', (index + 1) + '. ' + address + ' teljesítve');
         checkbox.addEventListener('change', () => {
             const ids = new Set(state.completed[tour.id] || []);
@@ -99,15 +108,39 @@ function render() {
         const text = document.createElement('span');
         const title = document.createElement('strong'); title.textContent = address;
         const subtitle = document.createElement('span'); subtitle.className = 'stop-city'; subtitle.textContent = city;
-        const meta = document.createElement('span'); meta.className = 'stop-meta'; meta.textContent = id + ' · ' + location;
-        text.append(title, subtitle, meta);
+        text.append(title, subtitle);
+        if (waived) {
+            const badge = document.createElement('span'); badge.className = 'exempt-badge'; badge.textContent = 'Mentesítve';
+            text.append(badge);
+        }
         const arrow = document.createElement('span'); arrow.className = 'navigate'; arrow.setAttribute('aria-hidden', 'true'); arrow.textContent = '↗';
-        link.append(text, arrow); row.append(label, number, link); list.append(row);
+        const info = document.createElement('button'); info.type = 'button'; info.className = 'stop-info-button'; info.textContent = 'ⓘ';
+        info.setAttribute('aria-label', address + ' – információk');
+        info.setAttribute('aria-haspopup', 'dialog'); info.setAttribute('aria-controls', 'info-dialog');
+        info.addEventListener('click', () => stopInfo.open(tour.id, [id, address, city, location]));
+        link.append(text, arrow); row.append(label, number, link, info); list.append(row);
     });
     $('list-count').textContent = list.children.length;
     $('empty').hidden = list.children.length > 0;
-    $('empty').textContent = !total ? 'Ehhez az útvonalhoz még nincs címlista megadva.' : '✓ Minden megálló teljesítve! A szűrő kikapcsolásával újra láthatod a címeket.';
+    $('empty').textContent = !total ? 'Ehhez az útvonalhoz még nincs címlista megadva.' : '✓ Nincs hátralévő megálló! A szűrő kikapcsolásával újra láthatod a teljesített és mentesített címeket.';
 }
+const stopInfo = initStopInfo({
+    isExempt: (route, id) => (state.exempt[route] || []).includes(id),
+    toggleExempt: (route, id) => {
+        const ids = new Set(state.exempt[route] || []);
+        ids.has(id) ? ids.delete(id) : ids.add(id);
+        state.exempt[route] = [...ids]; save(); render();
+    },
+});
+let clearExemptRoute;
+$('clear-exempt').addEventListener('click', () => {
+    clearExemptRoute = state.tour;
+    $('clear-exempt-description').textContent = 'A ' + tours.find(t => t.id === clearExemptRoute).name + ' útvonal összes mentesítését töröljük. A megjegyzések, képek és teljesítési pipák megmaradnak.';
+    $('clear-exempt-dialog').showModal();
+});
+$('clear-exempt-dialog').addEventListener('close', () => {
+    if ($('clear-exempt-dialog').returnValue === 'confirm') { state.exempt[clearExemptRoute] = []; save(); render(); }
+});
 for (const tour of tours) $('tour').add(new Option(tour.name, tour.id));
 $('ramp-button').addEventListener('click', () => {
     const tour = tours.find(t => t.id === state.tour);

@@ -35,13 +35,15 @@ function boot(saved, blocked = false, person = null) {
         },
         window: { addEventListener() {}, matchMedia: () => ({ matches: false }) },
         navigator: { onLine: true },
+        URL,
     };
     vm.createContext(context);
     const data = fs.readFileSync('resources/js/tours.js', 'utf8').replace('export const', 'const');
     const app = fs.readFileSync('resources/js/app.js', 'utf8').replace(/^import .*;\r?\n/gm, '');
     const schedule = fs.readFileSync('resources/js/schedule.js', 'utf8').replace(/export /g, '');
-    vm.runInContext(data + '\n' + schedule + '\n' + app, context);
-    return { elements, store };
+    const info = fs.readFileSync('resources/js/stop-info.js', 'utf8').replace(/export /g, '');
+    vm.runInContext(data + '\n' + schedule + '\n' + info + '\n' + app, context);
+    return { elements, store, context };
 }
 test('completion, filter, reload, tour isolation and reset', () => {
     let {elements: e, store} = boot(null);
@@ -226,4 +228,61 @@ test('updated fuel table includes O and Q while C F T remain unavailable', () =>
         assert.equal(e['fuel-empty'].hidden, false);
         assert.equal(e['fuel-values'].hidden, true);
     }
+});
+
+test('exemptions persist independently of completion and clear only the active route', async () => {
+    const {elements:e, store} = boot(JSON.stringify({tour:'S',completed:{S:['AB9087']},exempt:{V:['AB9131']}}));
+    await e.stops.children[0].children[3].events.click();
+    assert.equal(e['info-meta'].textContent, 'AB9087 · Central Passage');
+    e['info-exempt'].events.click();
+    assert.match(e.stops.children[0].className, /is-exempt/);
+    assert.equal(e.stops.children[0].children[0].children[0].disabled, true);
+    assert.equal(e['remaining-count'].textContent, 11);
+    assert.equal(e['done-count'].textContent, 0);
+    e.reset.events.click();
+    e['reset-dialog'].returnValue = 'confirm';
+    e['reset-dialog'].events.close();
+    assert.equal(JSON.parse(store.value).exempt.S[0], 'AB9087');
+    assert.equal(e['remaining-count'].textContent, 11);
+    e['remaining-only'].events.change({target:{checked:true}});
+    assert.equal(e.stops.children.length, 11);
+    const restored = boot(store.value);
+    assert.equal(restored.elements['remaining-count'].textContent, 11);
+    e['clear-exempt'].events.click();
+    e['clear-exempt-dialog'].returnValue = 'cancel';
+    e['clear-exempt-dialog'].events.close();
+    assert.equal(e['remaining-count'].textContent, 11);
+    e['clear-exempt'].events.click();
+    e['clear-exempt-dialog'].returnValue = 'confirm';
+    e['clear-exempt-dialog'].events.close();
+    assert.equal(e['remaining-count'].textContent, 12);
+    assert.equal(JSON.parse(store.value).exempt.V[0], 'AB9131');
+});
+
+test('address notes and camera photos save together, remain address-specific and report failed writes', async () => {
+    const {elements:e, context} = boot(null);
+    const records = new Map();
+    context.readAddressInfo = async id => records.get(id) || {id,note:'',photos:[]};
+    context.writeAddressInfo = async record => { records.set(record.id, record); };
+    await e.stops.children[0].children[3].events.click();
+    e['info-note'].value = 'Bejárat az udvar felől';
+    await e['info-save'].events.click();
+    assert.equal(records.get('AB9087').note, 'Bejárat az udvar felől');
+    const photo = new Blob(['test'], {type:'image/jpeg'});
+    photo.name = 'camera.jpg';
+    await e['info-camera'].events.change({target:{files:[photo],value:'camera.jpg'}});
+    assert.equal(records.get('AB9087').photos.length, 1);
+    assert.equal(e['info-gallery'].children.length, 1);
+    await e.stops.children[1].children[3].events.click();
+    assert.equal(e['info-note'].value, '');
+    assert.equal(e['info-gallery'].children.length, 0);
+    await e.stops.children[0].children[3].events.click();
+    assert.equal(e['info-note'].value, 'Bejárat az udvar felől');
+    assert.equal(e['info-gallery'].children.length, 1);
+    context.writeAddressInfo = async () => { throw Error('quota'); };
+    e['info-note'].value = 'Új megjegyzés';
+    await e['info-save'].events.click();
+    assert.match(e['info-status'].textContent, /Nem sikerült menteni/);
+    assert.equal(records.get('AB9087').note, 'Bejárat az udvar felől');
+    assert.equal(e['info-note'].value, 'Új megjegyzés');
 });

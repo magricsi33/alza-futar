@@ -74,6 +74,7 @@
                     value="0"
                     aria-label="Útvonal teljesítése"
                 ></progress>
+                <p id="exempt-summary" class="exempt-summary"></p>
             </section>
 
             <section class="stops-section" aria-labelledby="stops-title">
@@ -82,9 +83,10 @@
                         Megállók <span id="list-count">12</span>
                     </h2>
 
-                    <button id="reset" class="reset-button" type="button">
-                        ↻ Újrakezdés
-                    </button>
+                    <div class="route-actions">
+                        <button id="reset" class="reset-button" type="button">↻ Újrakezdés</button>
+                        <button id="clear-exempt" class="reset-button" type="button">Mentesítés törlése</button>
+                    </div>
                 </div>
 
                 <div class="list-toolbar">
@@ -146,6 +148,45 @@
             <p>A címkezelő használatához engedélyezd a JavaScriptet.</p>
         </noscript>
     </main>
+
+    <dialog id="info-dialog" aria-labelledby="info-title">
+        <div class="ramp-dialog-heading">
+            <h2 id="info-title"></h2>
+            <button id="info-close" class="ramp-close" type="button" aria-label="Bezárás" autofocus>×</button>
+        </div>
+        <p id="info-address"></p>
+        <p id="info-meta" class="info-meta"></p>
+
+        <label for="info-note">Megjegyzés</label>
+        <textarea id="info-note" rows="4" maxlength="10000" placeholder="Bejutás, parkolás, hasznos tudnivalók…"></textarea>
+        <button id="info-save" class="ramp-button" type="button">Megjegyzés mentése</button>
+
+        <h3>Képek</h3>
+        <div class="photo-inputs">
+            <label>Képek hozzáadása
+                <input id="info-files" type="file" accept="image/*" multiple>
+            </label>
+            <label>Fotó készítése
+                <input id="info-camera" type="file" accept="image/*" capture="environment">
+            </label>
+        </div>
+        <p class="info-storage">A képek és megjegyzések ezen az eszközön maradnak; más telefonon nem jelennek meg. A böngészőadatok törlése ezeket is törli. Legfeljebb 12 kép, képenként 20 MB.</p>
+        <p id="info-no-photos">Még nincs hozzáadott kép.</p>
+        <div id="info-gallery" class="info-gallery"></div>
+        <p id="info-status" role="status" aria-live="polite"></p>
+        <button id="info-exempt" class="ramp-button exemption-action" type="button">Megjelölés mentesítettként</button>
+    </dialog>
+
+    <dialog id="clear-exempt-dialog" aria-labelledby="clear-exempt-title">
+        <form method="dialog">
+            <h2 id="clear-exempt-title">Mentesítések törlése?</h2>
+            <p id="clear-exempt-description"></p>
+            <div class="dialog-actions">
+                <button value="cancel">Mégse</button>
+                <button value="confirm" class="confirm">Mentesítések törlése</button>
+            </div>
+        </form>
+    </dialog>
 
     <dialog id="person-dialog" aria-labelledby="person-title">
         <form id="person-form">
