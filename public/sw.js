@@ -1,4 +1,4 @@
-const CACHE = 'uton-v11';
+const CACHE = 'uton-v13';
 const ASSETS = [
     '/',
     '/css/app.css',
@@ -24,6 +24,7 @@ self.addEventListener('fetch', event => {
     if (event.request.method !== 'GET') return;
     const url = new URL(event.request.url);
     if (url.origin !== self.location.origin) return;
+    if (url.pathname.startsWith('/address-info/')) return;
     if (event.request.mode === 'navigate') {
         event.respondWith(fetch(event.request).then(response => {
             if (response.ok && url.pathname === '/') {

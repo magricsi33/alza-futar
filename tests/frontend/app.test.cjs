@@ -160,9 +160,9 @@ test('person selection persists, reopens directly and can be changed without res
     assert.equal(e['schedule-view'].hidden, false);
     assert.equal(e['route-view'].hidden, true);
     assert.equal(e['schedule-person'].textContent, 'Mag Richárd');
-    assert.equal(e['schedule-cards'].children.length, 5);
+    assert.equal(e['schedule-cards'].children.length, 8);
     assert.equal(e['schedule-cards'].children[0].children[1].textContent, 'Pihenőnap');
-    assert.equal(e['schedule-cards'].children[3].children[2].children[1].children[1].textContent, 'AICD394');
+    assert.equal(e['schedule-cards'].children[4].children[2].children[1].children[1].textContent, 'AICD394');
 
     const second = boot(first.store.value, false, first.store.person);
     second.elements['schedule-tab'].events.click();
@@ -183,9 +183,9 @@ test('empty schedule differs from rest and unknown saved person prompts again', 
     const {elements:e} = boot(null, false, 'deleted-person');
     e['schedule-tab'].events.click();
     assert.equal(e['person-dialog'].open, true);
-    e['person-select'].value = 'miklos-daniel';
+    e['person-select'].value = 'csolle-daniel';
     e['person-form'].events.submit({preventDefault() {}});
-    assert.equal(e['schedule-cards'].children.length, 5);
+    assert.equal(e['schedule-cards'].children.length, 8);
     for (const card of e['schedule-cards'].children) {
         assert.equal(card.children[1].textContent, 'Nincs megadott beosztás');
         assert.equal(card.children.length, 2);
@@ -197,12 +197,12 @@ test('all schedule rows cover exactly the published dates', () => {
     vm.createContext(context);
     vm.runInContext(fs.readFileSync('resources/js/schedule.js','utf8').replace(/export /g,'') + '\nthis.people = schedulePeople; this.days = scheduleDays; this.parse = parseShift;', context);
     assert.equal(context.people.length, 18);
-    assert.equal(context.days.length, 5);
-    assert.equal(context.days[0], '2026-10-28');
-    assert.equal(context.days[4], '2026-11-01');
-    assert.equal(context.people.find(p => p.id === 'mag-richard').cells[2], 'V AOFP411');
-    assert.equal(context.people.find(p => p.id === 'takacs-istvan').cells[0], 'Q AOTI174');
-    assert.equal(context.people.find(p => p.id === 'toth-boglarka').cells[0], 'O AADV156');
+    assert.equal(context.days.length, 8);
+    assert.equal(context.days[0], '2026-11-01');
+    assert.equal(context.days[7], '2026-11-08');
+    assert.equal(context.people.find(p => p.id === 'mag-richard').cells[7], 'V AOFP411');
+    assert.equal(context.people.find(p => p.id === 'takacs-istvan').cells[4], 'Q AADV156');
+    assert.equal(context.people.find(p => p.id === 'toth-boglarka').cells[0], 'V AOFP411 + TÉ');
     assert.equal(new Set(context.people.map(p => p.id)).size, 18);
     for (const person of context.people) assert.equal(person.cells.length, context.days.length, person.name);
     const night = context.parse('T csak éjszaka');
@@ -263,7 +263,7 @@ test('address notes and camera photos save together, remain address-specific and
     const {elements:e, context} = boot(null);
     const records = new Map();
     context.readAddressInfo = async id => records.get(id) || {id,note:'',photos:[]};
-    context.writeAddressInfo = async record => { records.set(record.id, record); };
+    context.writeAddressInfo = async record => { records.set(record.id, record); return record; };
     await e.stops.children[0].children[3].events.click();
     e['info-note'].value = 'Bejárat az udvar felől';
     await e['info-save'].events.click();

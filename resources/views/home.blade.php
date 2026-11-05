@@ -161,18 +161,21 @@
         <textarea id="info-note" rows="4" maxlength="10000" placeholder="Bejutás, parkolás, hasznos tudnivalók…"></textarea>
         <button id="info-save" class="ramp-button" type="button">Megjegyzés mentése</button>
 
-        <h3>Képek</h3>
-        <div class="photo-inputs">
-            <label>Képek hozzáadása
-                <input id="info-files" type="file" accept="image/*" multiple>
-            </label>
-            <label>Fotó készítése
-                <input id="info-camera" type="file" accept="image/*" capture="environment">
-            </label>
+        <div class="photo-heading">
+            <h3>Képek</h3>
+            <button id="info-take-photo" class="photo-camera" type="button" aria-label="Fotó készítése" title="Fotó készítése">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path d="M8 6l2-3h4l2 3h4a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                </svg>
+            </button>
         </div>
-        <p class="info-storage">A képek és megjegyzések ezen az eszközön maradnak; más telefonon nem jelennek meg. A böngészőadatok törlése ezeket is törli. Legfeljebb 12 kép, képenként 20 MB.</p>
-        <p id="info-no-photos">Még nincs hozzáadott kép.</p>
-        <div id="info-gallery" class="info-gallery"></div>
+        <input id="info-files" type="file" accept="image/*" multiple hidden>
+        <input id="info-camera" type="file" accept="image/*" capture="environment" hidden>
+        <div class="photo-grid">
+            <button id="info-add" class="photo-add" type="button" aria-label="Képek hozzáadása" title="Képek hozzáadása">+</button>
+            <div id="info-gallery" class="info-gallery"></div>
+        </div>
         <p id="info-status" role="status" aria-live="polite"></p>
         <button id="info-exempt" class="ramp-button exemption-action" type="button">Megjelölés mentesítettként</button>
     </dialog>

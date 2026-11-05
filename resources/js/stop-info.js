@@ -1,36 +1,39 @@
-// A képek Blobként, a megjegyzések ugyanazon címrekordban maradnak az eszközön.
-let dbPromise;
-function openDatabase() {
-    if (!dbPromise) {
-        dbPromise = new Promise((resolve, reject) => {
-            const request = indexedDB.open('alzafutar-address-info', 1);
-            request.onupgradeneeded = () => request.result.createObjectStore('addresses', { keyPath: 'id' });
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-            request.onblocked = () => reject(new Error('Az adattár megnyitását egy másik ablak blokkolja.'));
-        }).catch(error => { dbPromise = null; throw error; });
+async function responseJson(response) {
+    if (!response.ok) {
+        let message = 'A szerver nem érhető el. Ellenőrizd az internetkapcsolatot, és próbáld újra.';
+        try {
+            const body = await response.json();
+            if (response.status === 409) message = body.message;
+            else if (response.status === 422) message = 'Ellenőrizd a képeket: legfeljebb 12 kép, képenként 20 MB (JPG, PNG, WebP, GIF, HEIC vagy AVIF).';
+            else if (response.status === 419) message = 'A munkamenet lejárt. Próbáld újra a mentést.';
+            else if (response.status === 413) message = 'A feltöltés túl nagy a szerver beállításaihoz. Válassz kevesebb vagy kisebb képet.';
+        } catch {}
+        throw new Error(message);
     }
-    return dbPromise;
+    return response.json();
 }
 export async function readAddressInfo(id) {
-    const db = await openDatabase();
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction('addresses', 'readonly');
-        const request = transaction.objectStore('addresses').get(id);
-        transaction.oncomplete = () => resolve(request.result || { id, note: '', photos: [] });
-        transaction.onerror = () => reject(transaction.error);
-        transaction.onabort = () => reject(transaction.error);
-    });
+    return responseJson(await fetch('/address-info/' + encodeURIComponent(id), {
+        credentials: 'same-origin', cache: 'no-store', headers: { Accept: 'application/json' },
+    }));
 }
 export async function writeAddressInfo(record) {
-    const db = await openDatabase();
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction('addresses', 'readwrite');
-        transaction.objectStore('addresses').put(record);
-        transaction.oncomplete = () => resolve();
-        transaction.onerror = () => reject(transaction.error);
-        transaction.onabort = () => reject(transaction.error);
-    });
+    // Friss token kell, mert a PWA HTML-je korábbi munkamenetből is származhat.
+    const session = await responseJson(await fetch('/address-info/session', {
+        credentials: 'same-origin', cache: 'no-store', headers: { Accept: 'application/json' },
+    }));
+    const data = new FormData();
+    data.append('note', record.note);
+    data.append('revision', String(record.revision));
+    for (const photo of record.photos) {
+        if (photo.blob) data.append('photos[]', photo.blob, photo.name);
+        else data.append('keep[]', photo.id);
+    }
+    return responseJson(await fetch('/address-info/' + encodeURIComponent(record.id), {
+        method: 'POST', credentials: 'same-origin',
+        headers: { Accept: 'application/json', 'X-CSRF-TOKEN': session.token },
+        body: data,
+    }));
 }
 export function initStopInfo({ isExempt, toggleExempt }) {
     const el = id => document.getElementById(id);
@@ -38,11 +41,11 @@ export function initStopInfo({ isExempt, toggleExempt }) {
     let routeId = null;
     let busy = false;
     let generation = 0;
-    let urls = [];
-    function releaseImages() { urls.forEach(url => URL.revokeObjectURL(url)); urls = []; }
+
+
     function setBusy(value) {
         busy = value;
-        ['info-save', 'info-files', 'info-camera'].forEach(id => { el(id).disabled = value || !record; });
+        ['info-save', 'info-files', 'info-camera', 'info-add', 'info-take-photo'].forEach(id => { el(id).disabled = value || !record; });
         el('info-close').disabled = value;
         el('info-note').disabled = value || !record;
         el('info-exempt').disabled = value;
@@ -52,13 +55,13 @@ export function initStopInfo({ isExempt, toggleExempt }) {
             ? 'Mentesítés visszavonása' : 'Megjelölés mentesítettként';
     }
     function gallery() {
-        releaseImages();
+
         el('info-gallery').replaceChildren();
-        el('info-no-photos').hidden = record.photos.length > 0;
+
         record.photos.forEach((photo, index) => {
             const figure = document.createElement('figure');
-            const url = URL.createObjectURL(photo.blob);
-            urls.push(url);
+            const url = photo.url;
+
             const link = document.createElement('a');
             link.href = url; link.target = '_blank'; link.rel = 'noopener';
             link.setAttribute('aria-label', 'Kép megnyitása: ' + photo.name);
@@ -69,7 +72,8 @@ export function initStopInfo({ isExempt, toggleExempt }) {
             img.addEventListener('error', () => { img.hidden = true; caption.textContent = photo.name + ' – előnézet nem elérhető, koppints a megnyitáshoz.'; });
             link.append(img, caption);
             const remove = document.createElement('button');
-            remove.type = 'button'; remove.textContent = 'Kép törlése';
+            remove.type = 'button'; remove.textContent = '×';
+            remove.setAttribute('aria-label', 'Kép törlése: ' + photo.name);
             remove.addEventListener('click', async () => {
                 if (busy) return;
                 await persist(record.photos.filter((_, i) => i !== index));
@@ -81,14 +85,14 @@ export function initStopInfo({ isExempt, toggleExempt }) {
     async function persist(photos) {
         if (!record || busy) return;
         setBusy(true);
+        el('info-status').textContent = 'Mentés…';
         const next = { ...record, note: el('info-note').value, photos };
         try {
-            await writeAddressInfo(next);
-            record = next;
+            const saved = await writeAddressInfo(next);
+            record = saved;
             gallery();
-            el('info-status').textContent = 'Mentve ezen az eszközön.';
-        } catch {
-            el('info-status').textContent = 'Nem sikerült menteni. Lehet, hogy megtelt vagy nem elérhető a böngésző tárhelye. A megjegyzést másold ki, és próbáld újra.';
+            el('info-status').textContent = 'Mentve.';
+        } catch (error) { el('info-status').textContent = 'Nem sikerült menteni. ' + error.message;
         } finally { setBusy(false); }
     }
     async function addPhotos(event) {
@@ -103,6 +107,8 @@ export function initStopInfo({ isExempt, toggleExempt }) {
         }
         await persist([...record.photos, ...files.map(file => ({ name: file.name, blob: file }))]);
     }
+    el('info-add').addEventListener('click', () => el('info-files').click());
+    el('info-take-photo').addEventListener('click', () => el('info-camera').click());
     el('info-files').addEventListener('change', addPhotos);
     el('info-camera').addEventListener('change', addPhotos);
     el('info-save').addEventListener('click', () => record && persist(record.photos));
@@ -118,7 +124,7 @@ export function initStopInfo({ isExempt, toggleExempt }) {
     }
     el('info-close').addEventListener('click', close);
     el('info-dialog').addEventListener('cancel', event => { event.preventDefault(); close(); });
-    el('info-dialog').addEventListener('close', () => { generation++; releaseImages(); record = null; });
+    el('info-dialog').addEventListener('close', () => { generation++; record = null; });
     return {
         async open(route, stop) {
             const token = ++generation;
@@ -131,7 +137,7 @@ export function initStopInfo({ isExempt, toggleExempt }) {
             el('info-meta').textContent = id + ' · ' + location;
             el('info-note').value = '';
             el('info-gallery').replaceChildren();
-            el('info-no-photos').hidden = true;
+
             el('info-status').textContent = 'Adatok betöltése…';
             updateExempt();
             setBusy(false);
@@ -145,7 +151,7 @@ export function initStopInfo({ isExempt, toggleExempt }) {
                 el('info-status').textContent = '';
             } catch {
                 if (token !== generation) return;
-                el('info-status').textContent = 'A helyi adattár nem elérhető. A megjegyzések és képek most nem tölthetők be.';
+                el('info-status').textContent = 'A szerver nem érhető el. A megjegyzések és képek betöltéséhez internetkapcsolat szükséges.';
             }
             if (token === generation) setBusy(false);
         },
