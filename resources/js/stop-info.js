@@ -35,7 +35,7 @@ export async function writeAddressInfo(record) {
         body: data,
     }));
 }
-export function initStopInfo({ isExempt, toggleExempt }) {
+export function initStopInfo({ isExempt, toggleExempt, onSaved = () => {} }) {
     const el = id => document.getElementById(id);
     let record = null;
     let routeId = null;
@@ -90,6 +90,7 @@ export function initStopInfo({ isExempt, toggleExempt }) {
         try {
             const saved = await writeAddressInfo(next);
             record = saved;
+            onSaved(saved);
             gallery();
             el('info-status').textContent = 'Mentve.';
         } catch (error) { el('info-status').textContent = 'Nem sikerült menteni. ' + error.message;

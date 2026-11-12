@@ -8,7 +8,10 @@ class Element {
     add(item) { this.append(item); }
     replaceChildren() { this.children = []; }
     setAttribute() {}
-    addEventListener(name, fn) { this.events[name] = fn; }
+    addEventListener(name, fn) {
+        const previous = this.events[name];
+        this.events[name] = previous ? (...args) => { previous(...args); return fn(...args); } : fn;
+    }
     focus() {}
     showModal() { this.open = true; }
     close() { this.open = false; }
@@ -16,7 +19,7 @@ class Element {
 }
 function boot(saved, blocked = false, person = null) {
     const elements = {};
-    const store = { value: saved, person };
+    const store = { value: saved, person, extra: {} };
     const document = {
         getElementById: id => elements[id] ||= new Element(),
         createElement: () => new Element(),
@@ -26,11 +29,12 @@ function boot(saved, blocked = false, person = null) {
         document,
         Option: function(text, value) { this.text = text; this.value = value; },
         localStorage: {
-            getItem: key => key === 'alzafutar-person-v1' ? store.person : store.value,
+            getItem: key => key === 'alzafutar-person-v1' ? store.person : key === 'uton-state-v1' ? store.value : store.extra[key] || null,
             setItem: (key, value) => {
                 if (blocked) throw Error('blocked');
                 if (key === 'alzafutar-person-v1') store.person = value;
-                else store.value = value;
+                else if (key === 'uton-state-v1') store.value = value;
+                else store.extra[key] = value;
             },
         },
         window: { addEventListener() {}, matchMedia: () => ({ matches: false }) },
@@ -42,7 +46,8 @@ function boot(saved, blocked = false, person = null) {
     const app = fs.readFileSync('resources/js/app.js', 'utf8').replace(/^import .*;\r?\n/gm, '');
     const schedule = fs.readFileSync('resources/js/schedule.js', 'utf8').replace(/export /g, '');
     const info = fs.readFileSync('resources/js/stop-info.js', 'utf8').replace(/export /g, '');
-    vm.runInContext(data + '\n' + schedule + '\n' + info + '\n' + app, context);
+    const mobile = fs.readFileSync('resources/js/mobile.js', 'utf8').replace(/^import .*;\r?\n/gm, '').replace(/export /g, '');
+    vm.runInContext(data + '\n' + schedule + '\n' + info + '\n' + mobile + '\n' + app, context);
     return { elements, store, context };
 }
 test('completion, filter, reload, tour isolation and reset', () => {
@@ -272,6 +277,7 @@ test('address notes and camera photos save together, remain address-specific and
     e['info-note'].value = 'Bejárat az udvar felől';
     await e['info-save'].events.click();
     assert.equal(records.get('AB9087').note, 'Bejárat az udvar felől');
+    assert.equal(e.stops.children[0].children[2].children[0].children[2].textContent, 'Bejárat az udvar felől');
     const photo = new Blob(['test'], {type:'image/jpeg'});
     photo.name = 'camera.jpg';
     await e['info-camera'].events.change({target:{files:[photo],value:'camera.jpg'}});
@@ -289,4 +295,62 @@ test('address notes and camera photos save together, remain address-specific and
     assert.match(e['info-status'].textContent, /Nem sikerült menteni/);
     assert.equal(records.get('AB9087').note, 'Bejárat az udvar felől');
     assert.equal(e['info-note'].value, 'Új megjegyzés');
+});
+
+test('bottom tabs and header person selection preserve the active view', () => {
+    const {elements:e} = boot(null, false, 'mag-richard');
+    assert.equal(e['current-person'].textContent, 'Mag Richárd');
+    e['search-tab'].events.click();
+    assert.equal(e['search-view'].hidden, false);
+    assert.equal(e['route-view'].hidden, true);
+    e['current-person'].events.click();
+    e['person-select'].value = 'kollar-janos';
+    e['person-form'].events.submit({preventDefault() {}});
+    assert.equal(e['current-person'].textContent, 'Kollár János');
+    assert.equal(e['search-view'].hidden, false);
+    e['fuel-tab'].events.click();
+    assert.equal(e['fuel-view'].hidden, false);
+    assert.equal(e['search-view'].hidden, true);
+});
+
+test('route search uses the requested day and distinguishes missing schedules', () => {
+    const {context} = boot(null);
+    assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-12')), ['Szalai Zsolt']);
+    assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-13')), ['Mag Richárd']);
+    assert.deepEqual(Array.from(context.routeDrivers('D', '2026-11-14')), ['Kollár János']);
+    assert.equal(context.routeDrivers('S', '2026-12-01'), null);
+});
+
+test('fuel dates are device local, route-specific and reject future dates', () => {
+    const {elements:e, store} = boot(null);
+    e['last-fuel-button'].events.click();
+    e['fuel-date'].value = '2026-01-02';
+    e['fuel-form'].events.submit({preventDefault() {}});
+    assert.equal(store.extra['alzafutar-last-fuel-S'], '2026-01-02');
+    e.tour.events.change({target:{value:'V'}});
+    assert.match(e['last-fuel'].textContent, /Még nincs/);
+    e['last-fuel-button'].events.click();
+    e['fuel-date'].value = '2999-01-01';
+    e['fuel-form'].events.submit({preventDefault() {}});
+    assert.match(e['fuel-status'].textContent, /nem jövőbeli/);
+    assert.equal(store.extra['alzafutar-last-fuel-V'], undefined);
+    e['fuel-today'].events.click();
+    assert.match(store.extra['alzafutar-last-fuel-V'], /^\d{4}-\d{2}-\d{2}$/);
+});
+
+test('QR upload stays on the device, can be replaced and preserves old code on failed save', async () => {
+    const {elements:e, store, context} = boot(null);
+    context.FileReader = class { readAsDataURL(file) { this.result = file.data; this.onload(); } };
+    context.Image = class { set src(value) { this.onload(); } };
+    e['qr-button'].events.click();
+    assert.equal(e['qr-image'].hidden, true);
+    const upload = data => e['qr-file'].events.change({target:{files:[{type:'image/png',size:100,data}],value:''}});
+    await upload('data:image/png;base64,first');
+    assert.equal(store.extra['alzafutar-device-qr-v1'], 'data:image/png;base64,first');
+    await upload('data:image/png;base64,second');
+    assert.equal(e['qr-image'].src, 'data:image/png;base64,second');
+    context.localStorage.setItem = () => {throw Error('full');};
+    await upload('data:image/png;base64,third');
+    assert.equal(e['qr-image'].src, 'data:image/png;base64,second');
+    assert.match(e['qr-status'].textContent, /korábbi QR-kód megmaradt/);
 });

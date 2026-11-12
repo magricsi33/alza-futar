@@ -32,6 +32,9 @@ class AddressInfoTest extends TestCase
 
         $this->flushSession();
         $this->getJson('/address-info/AB9087')->assertOk()->assertJsonPath('note', 'Bejárat jobbra')->assertJsonCount(1, 'photos');
+        $this->getJson('/address-info/notes?ids[]=AB9087&ids[]=AB9815')
+            ->assertOk()->assertJsonPath('AB9087', 'Bejárat jobbra')->assertJsonPath('AB9815', '');
+        $this->getJson('/address-info/notes?ids[]=../invalid')->assertStatus(422);
         $this->get($saved['photos'][0]['url'])->assertOk()->assertHeader('Content-Type', 'image/png');
         $this->getJson('/address-info/AB9815')->assertJsonPath('note', '')->assertJsonCount(0, 'photos');
         $this->postJson('/address-info/AB9087', ['revision' => 0, 'note' => 'Régi eszköz'])->assertStatus(409);

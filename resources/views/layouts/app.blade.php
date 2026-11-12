@@ -17,6 +17,7 @@
         <link rel="icon" href="/favicon.ico?v=4" type="image/x-icon" sizes="48x48">
         <link rel="icon" href="/favicon.svg?v=4" type="image/svg+xml" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon-alzafutar-v5.png" sizes="180x180">
+        <link rel="stylesheet" href="/vendor/flaticon/icons.css">
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
         <script defer src="{{ mix('js/app.js') }}"></script>

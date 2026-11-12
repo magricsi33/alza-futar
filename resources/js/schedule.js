@@ -47,12 +47,19 @@ export function initSchedule() {
     } catch {}
     for (const person of schedulePeople) el('person-select').add(new Option(person.name, person.id));
 
-    function showView(schedule) {
-        el('route-view').hidden = schedule;
-        el('schedule-view').hidden = !schedule;
-        el('route-tab').setAttribute('aria-pressed', String(!schedule));
-        el('schedule-tab').setAttribute('aria-pressed', String(schedule));
+    let activeView = 'route';
+    let personTarget = 'route';
+    function showView(view) {
+        activeView = view;
+        for (const name of ['route', 'schedule', 'search', 'fuel']) {
+            el(name + '-view').hidden = name !== view;
+            el(name + '-tab').setAttribute('aria-pressed', String(name === view));
+        }
     }
+    function showPerson() {
+        el('current-person').textContent = schedulePeople.find(person => person.id === personId)?.name || 'Személy kiválasztása';
+    }
+    showPerson();
     function renderSchedule() {
         const person = schedulePeople.find(item => item.id === personId);
         if (!person) return;
@@ -102,16 +109,20 @@ export function initSchedule() {
             el('schedule-cards').append(card);
         });
     }
-    function choosePerson() {
+    function choosePerson(target = activeView) {
+        personTarget = target;
         el('person-select').value = personId || '';
         el('person-dialog').showModal();
     }
-    el('route-tab').addEventListener('click', () => showView(false));
+    el('route-tab').addEventListener('click', () => showView('route'));
+    el('search-tab').addEventListener('click', () => showView('search'));
+    el('fuel-tab').addEventListener('click', () => showView('fuel'));
     el('schedule-tab').addEventListener('click', () => {
-        if (!personId) choosePerson();
-        else { renderSchedule(); showView(true); }
+        if (!personId) choosePerson('schedule');
+        else { renderSchedule(); showView('schedule'); }
     });
-    el('change-person').addEventListener('click', choosePerson);
+    el('change-person').addEventListener('click', () => choosePerson('schedule'));
+    el('current-person').addEventListener('click', () => choosePerson());
     el('person-form').addEventListener('submit', event => {
         event.preventDefault();
         const selected = el('person-select').value;
@@ -125,8 +136,9 @@ export function initSchedule() {
         }
         el('person-dialog').close();
         renderSchedule();
-        showView(true);
-        el('schedule-person').focus();
+        showPerson();
+        showView(personTarget);
+        if (personTarget === 'schedule') el('schedule-person').focus();
     });
     el('person-cancel').addEventListener('click', () => el('person-dialog').close());
 }

@@ -21,6 +21,7 @@ Route::get('/', function () {
 Route::get('/address-info/session', function () {
     return response()->json(['token' => csrf_token()])->header('Cache-Control', 'no-store, private');
 });
+Route::get('/address-info/notes', [AddressInfoController::class, 'notes']);
 Route::get('/address-info/{id}', [AddressInfoController::class, 'show'])->where('id', 'AB[0-9]{3,6}');
 Route::post('/address-info/{id}', [AddressInfoController::class, 'update'])->where('id', 'AB[0-9]{3,6}');
 Route::get('/address-info/{id}/photos/{photo}', [AddressInfoController::class, 'photo'])

@@ -1,8 +1,26 @@
 import { initSchedule } from './schedule';
 import { initStopInfo } from './stop-info';
 import { tours } from './tours';
+import { initMobile } from './mobile';
 const key = 'uton-state-v1';
 const $ = id => document.getElementById(id);
+const notes = {};
+let notesRequest = 0;
+async function loadNotes() {
+    const request = ++notesRequest;
+    const tour = tours.find(t => t.id === state.tour);
+    try {
+        const query = tour.stops.map(stop => 'ids[]=' + encodeURIComponent(stop[0])).join('&');
+        const response = await fetch('/address-info/notes?' + query, { credentials: 'same-origin', cache: 'no-store', headers: { Accept: 'application/json' } });
+        if (!response.ok) throw Error('notes');
+        const data = await response.json();
+        if (request !== notesRequest) return;
+        Object.assign(notes, data); render();
+        $('notes-status').textContent = '';
+    } catch {
+        if (request === notesRequest) $('notes-status').textContent = 'A közös megjegyzések nem frissíthetők. Ellenőrizd az internetkapcsolatot.';
+    }
+}
 // A megadott táblázat értékei, átszámítás nélkül.
 const fuelData = {
     A: { code: 'HU14A', km: 289, liters: 31, amount: 21454 },
@@ -75,10 +93,6 @@ function render() {
     $('remaining-count').textContent = total - resolved;
     $('done-count').textContent = count;
     $('total-count').textContent = total;
-    $('progress').max = total || 1;
-    $('progress').value = resolved;
-    $('progress-percent').textContent = (total ? Math.round(resolved / total * 100) : 0) + '%';
-    $('progress-text').textContent = !total ? 'A címlista még feltöltésre vár' : resolved === total ? 'Nincs hátralévő cím. Szép munka!' : resolved ? 'Jól haladsz, csak így tovább!' : 'Kezdődjön az útvonal!';
     $('exempt-summary').textContent = exempt.length ? exempt.length + ' cím mentesítve' : '';
     $('reset').disabled = completed.length === 0;
     $('clear-exempt').disabled = exempt.length === 0;
@@ -109,6 +123,10 @@ function render() {
         const title = document.createElement('strong'); title.textContent = address;
         const subtitle = document.createElement('span'); subtitle.className = 'stop-city'; subtitle.textContent = city;
         text.append(title, subtitle);
+        if (notes[id]) {
+            const note = document.createElement('span'); note.className = 'stop-note';
+            note.textContent = notes[id]; text.append(note);
+        }
         if (waived) {
             const badge = document.createElement('span'); badge.className = 'exempt-badge'; badge.textContent = 'Mentesítve';
             text.append(badge);
@@ -125,6 +143,7 @@ function render() {
     $('empty').textContent = !total ? 'Ehhez az útvonalhoz még nincs címlista megadva.' : '✓ Nincs hátralévő megálló! A szűrő kikapcsolásával újra láthatod a teljesített és mentesített címeket.';
 }
 const stopInfo = initStopInfo({
+    onSaved: record => { notesRequest++; notes[record.id] = record.note; render(); },
     isExempt: (route, id) => (state.exempt[route] || []).includes(id),
     toggleExempt: (route, id) => {
         const ids = new Set(state.exempt[route] || []);
@@ -154,7 +173,7 @@ $('ramp-button').addEventListener('click', () => {
     $('ramp-departure').setAttribute('datetime', assignment ? assignment.departure : '');
     $('ramp-dialog').showModal();
 });
-$('tour').addEventListener('change', e => { state.tour = e.target.value; save(); render(); });
+$('tour').addEventListener('change', e => { state.tour = e.target.value; save(); render(); loadNotes(); });
 $('remaining-only').addEventListener('change', e => { state.remainingOnly = e.target.checked; save(); render(); });
 let resetTour;
 $('reset').addEventListener('click', () => {
@@ -179,3 +198,7 @@ if ('serviceWorker' in navigator) window.addEventListener('load', () => navigato
 render(); save(); connection();
 
 initSchedule();
+initMobile({ tours, ramps: rampAssignments, currentRoute: () => state.tour });
+loadNotes();
+window.addEventListener('focus', loadNotes);
+window.addEventListener('online', loadNotes);

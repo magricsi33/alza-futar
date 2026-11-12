@@ -8,6 +8,21 @@ use Illuminate\Validation\ValidationException;
 
 class AddressInfoController extends Controller
 {
+    public function notes(Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required|array|max:40',
+            'ids.*' => ['required', 'string', 'regex:/^AB[0-9]{3,6}$/D'],
+        ]);
+        $notes = [];
+        foreach (array_unique($data['ids']) as $id) {
+            $notes[$id] = $this->locked($id, function ($directory, $record) {
+                return $record['note'];
+            });
+        }
+        return response()->json($notes)->header('Cache-Control', 'no-store, private');
+    }
+
     private function directory($id)
     {
         abort_unless(preg_match('/^AB[0-9]{3,6}$/D', $id), 404);
