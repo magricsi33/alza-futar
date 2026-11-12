@@ -1,32 +1,35 @@
-export const scheduleDays = [
-    '2026-11-01', '2026-11-02', '2026-11-03', '2026-11-04',
-    '2026-11-05', '2026-11-06', '2026-11-07', '2026-11-08',
-];
-// Üres cella: nincs adat. Az extra jelöléseket a forrás szerint őrizzük meg.
+export const scheduleDays = ['2026-11-11', '2026-11-12', '2026-11-13', '2026-11-14', '2026-11-15'];
+// Üres cella: nincs adat. A táblából hiányzó korábbi személyek választását megőrizzük.
 export const schedulePeople = [
-    ['takacs-istvan', 'Takács István', 'PIHEN|D AOBL104|D AOBL104|S AABZ272|Q AADV156|PIHEN|PIHEN|S AICD394'],
-    ['kollar-janos', 'Kollár János', 'D AOBL104|O AOGG683|O AOGG683|PIHEN|PIHEN|O AOGG683|O AOGG683|O AOGG683'],
-    ['balla-laszlo', 'Balla László', 'S AICD394|V AOFP411|V AOFP411|PIHEN|PIHEN|PIHEN|S AICD394|PIHEN'],
-    ['vegh-krisztian', 'Végh Krisztián', 'U AICD597|U AICD597|PIHEN|U AICD597|U AICD597|U AICD597|U AICD597|U AICD597'],
-    ['szikszai-bettina', 'Szikszai Bettina', 'E AADN204|PIHEN|PIHEN|D AADN204|D AADN204|D AADN204|E AADN204 + TÉ|E AADN204 + TÉ'],
-    ['bartos-laszlo', 'Bartos László', 'A AAIJ346||||||A AAIJ346|A AAIJ346'],
-    ['joszkin-kevin', 'Joszkin Kevin', 'PIHEN|A AAIJ346|A AAIJ346|A AAIJ346|A AAIJ346|A AAIJ346|PIHEN|PIHEN'],
-    ['szalai-zsolt', 'Szalai Zsolt', 'O AOGG683|PIHEN|U AICD597|O AOGG683|O AOGG683|E AOBL104|D AOBL104|D AOBL104'],
-    ['fekete-gergely', 'Fekete Gergely', 'PIHEN|B AABZ272|Q AADV156|E AOBL104|E AOBL104|PIHEN|PIHEN|B AABZ272'],
-    ['toth-boglarka', 'Tóth Boglárka', 'V AOFP411 + TÉ|E AADN204|E AADN204|V AOFP411 + TÉ|V AOFP411 + TÉ|V AOFP411 + TÉ|V AOFP411|PIHEN'],
-    ['mag-richard', 'Mag Richárd', 'PIHEN|S AICD394|S AICD394|PIHEN|S AICD394|S AICD394|PIHEN|V AOFP411'],
-    ['horvath-angela', 'Horváth Angéla', 'B AABZ272|PIHEN|B AABZ272|B AICD394|B AABZ272|B AABZ272|B AABZ272|PIHEN'],
-    ['utto-norbert', 'Uttó Norbert', 'Q AADV156|Q AADV156|PIHEN|Q AADV156|PIHEN|Q AADV156|Q AADV156|Q AADV156'],
-    ['kiss-daniel', 'Kiss Dániel', 'F + É|F + É|F + É|F É|F + É|F + É|F + É|F + É'],
-    ['hanuszka-daniel', 'Hanuszka Dániel', 'C|PIHEN|PIHEN|C|C|C|C|C'],
-    ['pokorny-patrik', 'Pokorny Patrik', 'T|T + É|T + É|T|T|T|T|T'],
-    // Csölle Dániel nem szerepel az új táblában; korábbi személyválasztását megőrizzük.
-    ['csolle-daniel', 'Csölle Dániel', '|||||||'],
-    ['miklos-daniel', 'Miklós Dániel', 'PIHEN|C|C|F||||'],
+    ["takacs-istvan","Takács István","MENTESÍTŐ (Q-O) AOJT457|V AOBL104|Q AADV156|V AOBL104|PIHEN"],
+    ["kollar-janos","Kollár János","PIHEN|MENTESÍTŐ (Q-O)|PIHEN|D AADN204|O AOGG683"],
+    ["balla-laszlo","Balla László","A AAIJ346|A AAIJ346|A AAIJ346|PIHEN|PIHEN"],
+    ["vegh-krisztian","Végh Krisztián","U AICD597|U AICD597|U AICD597|U AICD597|U AICD597"],
+    ["szikszai-bettina","Szikszai Bettina","D AADN204|D AADN204|D AADN204|PIHEN|D AADN204"],
+    ["bartos-laszlo","Bartos László","|||A AAIJ346|A AAIJ346"],
+    ["joszkin-kevin","Joszkin Kevin","PIHEN|Q AADV156|PIHEN|E AOJT458|oktatás"],
+    ["szalai-zsolt","Szalai Zsolt","S AELW962|S AELW962|V AOBL104|O AOGG683|V AOBL104"],
+    ["fekete-gergely","Fekete Gergely","B AICD394|B AICD394|B AICD394|B AICD394|B AICD394"],
+    ["toth-boglarka","Tóth Boglárka","V AOBL104|PIHEN|PIHEN|PIHEN|PIHEN"],
+    ["mag-richard","Mag Richárd","PIHEN|PIHEN|S AELW962|S AELW962|S AELW962"],
+    ["horvath-angela","Horváth Angéla","E AOJT458|E AOJT458|E AOJT458|PIHEN|E AOJT458"],
+    ["utto-norbert","Uttó Norbert","Q AADV156|PIHEN|PIHEN|Q AADV156|Q AADV156"],
+    ["kemecsei-balazs","Kemecsei Balázs","O AOGG683|O AOGG683|O AOGG683|PIHEN|PIHEN"],
+    ["kiss-daniel","Kiss Dániel","F É|F + É|F + É|F + É|F + É"],
+    ["hanuszka-daniel","Hanuszka Dániel","C + TÉ|C|C + TÉ|C + TÉ|C + TÉ"],
+    ["pokorny-patrik","Pokorny Patrik","F|T + É|T|T|T"],
+    ["csolle-daniel","Csölle Dániel","||||"],
+    ["miklos-daniel","Miklós Dániel","||||"],
 ].map(([id, name, cells]) => ({ id, name, cells: cells.split('|') }));
+
 export function parseShift(cell) {
     if (!cell) return { status: 'unknown' };
     if (cell === 'PIHEN') return { status: 'rest' };
+    if (cell.toLowerCase() === 'oktatás') return { status: 'work', task: 'Oktatás', plate: 'Nem ismert', note: '' };
+    if (cell.startsWith('MENTESÍTŐ')) {
+        const plate = cell.match(/\b[A-Z]{4}\d{3}\b/);
+        return { status: 'work', task: 'Mentesítő (Q–O)', plate: plate ? plate[0] : 'Nem ismert', note: '' };
+    }
     const [route, ...tokens] = cell.split(' ');
     const plate = tokens.find(token => /^[A-Z]{4}\d{3}$/.test(token));
     return { status: 'work', route, plate: plate || 'Nem ismert', note: tokens.filter(token => token !== plate).join(' ') };
@@ -79,7 +82,7 @@ export function initSchedule() {
             if (shift.status === 'work') {
                 const details = document.createElement('div');
                 details.className = 'shift-details';
-                for (const [label, value] of [['Útvonal', shift.route], ['Rendszám', shift.plate]]) {
+                for (const [label, value] of [[shift.task ? 'Feladat' : 'Útvonal', shift.task || shift.route], ['Rendszám', shift.plate]]) {
                     const field = document.createElement('div');
                     const caption = document.createElement('span');
                     caption.textContent = label;

@@ -156,6 +156,7 @@
         </div>
         <p id="info-address"></p>
         <p id="info-meta" class="info-meta"></p>
+        <p id="info-deadline" class="info-meta"></p>
 
         <label for="info-note">Megjegyzés</label>
         <textarea id="info-note" rows="4" maxlength="10000" placeholder="Bejutás, parkolás, hasznos tudnivalók…"></textarea>

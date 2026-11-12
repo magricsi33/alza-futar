@@ -83,7 +83,7 @@ function render() {
     $('reset').disabled = completed.length === 0;
     $('clear-exempt').disabled = exempt.length === 0;
     const list = $('stops'); list.replaceChildren();
-    tour.stops.forEach(([id, address, city, location], index) => {
+    tour.stops.forEach(([id, address, city, location, deadline], index) => {
         const done = completed.includes(id);
         const waived = exempt.includes(id);
         if (state.remainingOnly && (done || waived)) return;
@@ -117,7 +117,7 @@ function render() {
         const info = document.createElement('button'); info.type = 'button'; info.className = 'stop-info-button'; info.textContent = 'ⓘ';
         info.setAttribute('aria-label', address + ' – információk');
         info.setAttribute('aria-haspopup', 'dialog'); info.setAttribute('aria-controls', 'info-dialog');
-        info.addEventListener('click', () => stopInfo.open(tour.id, [id, address, city, location]));
+        info.addEventListener('click', () => stopInfo.open(tour.id, [id, address, city, location, deadline]));
         link.append(text, arrow); row.append(label, number, link, info); list.append(row);
     });
     $('list-count').textContent = list.children.length;

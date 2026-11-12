@@ -130,11 +130,12 @@ export function initStopInfo({ isExempt, toggleExempt }) {
             const token = ++generation;
             routeId = route;
             record = null;
-            const [id, address, city, location] = stop;
+            const [id, address, city, location, deadline] = stop;
             el('info-dialog').dataset.stop = id;
             el('info-title').textContent = address;
             el('info-address').textContent = city;
             el('info-meta').textContent = id + ' · ' + location;
+            el('info-deadline').textContent = 'Befejezési határidő: ' + (deadline || 'Nincs elérhető adat');
             el('info-note').value = '';
             el('info-gallery').replaceChildren();
 

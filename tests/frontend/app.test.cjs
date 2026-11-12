@@ -47,12 +47,12 @@ function boot(saved, blocked = false, person = null) {
 }
 test('completion, filter, reload, tour isolation and reset', () => {
     let {elements: e, store} = boot(null);
-    assert.equal(e.stops.children.length, 12);
+    assert.equal(e.stops.children.length, 14);
     const first = e.stops.children[0].children[0].children[0];
     first.checked = true; first.events.change();
     assert.equal(e['done-count'].textContent, 1);
     e['remaining-only'].events.change({target:{checked:true}});
-    assert.equal(e.stops.children.length, 11);
+    assert.equal(e.stops.children.length, 13);
     assert.equal(e.stops.children[0].children[1].textContent, '02');
     e.tour.events.change({target:{value:'V'}});
     assert.equal(e.stops.children.length, 11);
@@ -63,20 +63,20 @@ test('completion, filter, reload, tour isolation and reset', () => {
     assert.equal(e.tour.value, 'V');
     e.tour.events.change({target:{value:'S'}});
     assert.equal(e['done-count'].textContent, 1);
-    assert.equal(e.stops.children.length, 11);
+    assert.equal(e.stops.children.length, 13);
     e.reset.events.click();
     e['reset-dialog'].returnValue = 'cancel'; e['reset-dialog'].events.close();
     assert.equal(e['done-count'].textContent, 1);
     e.reset.events.click();
     e['reset-dialog'].returnValue = 'confirm'; e['reset-dialog'].events.close();
     assert.equal(e['done-count'].textContent, 0);
-    assert.equal(e.stops.children.length, 12);
+    assert.equal(e.stops.children.length, 14);
     e.tour.events.change({target:{value:'V'}});
     assert.equal(e['done-count'].textContent, 1);
     assert.equal(e.stops.children.length, 10);
 });
 test('malformed, stale and blocked storage recover safely', () => {
-    assert.equal(boot('{').elements.stops.children.length, 12);
+    assert.equal(boot('{').elements.stops.children.length, 14);
     const saved = JSON.stringify({tour:'missing',completed:{S:['AB9087','AB9087','invalid']}});
     assert.equal(boot(saved).elements['done-count'].textContent, 1);
     assert.match(boot(null, true).elements['save-note'].textContent, /nem engedi/);
@@ -126,7 +126,7 @@ test('ramp dialog follows the active tour and distinguishes warehouse loading', 
 });
 test('all addresses have correctly encoded Waze navigation links', () => {
     const {elements} = boot(null);
-    const expected = {A:16, B:18, C:18, D:16, E:13, F:18, O:22, Q:18, S:12, T:14, U:13, V:11};
+    const expected = {A:15, B:17, C:16, D:14, E:11, F:22, O:22, Q:16, S:14, T:16, U:15, V:11};
     assert.equal(elements.tour.children.length, 12);
     const allIds = new Set();
     let total = 0;
@@ -145,7 +145,7 @@ test('all addresses have correctly encoded Waze navigation links', () => {
     }
     assert.equal(total, 189);
     elements.tour.events.change({target:{value:'S'}});
-    assert.match(new URL(elements.stops.children[11].children[2].href).searchParams.get('q'), /Gödöllői út 244, 2146 Mogyoród/);
+    assert.match(new URL(elements.stops.children[9].children[2].href).searchParams.get('q'), /Gödöllői út 244, 2146 Mogyoród/);
 });
 
 test('person selection persists, reopens directly and can be changed without resetting route', () => {
@@ -160,9 +160,9 @@ test('person selection persists, reopens directly and can be changed without res
     assert.equal(e['schedule-view'].hidden, false);
     assert.equal(e['route-view'].hidden, true);
     assert.equal(e['schedule-person'].textContent, 'Mag Richárd');
-    assert.equal(e['schedule-cards'].children.length, 8);
+    assert.equal(e['schedule-cards'].children.length, 5);
     assert.equal(e['schedule-cards'].children[0].children[1].textContent, 'Pihenőnap');
-    assert.equal(e['schedule-cards'].children[4].children[2].children[1].children[1].textContent, 'AICD394');
+    assert.equal(e['schedule-cards'].children[4].children[2].children[1].children[1].textContent, 'AELW962');
 
     const second = boot(first.store.value, false, first.store.person);
     second.elements['schedule-tab'].events.click();
@@ -185,7 +185,7 @@ test('empty schedule differs from rest and unknown saved person prompts again', 
     assert.equal(e['person-dialog'].open, true);
     e['person-select'].value = 'csolle-daniel';
     e['person-form'].events.submit({preventDefault() {}});
-    assert.equal(e['schedule-cards'].children.length, 8);
+    assert.equal(e['schedule-cards'].children.length, 5);
     for (const card of e['schedule-cards'].children) {
         assert.equal(card.children[1].textContent, 'Nincs megadott beosztás');
         assert.equal(card.children.length, 2);
@@ -196,15 +196,18 @@ test('all schedule rows cover exactly the published dates', () => {
     const context = {};
     vm.createContext(context);
     vm.runInContext(fs.readFileSync('resources/js/schedule.js','utf8').replace(/export /g,'') + '\nthis.people = schedulePeople; this.days = scheduleDays; this.parse = parseShift;', context);
-    assert.equal(context.people.length, 18);
-    assert.equal(context.days.length, 8);
-    assert.equal(context.days[0], '2026-11-01');
-    assert.equal(context.days[7], '2026-11-08');
-    assert.equal(context.people.find(p => p.id === 'mag-richard').cells[7], 'V AOFP411');
-    assert.equal(context.people.find(p => p.id === 'takacs-istvan').cells[4], 'Q AADV156');
-    assert.equal(context.people.find(p => p.id === 'toth-boglarka').cells[0], 'V AOFP411 + TÉ');
-    assert.equal(new Set(context.people.map(p => p.id)).size, 18);
+    assert.equal(context.people.length, 19);
+    assert.equal(context.days.length, 5);
+    assert.equal(context.days[0], '2026-11-11');
+    assert.equal(context.days[4], '2026-11-15');
+    assert.equal(context.people.find(p => p.id === 'mag-richard').cells[4], 'S AELW962');
+    assert.equal(context.people.find(p => p.id === 'takacs-istvan').cells[2], 'Q AADV156');
+    assert.equal(context.people.find(p => p.id === 'toth-boglarka').cells[0], 'V AOBL104');
+    assert.equal(new Set(context.people.map(p => p.id)).size, 19);
     for (const person of context.people) assert.equal(person.cells.length, context.days.length, person.name);
+    assert.equal(context.parse('MENTESÍTŐ (Q-O) AOJT457').plate, 'AOJT457');
+    assert.equal(context.parse('MENTESÍTŐ (Q-O)').task, 'Mentesítő (Q–O)');
+    assert.equal(context.parse('oktatás').task, 'Oktatás');
     const night = context.parse('T csak éjszaka');
     assert.equal(night.route, 'T');
     assert.equal(night.plate, 'Nem ismert');
@@ -231,32 +234,33 @@ test('updated fuel table includes O and Q while C F T remain unavailable', () =>
 });
 
 test('exemptions persist independently of completion and clear only the active route', async () => {
-    const {elements:e, store} = boot(JSON.stringify({tour:'S',completed:{S:['AB9087']},exempt:{V:['AB9131']}}));
+    const {elements:e, store} = boot(JSON.stringify({tour:'S',completed:{S:['AB9087']},exempt:{V:['AB9705']}}));
     await e.stops.children[0].children[3].events.click();
     assert.equal(e['info-meta'].textContent, 'AB9087 · Central Passage');
+    assert.equal(e['info-deadline'].textContent, 'Befejezési határidő: 10:00');
     e['info-exempt'].events.click();
     assert.match(e.stops.children[0].className, /is-exempt/);
     assert.equal(e.stops.children[0].children[0].children[0].disabled, true);
-    assert.equal(e['remaining-count'].textContent, 11);
+    assert.equal(e['remaining-count'].textContent, 13);
     assert.equal(e['done-count'].textContent, 0);
     e.reset.events.click();
     e['reset-dialog'].returnValue = 'confirm';
     e['reset-dialog'].events.close();
     assert.equal(JSON.parse(store.value).exempt.S[0], 'AB9087');
-    assert.equal(e['remaining-count'].textContent, 11);
+    assert.equal(e['remaining-count'].textContent, 13);
     e['remaining-only'].events.change({target:{checked:true}});
-    assert.equal(e.stops.children.length, 11);
+    assert.equal(e.stops.children.length, 13);
     const restored = boot(store.value);
-    assert.equal(restored.elements['remaining-count'].textContent, 11);
+    assert.equal(restored.elements['remaining-count'].textContent, 13);
     e['clear-exempt'].events.click();
     e['clear-exempt-dialog'].returnValue = 'cancel';
     e['clear-exempt-dialog'].events.close();
-    assert.equal(e['remaining-count'].textContent, 11);
+    assert.equal(e['remaining-count'].textContent, 13);
     e['clear-exempt'].events.click();
     e['clear-exempt-dialog'].returnValue = 'confirm';
     e['clear-exempt-dialog'].events.close();
-    assert.equal(e['remaining-count'].textContent, 12);
-    assert.equal(JSON.parse(store.value).exempt.V[0], 'AB9131');
+    assert.equal(e['remaining-count'].textContent, 14);
+    assert.equal(JSON.parse(store.value).exempt.V[0], 'AB9705');
 });
 
 test('address notes and camera photos save together, remain address-specific and report failed writes', async () => {
