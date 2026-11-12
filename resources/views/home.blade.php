@@ -35,11 +35,10 @@
     <section id="schedule-view" aria-labelledby="schedule-person" hidden>
         <div class="schedule-heading">
             <div>
-                <p class="eyebrow">BEOSZTÁS</p>
-                <h1 id="schedule-person" tabindex="-1">
-                </h1>
+                <h1 class="page-title">Beosztás</h1>
+                <p id="schedule-person" tabindex="-1">
+                </p>
             </div>
-            <button id="change-person" class="ramp-button" type="button" aria-haspopup="dialog">Személy módosítása</button>
         </div>
         <p id="schedule-period" class="schedule-period">
         </p>
@@ -50,14 +49,11 @@
         </div>
     </section>
     <div id="route-view">
-        <div class="quick-actions">
-            <button id="ramp-button" class="ramp-button" type="button" aria-haspopup="dialog">Rámpa</button>
-        </div>
         <section class="stops-section" aria-labelledby="stops-title">
             <div class="section-heading">
-                <h2 id="stops-title">
+                <h1 id="stops-title" class="page-title">
                     Megállók <span id="list-count">12</span>
-                </h2>
+                </h1>
                 <div class="route-actions">
                     <button id="reset" class="reset-button" type="button">↻ Újrakezdés</button>
                     <button id="clear-exempt" class="reset-button" type="button">Mentesítés törlése</button>
@@ -77,13 +73,16 @@
             <div id="empty" class="empty" hidden>
             </div>
         </section>
-        <div class="save-note" id="save-note" role="status">
-            ✓ A haladásod automatikusan mentve ezen az eszközön.
-        </div>
+        <p id="save-note" role="status"></p>
+        <section class="route-ramp" aria-labelledby="ramp-title">
+            <h2 id="ramp-title">Rámpakiosztás</h2>
+            <p id="ramp-tour"></p>
+            <p><strong id="ramp-location"></strong> · Indulás: <time id="ramp-departure"></time></p>
+        </section>
     </div>
     <section id="qr-view" hidden aria-labelledby="qr-title">
     <div class="ramp-dialog-heading">
-        <h2 id="qr-title">Saját QR-kód</h2>
+        <h1 id="qr-title" class="page-title">Saját QR-kód</h1>
 
     </div>
     <img id="qr-image" alt="Saját QR-kód" hidden>
@@ -94,9 +93,9 @@
     </p>
 </section>
     <section id="search-view" hidden>
-        <h1>Útvonal keresése</h1>
-        <label for="route-search">Útvonal betűjele vagy neve</label>
-        <input id="route-search" type="search" placeholder="Pl. S vagy Budapest S" autocomplete="off">
+        <h1 class="page-title">Útvonal keresése</h1>
+        <label for="route-search">Útvonal</label>
+        <select id="route-search" aria-label="Keresett útvonal"></select>
         <p id="search-date">
         </p>
         <div id="search-results" aria-live="polite">
@@ -104,7 +103,7 @@
     </section>
     <section id="fuel-view" hidden>
         <section class="fuel-panel" aria-labelledby="fuel-title">
-            <h2 id="fuel-title">Útvonal és tankolás</h2>
+            <h1 id="fuel-title" class="page-title">Tankolás</h1>
             <p id="fuel-tour" class="fuel-tour">
             </p>
             <dl id="fuel-values" class="fuel-values">
@@ -178,8 +177,7 @@
     <p id="info-deadline" class="info-meta">
     </p>
     <label for="info-note">Megjegyzés</label>
-    <textarea id="info-note" rows="4" maxlength="10000" placeholder="Bejutás, parkolás, hasznos tudnivalók…">
-    </textarea>
+    <textarea id="info-note" rows="4" maxlength="10000" placeholder="Bejutás, parkolás, hasznos tudnivalók…"></textarea>
     <button id="info-save" class="ramp-button" type="button">Megjegyzés mentése</button>
     <div class="photo-heading">
         <h3>Képek</h3>
@@ -226,27 +224,7 @@
         </div>
     </form>
 </dialog>
-<dialog id="ramp-dialog" aria-labelledby="ramp-title" aria-describedby="ramp-location">
-    <form method="dialog">
-        <div class="ramp-dialog-heading">
-            <h2 id="ramp-title">Rámpakiosztás</h2>
-            <button class="ramp-close" aria-label="Bezárás" autofocus>×</button>
-        </div>
-        <p id="ramp-tour" class="ramp-tour">
-        </p>
-        <div class="ramp-details">
-            <span class="ramp-label">PAKOLÁS HELYE</span>
-            <strong id="ramp-location">
-            </strong>
-            <span class="ramp-label">INDULÁS</span>
-            <time id="ramp-departure">
-            </time>
-        </div>
-        <div class="dialog-actions">
-            <button class="confirm">Rendben</button>
-        </div>
-    </form>
-</dialog>
+
 <dialog id="reset-dialog">
     <form method="dialog">
         <span class="dialog-icon">↻</span>

@@ -101,10 +101,8 @@ test('fuel summary follows restored and changed tours without leaking previous v
     assert.equal(e['fuel-amount'].textContent.replace(/\s/g, ''), '10170Ft');
     assert.equal(e['fuel-frequency'].textContent, 'Tankolás 2 naponta');
 });
-test('ramp dialog follows the active tour and distinguishes warehouse loading', () => {
+test('ramp section follows the active tour and distinguishes warehouse loading', () => {
     const {elements: e} = boot(JSON.stringify({tour:'S'}));
-    e['ramp-button'].events.click();
-    assert.equal(e['ramp-dialog'].open, true);
     assert.equal(e['ramp-tour'].textContent, 'Budapest S');
     assert.equal(e['ramp-location'].textContent, '77. rámpa');
     assert.equal(e['ramp-departure'].textContent, '06:00');
@@ -117,8 +115,7 @@ test('ramp dialog follows the active tour and distinguishes warehouse loading', 
         ['Q', 'Raktárban pakol', '05:30'],
     ]) {
         e.tour.events.change({target:{value:tour}});
-        e['ramp-button'].events.click();
-        assert.equal(e['ramp-tour'].textContent, 'Budapest ' + tour);
+            assert.equal(e['ramp-tour'].textContent, 'Budapest ' + tour);
         assert.equal(e['ramp-location'].textContent, location);
         assert.equal(e['ramp-departure'].textContent, departure);
     }
@@ -167,7 +164,7 @@ test('person selection persists, reopens directly and can be changed without res
     second.elements['schedule-tab'].events.click();
     assert.equal(second.elements['person-dialog'], undefined);
     assert.equal(second.elements['schedule-person'].textContent, 'Mag Richárd');
-    second.elements['change-person'].events.click();
+    second.elements['current-person'].events.click();
     assert.equal(second.elements['person-dialog'].open, true);
     second.elements['person-select'].value = 'kiss-daniel';
     second.elements['person-form'].events.submit({preventDefault() {}});
@@ -289,6 +286,10 @@ test('bottom tabs and header person selection preserve the active view', () => {
     assert.equal(e['current-person'].textContent, 'Mag Richárd');
     e['search-tab'].events.click();
     assert.equal(e['search-view'].hidden, false);
+    e['route-search'].value = 'Q';
+    e['route-search'].events.change();
+    assert.equal(e['search-results'].children.length, 1);
+    assert.equal(e['search-results'].children[0].children[0].textContent, 'Budapest Q');
     assert.equal(e['route-view'].hidden, true);
     e['current-person'].events.click();
     e['person-select'].value = 'kollar-janos';
@@ -319,6 +320,7 @@ test('fuel dates are device local, route-specific and reject future dates', () =
     e['fuel-date'].value = '2026-01-02';
     e['fuel-form'].events.submit({preventDefault() {}});
     assert.equal(store.extra['alzafutar-last-fuel-S'], '2026-01-02');
+    assert.equal(e['last-fuel'].textContent, 'Legutóbbi tankolás: 2026. 01. 02.');
     e.tour.events.change({target:{value:'V'}});
     assert.match(e['last-fuel'].textContent, /Még nincs/);
     e['last-fuel-button'].events.click();

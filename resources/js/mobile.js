@@ -4,6 +4,10 @@ export function todayDate() {
     return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Budapest' }).format(new Date());
 }
 
+export function displayDate(date) {
+    return /^\d{4}-\d{2}-\d{2}$/.test(date || '') ? date.split('-').join('. ') + '.' : '';
+}
+
 export function routeDrivers(route, date) {
     const index = scheduleDays.indexOf(date);
     if (index < 0) return null;
@@ -12,11 +16,13 @@ export function routeDrivers(route, date) {
 
 export function initMobile({ tours, ramps, currentRoute }) {
     const el = id => document.getElementById(id);
+    for (const tour of tours) el('route-search').add(new Option(tour.name, tour.id));
+    el('route-search').value = currentRoute();
     function search() {
         const today = todayDate();
-        el('search-date').textContent = 'Mai beosztás · ' + today;
+        el('search-date').textContent = 'Mai beosztás · ' + displayDate(today);
         const query = el('route-search').value.trim().toLocaleUpperCase('hu-HU');
-        const matches = tours.filter(tour => !query || tour.id === query || tour.name.toLocaleUpperCase('hu-HU').includes(query));
+        const matches = tours.filter(tour => tour.id === query);
         el('search-results').replaceChildren();
         for (const tour of matches) {
             const card = document.createElement('article'); card.className = 'shift-card';
@@ -31,7 +37,7 @@ export function initMobile({ tours, ramps, currentRoute }) {
         }
         if (!matches.length) el('search-results').textContent = 'Nincs ilyen útvonal.';
     }
-    el('route-search').addEventListener('input', search);
+    el('route-search').addEventListener('change', search);
     el('search-tab').addEventListener('click', search);
     window.addEventListener('focus', search);
 
@@ -39,7 +45,7 @@ export function initMobile({ tours, ramps, currentRoute }) {
     function refreshFuel() {
         let date = null;
         try { date = localStorage.getItem(fuelKey(currentRoute())); } catch {}
-        el('last-fuel').textContent = /^\d{4}-\d{2}-\d{2}$/.test(date || '') ? 'Legutóbbi tankolás: ' + date : 'Még nincs rögzített tankolás.';
+        el('last-fuel').textContent = /^\d{4}-\d{2}-\d{2}$/.test(date || '') ? 'Legutóbbi tankolás: ' + displayDate(date) : 'Még nincs rögzített tankolás.';
     }
     let fuelRoute;
     el('last-fuel-button').addEventListener('click', () => {

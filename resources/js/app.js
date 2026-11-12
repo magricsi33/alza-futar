@@ -78,12 +78,13 @@ try {
     }
 } catch { /* Invalid or unavailable storage: use a clean state. */ }
 function save() {
-    try { localStorage.setItem(key, JSON.stringify(state)); $('save-note').textContent = '✓ A haladásod automatikusan mentve ezen az eszközön.'; }
+    try { localStorage.setItem(key, JSON.stringify(state)); $('save-note').textContent = ''; }
     catch { $('save-note').textContent = 'A böngésző nem engedi a mentést. A haladás most csak a lap bezárásáig marad meg.'; }
 }
 function render() {
     const tour = tours.find(t => t.id === state.tour);
     renderFuel(tour);
+    renderRamp();
     const completed = state.completed[tour.id] || [];
     const exempt = state.exempt[tour.id] || [];
     const total = tour.stops.length;
@@ -156,7 +157,7 @@ $('clear-exempt-dialog').addEventListener('close', () => {
     if ($('clear-exempt-dialog').returnValue === 'confirm') { state.exempt[clearExemptRoute] = []; save(); render(); }
 });
 for (const tour of tours) $('tour').add(new Option(tour.name, tour.id));
-$('ramp-button').addEventListener('click', () => {
+function renderRamp() {
     const tour = tours.find(t => t.id === state.tour);
     const assignment = rampAssignments[tour.id];
 
@@ -166,8 +167,7 @@ $('ramp-button').addEventListener('click', () => {
         : assignment.ramp === null ? 'Raktárban pakol' : assignment.ramp + '. rámpa';
     $('ramp-departure').textContent = assignment ? assignment.departure : 'Nincs megadva';
     $('ramp-departure').setAttribute('datetime', assignment ? assignment.departure : '');
-    $('ramp-dialog').showModal();
-});
+}
 $('tour').addEventListener('change', e => { state.tour = e.target.value; save(); render(); loadNotes(); });
 $('remaining-only').addEventListener('change', e => { state.remainingOnly = e.target.checked; save(); render(); });
 let resetTour;

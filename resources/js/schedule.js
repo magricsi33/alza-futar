@@ -38,7 +38,7 @@ export function parseShift(cell) {
 export function initSchedule() {
     const el = id => document.getElementById(id);
     const storageKey = 'alzafutar-person-v1';
-    const periodFormat = new Intl.DateTimeFormat('hu-HU', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Europe/Budapest' });
+    const periodFormat = new Intl.DateTimeFormat('hu-HU', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Europe/Budapest' });
     el('schedule-period').textContent = periodFormat.format(new Date(scheduleDays[0] + 'T12:00:00Z')) + ' – ' + periodFormat.format(new Date(scheduleDays[scheduleDays.length - 1] + 'T12:00:00Z'));
     let personId = null;
     try {
@@ -73,7 +73,7 @@ export function initSchedule() {
             const heading = document.createElement('h3');
             const time = document.createElement('time');
             time.setAttribute('datetime', date);
-            time.textContent = new Intl.DateTimeFormat('hu-HU', { month: 'long', day: 'numeric', weekday: 'long', timeZone: 'Europe/Budapest' }).format(new Date(date + 'T12:00:00Z'));
+            time.textContent = new Intl.DateTimeFormat('hu-HU', { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'long', timeZone: 'Europe/Budapest' }).format(new Date(date + 'T12:00:00Z'));
             heading.append(time);
             if (date === today) {
                 const badge = document.createElement('span');
@@ -122,7 +122,6 @@ export function initSchedule() {
         if (!personId) choosePerson('schedule');
         else { renderSchedule(); showView('schedule'); }
     });
-    el('change-person').addEventListener('click', () => choosePerson('schedule'));
     el('current-person').addEventListener('click', () => choosePerson());
     el('person-form').addEventListener('submit', event => {
         event.preventDefault();
