@@ -55,7 +55,6 @@ test('completion, filter, reload, tour isolation and reset', () => {
     assert.equal(e.stops.children.length, 14);
     const first = e.stops.children[0].children[0].children[0];
     first.checked = true; first.events.change();
-    assert.equal(e['done-count'].textContent, 1);
     e['remaining-only'].events.change({target:{checked:true}});
     assert.equal(e.stops.children.length, 13);
     assert.equal(e.stops.children[0].children[1].textContent, '02');
@@ -67,23 +66,18 @@ test('completion, filter, reload, tour isolation and reset', () => {
     const restored = boot(store.value); e = restored.elements;
     assert.equal(e.tour.value, 'V');
     e.tour.events.change({target:{value:'S'}});
-    assert.equal(e['done-count'].textContent, 1);
     assert.equal(e.stops.children.length, 13);
     e.reset.events.click();
     e['reset-dialog'].returnValue = 'cancel'; e['reset-dialog'].events.close();
-    assert.equal(e['done-count'].textContent, 1);
     e.reset.events.click();
     e['reset-dialog'].returnValue = 'confirm'; e['reset-dialog'].events.close();
-    assert.equal(e['done-count'].textContent, 0);
     assert.equal(e.stops.children.length, 14);
     e.tour.events.change({target:{value:'V'}});
-    assert.equal(e['done-count'].textContent, 1);
     assert.equal(e.stops.children.length, 10);
 });
 test('malformed, stale and blocked storage recover safely', () => {
     assert.equal(boot('{').elements.stops.children.length, 14);
     const saved = JSON.stringify({tour:'missing',completed:{S:['AB9087','AB9087','invalid']}});
-    assert.equal(boot(saved).elements['done-count'].textContent, 1);
     assert.match(boot(null, true).elements['save-note'].textContent, /nem engedi/);
 });
 test('fuel summary follows restored and changed tours without leaking previous values', () => {
@@ -181,7 +175,6 @@ test('person selection persists, reopens directly and can be changed without res
     assert.equal(second.elements['schedule-cards'].children[0].children[2].children[1].children[1].textContent, 'Nem ismert');
     second.elements['route-tab'].events.click();
     assert.equal(second.elements['route-view'].hidden, false);
-    assert.equal(second.elements['done-count'].textContent, 1);
 });
 
 test('empty schedule differs from rest and unknown saved person prompts again', () => {
@@ -246,25 +239,19 @@ test('exemptions persist independently of completion and clear only the active r
     e['info-exempt'].events.click();
     assert.match(e.stops.children[0].className, /is-exempt/);
     assert.equal(e.stops.children[0].children[0].children[0].disabled, true);
-    assert.equal(e['remaining-count'].textContent, 13);
-    assert.equal(e['done-count'].textContent, 0);
     e.reset.events.click();
     e['reset-dialog'].returnValue = 'confirm';
     e['reset-dialog'].events.close();
     assert.equal(JSON.parse(store.value).exempt.S[0], 'AB9087');
-    assert.equal(e['remaining-count'].textContent, 13);
     e['remaining-only'].events.change({target:{checked:true}});
     assert.equal(e.stops.children.length, 13);
     const restored = boot(store.value);
-    assert.equal(restored.elements['remaining-count'].textContent, 13);
     e['clear-exempt'].events.click();
     e['clear-exempt-dialog'].returnValue = 'cancel';
     e['clear-exempt-dialog'].events.close();
-    assert.equal(e['remaining-count'].textContent, 13);
     e['clear-exempt'].events.click();
     e['clear-exempt-dialog'].returnValue = 'confirm';
     e['clear-exempt-dialog'].events.close();
-    assert.equal(e['remaining-count'].textContent, 14);
     assert.equal(JSON.parse(store.value).exempt.V[0], 'AB9705');
 });
 
@@ -311,6 +298,11 @@ test('bottom tabs and header person selection preserve the active view', () => {
     e['fuel-tab'].events.click();
     assert.equal(e['fuel-view'].hidden, false);
     assert.equal(e['search-view'].hidden, true);
+    e['qr-tab'].events.click();
+    assert.equal(e['qr-view'].hidden, false);
+    assert.equal(e['fuel-view'].hidden, true);
+    e['route-tab'].events.click();
+    assert.equal(e['qr-view'].hidden, true);
 });
 
 test('route search uses the requested day and distinguishes missing schedules', () => {
@@ -342,7 +334,7 @@ test('QR upload stays on the device, can be replaced and preserves old code on f
     const {elements:e, store, context} = boot(null);
     context.FileReader = class { readAsDataURL(file) { this.result = file.data; this.onload(); } };
     context.Image = class { set src(value) { this.onload(); } };
-    e['qr-button'].events.click();
+    e['qr-tab'].events.click();
     assert.equal(e['qr-image'].hidden, true);
     const upload = data => e['qr-file'].events.change({target:{files:[{type:'image/png',size:100,data}],value:''}});
     await upload('data:image/png;base64,first');

@@ -86,14 +86,9 @@ function render() {
     renderFuel(tour);
     const completed = state.completed[tour.id] || [];
     const exempt = state.exempt[tour.id] || [];
-    const resolved = new Set([...completed, ...exempt]).size;
-    const count = completed.filter(id => !exempt.includes(id)).length, total = tour.stops.length;
+    const total = tour.stops.length;
     $('tour').value = tour.id;
     $('remaining-only').checked = state.remainingOnly;
-    $('remaining-count').textContent = total - resolved;
-    $('done-count').textContent = count;
-    $('total-count').textContent = total;
-    $('exempt-summary').textContent = exempt.length ? exempt.length + ' cím mentesítve' : '';
     $('reset').disabled = completed.length === 0;
     $('clear-exempt').disabled = exempt.length === 0;
     const list = $('stops'); list.replaceChildren();

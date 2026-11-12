@@ -71,13 +71,11 @@ export function initMobile({ tours, ramps, currentRoute }) {
         el('qr-image').hidden = !valid; el('qr-empty').hidden = valid;
         if (valid) el('qr-image').src = value;
     }
-    el('qr-button').addEventListener('click', () => {
+    el('qr-tab').addEventListener('click', () => {
         el('qr-status').textContent = '';
         try { showQr(localStorage.getItem(qrKey)); }
         catch { showQr(null); el('qr-status').textContent = 'A helyi tároló nem érhető el.'; }
-        el('qr-dialog').showModal();
     });
-    el('qr-close').addEventListener('click', () => el('qr-dialog').close());
     el('qr-upload').addEventListener('click', () => el('qr-file').click());
     el('qr-file').addEventListener('change', async event => {
         const file = event.target.files[0]; event.target.value = '';

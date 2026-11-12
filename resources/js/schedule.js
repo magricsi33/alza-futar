@@ -51,7 +51,7 @@ export function initSchedule() {
     let personTarget = 'route';
     function showView(view) {
         activeView = view;
-        for (const name of ['route', 'schedule', 'search', 'fuel']) {
+        for (const name of ['route', 'schedule', 'search', 'fuel', 'qr']) {
             el(name + '-view').hidden = name !== view;
             el(name + '-tab').setAttribute('aria-pressed', String(name === view));
         }
@@ -117,6 +117,7 @@ export function initSchedule() {
     el('route-tab').addEventListener('click', () => showView('route'));
     el('search-tab').addEventListener('click', () => showView('search'));
     el('fuel-tab').addEventListener('click', () => showView('fuel'));
+    el('qr-tab').addEventListener('click', () => showView('qr'));
     el('schedule-tab').addEventListener('click', () => {
         if (!personId) choosePerson('schedule');
         else { renderSchedule(); showView('schedule'); }

@@ -28,6 +28,9 @@
             <i class="fi fi-rr-gas-pump" aria-hidden="true">
             </i>
         </button>
+        <button id="qr-tab" type="button" aria-label="QR-kód" title="QR-kód" aria-pressed="false" aria-controls="qr-view">
+            <i class="fi fi-rr-qrcode" aria-hidden="true"></i>
+        </button>
     </nav>
     <section id="schedule-view" aria-labelledby="schedule-person" hidden>
         <div class="schedule-heading">
@@ -49,28 +52,7 @@
     <div id="route-view">
         <div class="quick-actions">
             <button id="ramp-button" class="ramp-button" type="button" aria-haspopup="dialog">Rámpa</button>
-            <button id="qr-button" class="ramp-button" type="button" aria-haspopup="dialog">
-                <i class="fi fi-rr-qrcode" aria-hidden="true">
-                </i> QR-kód</button>
         </div>
-        <section class="tour-panel" aria-label="Útvonal és haladás">
-            <div class="stats">
-                <div>
-                    <strong id="remaining-count">12</strong>
-                    <span>hátralévő cím</span>
-                </div>
-                <div>
-                    <strong id="done-count">0</strong>
-                    <span>teljesítve</span>
-                </div>
-                <div>
-                    <strong id="total-count">12</strong>
-                    <span>összes megálló</span>
-                </div>
-            </div>
-            <p id="exempt-summary" class="exempt-summary">
-            </p>
-        </section>
         <section class="stops-section" aria-labelledby="stops-title">
             <div class="section-heading">
                 <h2 id="stops-title">
@@ -99,6 +81,18 @@
             ✓ A haladásod automatikusan mentve ezen az eszközön.
         </div>
     </div>
+    <section id="qr-view" hidden aria-labelledby="qr-title">
+    <div class="ramp-dialog-heading">
+        <h2 id="qr-title">Saját QR-kód</h2>
+
+    </div>
+    <img id="qr-image" alt="Saját QR-kód" hidden>
+    <p id="qr-empty">Még nincs feltöltött QR-kód.</p>
+    <button id="qr-upload" type="button" class="ramp-button file-button">QR-kód feltöltése / cseréje</button>
+    <input id="qr-file" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+    <p id="qr-status" role="status">
+    </p>
+</section>
     <section id="search-view" hidden>
         <h1>Útvonal keresése</h1>
         <label for="route-search">Útvonal betűjele vagy neve</label>
@@ -154,18 +148,7 @@
         <p>A címkezelő használatához engedélyezd a JavaScriptet.</p>
     </noscript>
 </main>
-<dialog id="qr-dialog" aria-labelledby="qr-title">
-    <div class="ramp-dialog-heading">
-        <h2 id="qr-title">Saját QR-kód</h2>
-        <button id="qr-close" type="button" class="ramp-close" aria-label="Bezárás">×</button>
-    </div>
-    <img id="qr-image" alt="Saját QR-kód" hidden>
-    <p id="qr-empty">Még nincs feltöltött QR-kód.</p>
-    <button id="qr-upload" type="button" class="ramp-button file-button">QR-kód feltöltése / cseréje</button>
-    <input id="qr-file" type="file" accept="image/png,image/jpeg,image/webp" hidden>
-    <p id="qr-status" role="status">
-    </p>
-</dialog>
+
 <dialog id="fuel-dialog" aria-labelledby="fuel-dialog-title">
     <div class="ramp-dialog-heading">
         <h2 id="fuel-dialog-title">Legutóbbi tankolás</h2>

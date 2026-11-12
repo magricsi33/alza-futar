@@ -36,7 +36,7 @@ Androidon a Telepítés gomb vagy böngészőmenü; iPhone-on Safari → Megoszt
 Kiadáskor a public/sw.js CACHE verzióját növelni kell, és az új builddel együtt feltölteni. A várakozó frissítés minden régi alkalmazásablak bezárása után aktiválódik.
 
 ## Mobil navigáció és helyi adatok
-A felső fix sávban az útvonal és a személy választható; alul az Útvonal, Beosztás, Keresés és Tankolás ikonok váltják a nézeteket. A keresés az Europe/Budapest szerinti mai dátumra dolgozik, a kiadott időszakon kívül nem talál ki sofőrt. A rámpakiosztás ettől függetlenül látható.
+A felső fix sávban az útvonal és a személy választható; alul az Útvonal, Beosztás, Keresés, Tankolás és QR-kód ikonok váltják a nézeteket. A keresés az Europe/Budapest szerinti mai dátumra dolgozik, a kiadott időszakon kívül nem talál ki sofőrt. A rámpakiosztás ettől függetlenül látható.
 
 A QR-kép csak az adott böngésző localStorage tárolójába kerül (alzafutar-device-qr-v1), nem töltődik fel a szerverre. PNG/JPG/WebP, legfeljebb 2 MB; a csere csak sikeres képbetöltés és mentés után lép életbe. A tankolási dátum szintén helyi, útvonalanként külön kulccsal (alzafutar-last-fuel-S stb.). A böngészőadatok törlése ezeket törli.
 
