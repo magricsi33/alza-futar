@@ -2,6 +2,16 @@ import { initSchedule } from './schedule';
 import { initStopInfo } from './stop-info';
 import { tours } from './tours';
 import { initMobile } from './mobile';
+const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+if (standalone) {
+    document.querySelector('meta[name="viewport"]')?.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover');
+    document.documentElement?.classList.add('pwa-standalone');
+    // Az iOS gesztusait is kezeljük, mert a viewport-korlátot felülbírálhatja.
+    ['gesturestart', 'gesturechange'].forEach(name => document.addEventListener(name, event => event.preventDefault(), { passive: false }));
+    document.addEventListener('touchmove', event => {
+        if (event.touches.length > 1) event.preventDefault();
+    }, { passive: false });
+}
 const key = 'uton-state-v1';
 const $ = id => document.getElementById(id);
 let navigationApp = 'waze';
