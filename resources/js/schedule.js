@@ -282,7 +282,6 @@ export function initSchedule() {
     function renderSchedule() {
         const person = schedulePeople.find(item => item.id === personId);
         if (!person) return;
-        el('schedule-person').textContent = person.name;
         el('schedule-cards').replaceChildren();
         const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Budapest' }).format(new Date());
         const days = scheduleWeek(weeks[weekIndex]);
@@ -364,7 +363,7 @@ export function initSchedule() {
         renderSchedule();
         showPerson();
         showView(personTarget);
-        if (personTarget === 'schedule') el('schedule-person').focus();
+        if (personTarget === 'schedule') el('schedule-title').focus();
     });
     el('person-cancel').addEventListener('click', () => el('person-dialog').close());
 }

@@ -35,12 +35,10 @@
             </i>
         </button>
     </nav>
-    <section id="schedule-view" aria-labelledby="schedule-person" hidden>
+    <section id="schedule-view" aria-labelledby="schedule-title" hidden>
         <div class="schedule-heading">
             <div>
-                <h1 class="page-title">Beosztás</h1>
-                <p id="schedule-person" tabindex="-1">
-                </p>
+                <h1 id="schedule-title" class="page-title" tabindex="-1">Beosztás</h1>
             </div>
         </div>
         <div class="week-switcher">
@@ -101,9 +99,14 @@
     </p>
 </section>
     <section id="search-view" hidden>
-        <h1 class="page-title">Útvonal keresése</h1>
+        <h1 class="page-title">Keresés</h1>
+        <label for="search-mode">Keresés típusa</label>
+        <select id="search-mode"><option value="route">Útvonal</option><option value="address">Cím</option></select>
+        <div id="route-search-fields">
         <label for="route-search">Útvonal</label>
         <select id="route-search" aria-label="Keresett útvonal"></select>
+        </div>
+        <div id="address-search-fields" hidden><label for="address-search">Cím, város, helyszín vagy boxazonosító</label><input id="address-search" type="search" placeholder="Pl. Király utca vagy AB9087" autocomplete="off"></div>
         <p id="search-date">
         </p>
         <div id="search-results" aria-live="polite">

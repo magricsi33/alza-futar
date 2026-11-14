@@ -18,7 +18,29 @@ export function initMobile({ tours, ramps, currentRoute }) {
     const el = id => document.getElementById(id);
     for (const tour of tours) el('route-search').add(new Option(tour.name, tour.id));
     el('route-search').value = currentRoute();
+    const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('hu-HU');
     function search() {
+        const addressMode = el('search-mode').value === 'address';
+        el('route-search-fields').hidden = addressMode;
+        el('address-search-fields').hidden = !addressMode;
+        el('search-results').replaceChildren();
+        if (addressMode) {
+            el('search-date').textContent = '';
+            const query = normalize(el('address-search').value.trim());
+            if (!query) { el('search-results').textContent = 'Írj be egy címet, várost vagy boxazonosítót.'; return; }
+            const words = query.split(/\s+/);
+            let count = 0;
+            for (const tour of tours) for (const stop of tour.stops) {
+                if (!words.every(word => normalize(stop.slice(0, 4).join(' ')).includes(word))) continue;
+                const card = document.createElement('article'); card.className = 'shift-card';
+                const title = document.createElement('h2'); title.textContent = stop[1];
+                const address = document.createElement('p'); address.textContent = stop[2];
+                const details = document.createElement('p'); details.textContent = tour.name + ' · ' + stop[0] + ' · ' + stop[3];
+                card.append(title, address, details); el('search-results').append(card); count++;
+            }
+            if (!count) el('search-results').textContent = 'Nincs találat erre a címre.';
+            return;
+        }
         const today = todayDate();
         el('search-date').textContent = 'Mai beosztás · ' + displayDate(today);
         const query = el('route-search').value.trim().toLocaleUpperCase('hu-HU');
@@ -38,6 +60,8 @@ export function initMobile({ tours, ramps, currentRoute }) {
         if (!matches.length) el('search-results').textContent = 'Nincs ilyen útvonal.';
     }
     el('route-search').addEventListener('change', search);
+    el('search-mode').addEventListener('change', search);
+    el('address-search').addEventListener('input', search);
     el('search-tab').addEventListener('click', search);
     window.addEventListener('focus', search);
 

@@ -156,7 +156,7 @@ test('person selection persists, reopens directly and can be changed without res
     assert.equal(e['person-dialog'].open, false);
     assert.equal(e['schedule-view'].hidden, false);
     assert.equal(e['route-view'].hidden, true);
-    assert.equal(e['schedule-person'].textContent, 'Mag Richárd');
+    assert.equal(e['current-person'].textContent, 'Mag Richárd');
     assert.equal(e['schedule-cards'].children.length, 7);
     assert.equal(e['schedule-cards'].children[1].children[1].textContent, 'Pihenőnap');
     assert.equal(e['schedule-cards'].children[4].children[2].children[1].children[1].textContent, 'AELW962');
@@ -164,7 +164,7 @@ test('person selection persists, reopens directly and can be changed without res
     const second = boot(first.store.value, false, first.store.person);
     second.elements['schedule-tab'].events.click();
     assert.equal(second.elements['person-dialog'], undefined);
-    assert.equal(second.elements['schedule-person'].textContent, 'Mag Richárd');
+    assert.equal(second.elements['current-person'].textContent, 'Mag Richárd');
     second.elements['current-person'].events.click();
     assert.equal(second.elements['person-dialog'].open, true);
     second.elements['person-select'].value = 'kiss-daniel';
@@ -385,4 +385,24 @@ test('navigation switches between Waze and Google Maps and saves the preference'
     context.localStorage.setItem = () => {throw Error('blocked');};
     e['navigation-app'].events.change({target:{value:'waze'}});
     assert.equal(new URL(e.stops.children[0].children[2].href).hostname, 'waze.com');
+});
+
+test('address search supports accents, box identifiers and switching back to routes', () => {
+    const {elements:e} = boot(null);
+    e['search-mode'].value = 'address';
+    e['address-search'].value = 'kiraly';
+    e['search-mode'].events.change();
+    assert.equal(e['route-search-fields'].hidden, true);
+    assert.ok(e['search-results'].children.length > 0);
+    e['address-search'].value = 'AB9087';
+    e['address-search'].events.input();
+    assert.equal(e['search-results'].children.length, 1);
+    assert.match(e['search-results'].children[0].children[2].textContent, /Budapest S/);
+    e['address-search'].value = 'nonexistent-address';
+    e['address-search'].events.input();
+    assert.match(e['search-results'].textContent, /Nincs találat/);
+    e['search-mode'].value = 'route';
+    e['search-mode'].events.change();
+    assert.equal(e['address-search-fields'].hidden, true);
+    assert.equal(e['search-results'].children.length, 1);
 });
