@@ -1,4 +1,4 @@
-const CACHE = 'uton-v19';
+const CACHE = 'uton-v20';
 const ASSETS = [
     '/',
     '/css/app.css',

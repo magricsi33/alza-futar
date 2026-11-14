@@ -41,9 +41,9 @@
             </div>
         </div>
         <div class="week-switcher">
-            <button id="schedule-prev" class="ramp-button btn-sm" type="button" aria-label="Előző hét">‹</button>
+            <button id="schedule-prev" class="ramp-button btn-sm" type="button" aria-label="Előző hét" title="Előző hét"><i class="fi fi-rr-angle-left" aria-hidden="true"></i></button>
             <p id="schedule-period" class="schedule-period" aria-live="polite"></p>
-            <button id="schedule-next" class="ramp-button btn-sm" type="button" aria-label="Következő hét">›</button>
+            <button id="schedule-next" class="ramp-button btn-sm" type="button" aria-label="Következő hét" title="Következő hét"><i class="fi fi-rr-angle-right" aria-hidden="true"></i></button>
         </div>
         <p id="person-save-status" role="status">
         </p>
@@ -57,7 +57,7 @@
                     Megállók <span id="list-count">12</span>
                 </h1>
                 <div class="route-actions">
-                    <button id="reset" class="reset-button btn-sm" type="button">↻ Újrakezdés</button>
+                    <button id="reset" class="reset-button btn-sm" type="button" aria-label="Újrakezdés" title="Újrakezdés"><i class="fi fi-rr-refresh" aria-hidden="true"></i></button>
                     <button id="clear-exempt" class="reset-button btn-sm" type="button">Mentesítés törlése</button>
                 </div>
             </div>
