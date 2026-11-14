@@ -27,6 +27,7 @@ function boot(saved, blocked = false, person = null) {
     };
     const context = {
         document,
+        Date: class extends Date { constructor(...args) { super(...(args.length ? args : ["2026-11-18T12:00:00Z"])); } },
         Option: function(text, value) { this.text = text; this.value = value; },
         localStorage: {
             getItem: key => key === 'alzafutar-person-v1' ? store.person : key === 'uton-state-v1' ? store.value : store.extra[key] || null,
@@ -192,12 +193,12 @@ test('all schedule rows cover exactly the published dates', () => {
     vm.createContext(context);
     vm.runInContext(fs.readFileSync('resources/js/schedule.js','utf8').replace(/export /g,'') + '\nthis.people = schedulePeople; this.days = scheduleDays; this.parse = parseShift;', context);
     assert.equal(context.people.length, 19);
-    assert.equal(context.days.length, 7);
-    assert.equal(context.days[0], '2026-11-16');
-    assert.equal(context.days[6], '2026-11-22');
-    assert.equal(context.people.find(p => p.id === 'mag-richard').cells[4], 'S AELW962');
-    assert.equal(context.people.find(p => p.id === 'takacs-istvan').cells[2], 'Q AADV156');
-    assert.equal(context.people.find(p => p.id === 'toth-boglarka').cells[0], '');
+    assert.equal(context.days.length, 12);
+    assert.equal(context.days[0], '2026-11-11');
+    assert.equal(context.days[11], '2026-11-22');
+    assert.equal(context.people.find(p => p.id === 'mag-richard').cells[9], 'S AELW962');
+    assert.equal(context.people.find(p => p.id === 'takacs-istvan').cells[7], 'Q AADV156');
+    assert.equal(context.people.find(p => p.id === 'toth-boglarka').cells[5], '');
     assert.equal(new Set(context.people.map(p => p.id)).size, 19);
     for (const person of context.people) assert.equal(person.cells.length, context.days.length, person.name);
     assert.equal(context.parse('MENTESÍTŐ (Q-O) AOJT457').plate, 'AOJT457');
@@ -207,7 +208,7 @@ test('all schedule rows cover exactly the published dates', () => {
     assert.equal(night.route, 'T');
     assert.equal(night.plate, 'Nem ismert');
     assert.equal(night.note, 'csak éjszaka');
-    const extra = context.parse(context.people.find(p => p.id === 'szalai-zsolt').cells[2]);
+    const extra = context.parse(context.people.find(p => p.id === 'szalai-zsolt').cells[7]);
     assert.equal(extra.route, 'B');
     assert.equal(extra.plate, 'AICD394');
     assert.equal(extra.note, '+ T ÉJSZAKA AOBL104');
@@ -351,4 +352,21 @@ test('QR upload stays on the device, can be replaced and preserves old code on f
     await upload('data:image/png;base64,third');
     assert.equal(e['qr-image'].src, 'data:image/png;base64,second');
     assert.match(e['qr-status'].textContent, /korábbi QR-kód megmaradt/);
+});
+
+test('weekly navigation preserves old shifts and missing days', () => {
+    const {elements:e, context} = boot(null, false, 'takacs-istvan');
+    e['schedule-tab'].events.click();
+    assert.match(e['schedule-period'].textContent, /2026. 11. 16./);
+    assert.equal(e['schedule-next'].disabled, true);
+    e['schedule-prev'].events.click();
+    assert.match(e['schedule-period'].textContent, /2026. 11. 09./);
+    assert.equal(e['schedule-cards'].children.length, 7);
+    assert.equal(e['schedule-cards'].children[0].children[1].textContent, 'Nincs megadott beosztás');
+    assert.equal(e['schedule-cards'].children[2].children[2].children[1].children[1].textContent, 'AOJT457');
+    assert.equal(e['schedule-prev'].disabled, true);
+    e['schedule-next'].events.click();
+    assert.match(e['schedule-period'].textContent, /2026. 11. 16./);
+    assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-12')), ['Szalai Zsolt']);
+    assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-18')), ['Mag Richárd']);
 });

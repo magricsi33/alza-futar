@@ -43,3 +43,5 @@ A QR-kép csak az adott böngésző localStorage tárolójába kerül (alzafutar
 A címlista a megjegyzéseket a GET /address-info/notes végpontról kötegelt lekéréssel tölti be, útvonalváltáskor, lapfókuszkor és a kapcsolat visszatérésekor frissíti. A modal mentése azonnal frissíti a listát is. A QR-kép és a tankolási dátum mentéséhez nincs szükség internetkapcsolatra.
 
 Flaticon Uicons 4.0.0 regular-rounded: a CSS és WOFF2 helyben, a public/vendor/flaticon könyvtárban található, a service worker az offline használathoz gyorsítótárazza. Forrás és használati útmutató: https://www.flaticon.com/uicons/get-started/ . Az alkalmazás alján szerepel az előírt Flaticon forrásmegjelölés.
+
+A beosztás kiadásai a scheduleReleases tömbbe kerülnek, a korábbi blokkokat meg kell őrizni. Új feltöltésnél új blokk adható hozzá; az azonos személy azonos dátumú celláját a későbbi kiadás felülírja. Jelenleg november 11–15. és november 16–22. is elérhető. A heti lapozó hétfő–vasárnap bontású, a hiányzó napokat is jelzi. A gombméretek: alapértelmezett / btn-standard, btn-sm, btn-xs.

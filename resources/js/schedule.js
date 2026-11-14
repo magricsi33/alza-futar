@@ -1,26 +1,242 @@
-export const scheduleDays = ['2026-11-16', '2026-11-17', '2026-11-18', '2026-11-19', '2026-11-20', '2026-11-21', '2026-11-22'];
-// Üres cella: nincs adat. A táblából hiányzó korábbi személyek választását megőrizzük.
-export const schedulePeople = [
-    ["takacs-istvan", "Takács István", "O AOGG683|PIHEN|Q AADV156|Q AADV156|O AOGG683|PIHEN|E AOJT458"],
-    ["kollar-janos", "Kollár János", "PIHEN|O AOGG683|O AOGG683|O AOGG683|PIHEN|O AOGG683|O AOGG683"],
-    ["balla-laszlo", "Balla László", "V AOBL104|U AICD597|V AOBL104|PIHEN|PIHEN|S AELW962|V AOBL104"],
-    ["vegh-krisztian", "Végh Krisztián", "U AICD597|PIHEN|U AICD597|U AICD597|U AICD597|U AICD597|U AICD597"],
-    ["szikszai-bettina", "Szikszai Bettina", "PIHEN|D AADN204|D AADN204|D AADN204|PIHEN|D AADN204|D AADN204"],
-    ["bartos-laszlo", "Bartos László", "|||||A AAIJ346|A AAIJ346"],
-    ["joszkin-kevin", "Joszkin Kevin", "A AAIJ346|A AAIJ346|A AAIJ346|A AAIJ346|A AAIJ346|PIHEN|PIHEN"],
-    ["szalai-zsolt", "Szalai Zsolt", "T AELW962 CSAK ÉJSZAKA|S AELW962|B AICD394 + T ÉJSZAKA AOBL104|V AOBL104 + T ÉJSZAKA|V AOBL104|V AOBL104|PIHEN"],
-    ["fekete-gergely", "Fekete Gergely", "B AICD394|V AOBL104|PIHEN|PIHEN|B AICD394|B AICD394|B AICD394"],
-    ["toth-boglarka", "Tóth Boglárka", "||||||"],
-    ["mag-richard", "Mag Richárd", "S AELW962|PIHEN|S AELW962|S AELW962|S AELW962|PIHEN|S AELW962"],
-    ["horvath-angela", "Horváth Angéla", "D AADN204|B AICD394|PIHEN|B AICD394|D AADN204|E AOJT458|PIHEN"],
-    ["utto-norbert", "Uttó Norbert", "Q AADV156|Q AADV156|PIHEN|PIHEN|Q AADV156|Q AADV156|Q AADV156"],
-    ["kemecsei-balazs", "Kemecsei Balázs", "E AOJT458|E AOJT458|E AOJT458|E AOJT458|E AOJT458|PIHEN|PIHEN"],
-    ["kiss-daniel", "Kiss Dániel", "F + É|F + É|F É|F + É|F + É|F + É|F + É"],
-    ["hanuszka-daniel", "Hanuszka Dániel", "PIHEN|PIHEN|C|C|C + TÉ|C + TÉ|C + TÉ"],
-    ["pokorny-patrik", "Pokorny Patrik", "T|T + TÉ|T|T|T|T|T"],
-    ["csolle-daniel", "Csölle Dániel", "||||||"],
-    ["miklos-daniel", "Miklós Dániel", "C|C|F||||"],
-].map(([id, name, cells]) => ({ id, name, cells: cells.split('|') }));
+// Új kiadáskor ide új blokk kerül; a korábbi dátumok megmaradnak.
+// Átfedésnél a későbbi blokk az adott személy adott napi celláját frissíti.
+export const scheduleReleases = [
+    {
+        "days": [
+            "2026-11-11",
+            "2026-11-12",
+            "2026-11-13",
+            "2026-11-14",
+            "2026-11-15"
+        ],
+        "people": [
+            [
+                "takacs-istvan",
+                "Takács István",
+                "MENTESÍTŐ (Q-O) AOJT457|V AOBL104|Q AADV156|V AOBL104|PIHEN"
+            ],
+            [
+                "kollar-janos",
+                "Kollár János",
+                "PIHEN|MENTESÍTŐ (Q-O)|PIHEN|D AADN204|O AOGG683"
+            ],
+            [
+                "balla-laszlo",
+                "Balla László",
+                "A AAIJ346|A AAIJ346|A AAIJ346|PIHEN|PIHEN"
+            ],
+            [
+                "vegh-krisztian",
+                "Végh Krisztián",
+                "U AICD597|U AICD597|U AICD597|U AICD597|U AICD597"
+            ],
+            [
+                "szikszai-bettina",
+                "Szikszai Bettina",
+                "D AADN204|D AADN204|D AADN204|PIHEN|D AADN204"
+            ],
+            [
+                "bartos-laszlo",
+                "Bartos László",
+                "|||A AAIJ346|A AAIJ346"
+            ],
+            [
+                "joszkin-kevin",
+                "Joszkin Kevin",
+                "PIHEN|Q AADV156|PIHEN|E AOJT458|oktatás"
+            ],
+            [
+                "szalai-zsolt",
+                "Szalai Zsolt",
+                "S AELW962|S AELW962|V AOBL104|O AOGG683|V AOBL104"
+            ],
+            [
+                "fekete-gergely",
+                "Fekete Gergely",
+                "B AICD394|B AICD394|B AICD394|B AICD394|B AICD394"
+            ],
+            [
+                "toth-boglarka",
+                "Tóth Boglárka",
+                "V AOBL104|PIHEN|PIHEN|PIHEN|PIHEN"
+            ],
+            [
+                "mag-richard",
+                "Mag Richárd",
+                "PIHEN|PIHEN|S AELW962|S AELW962|S AELW962"
+            ],
+            [
+                "horvath-angela",
+                "Horváth Angéla",
+                "E AOJT458|E AOJT458|E AOJT458|PIHEN|E AOJT458"
+            ],
+            [
+                "utto-norbert",
+                "Uttó Norbert",
+                "Q AADV156|PIHEN|PIHEN|Q AADV156|Q AADV156"
+            ],
+            [
+                "kemecsei-balazs",
+                "Kemecsei Balázs",
+                "O AOGG683|O AOGG683|O AOGG683|PIHEN|PIHEN"
+            ],
+            [
+                "kiss-daniel",
+                "Kiss Dániel",
+                "F É|F + É|F + É|F + É|F + É"
+            ],
+            [
+                "hanuszka-daniel",
+                "Hanuszka Dániel",
+                "C + TÉ|C|C + TÉ|C + TÉ|C + TÉ"
+            ],
+            [
+                "pokorny-patrik",
+                "Pokorny Patrik",
+                "F|T + É|T|T|T"
+            ],
+            [
+                "csolle-daniel",
+                "Csölle Dániel",
+                "||||"
+            ],
+            [
+                "miklos-daniel",
+                "Miklós Dániel",
+                "||||"
+            ]
+        ]
+    },
+    {
+        "days": [
+            "2026-11-16",
+            "2026-11-17",
+            "2026-11-18",
+            "2026-11-19",
+            "2026-11-20",
+            "2026-11-21",
+            "2026-11-22"
+        ],
+        "people": [
+            [
+                "takacs-istvan",
+                "Takács István",
+                "O AOGG683|PIHEN|Q AADV156|Q AADV156|O AOGG683|PIHEN|E AOJT458"
+            ],
+            [
+                "kollar-janos",
+                "Kollár János",
+                "PIHEN|O AOGG683|O AOGG683|O AOGG683|PIHEN|O AOGG683|O AOGG683"
+            ],
+            [
+                "balla-laszlo",
+                "Balla László",
+                "V AOBL104|U AICD597|V AOBL104|PIHEN|PIHEN|S AELW962|V AOBL104"
+            ],
+            [
+                "vegh-krisztian",
+                "Végh Krisztián",
+                "U AICD597|PIHEN|U AICD597|U AICD597|U AICD597|U AICD597|U AICD597"
+            ],
+            [
+                "szikszai-bettina",
+                "Szikszai Bettina",
+                "PIHEN|D AADN204|D AADN204|D AADN204|PIHEN|D AADN204|D AADN204"
+            ],
+            [
+                "bartos-laszlo",
+                "Bartos László",
+                "|||||A AAIJ346|A AAIJ346"
+            ],
+            [
+                "joszkin-kevin",
+                "Joszkin Kevin",
+                "A AAIJ346|A AAIJ346|A AAIJ346|A AAIJ346|A AAIJ346|PIHEN|PIHEN"
+            ],
+            [
+                "szalai-zsolt",
+                "Szalai Zsolt",
+                "T AELW962 CSAK ÉJSZAKA|S AELW962|B AICD394 + T ÉJSZAKA AOBL104|V AOBL104 + T ÉJSZAKA|V AOBL104|V AOBL104|PIHEN"
+            ],
+            [
+                "fekete-gergely",
+                "Fekete Gergely",
+                "B AICD394|V AOBL104|PIHEN|PIHEN|B AICD394|B AICD394|B AICD394"
+            ],
+            [
+                "toth-boglarka",
+                "Tóth Boglárka",
+                "||||||"
+            ],
+            [
+                "mag-richard",
+                "Mag Richárd",
+                "S AELW962|PIHEN|S AELW962|S AELW962|S AELW962|PIHEN|S AELW962"
+            ],
+            [
+                "horvath-angela",
+                "Horváth Angéla",
+                "D AADN204|B AICD394|PIHEN|B AICD394|D AADN204|E AOJT458|PIHEN"
+            ],
+            [
+                "utto-norbert",
+                "Uttó Norbert",
+                "Q AADV156|Q AADV156|PIHEN|PIHEN|Q AADV156|Q AADV156|Q AADV156"
+            ],
+            [
+                "kemecsei-balazs",
+                "Kemecsei Balázs",
+                "E AOJT458|E AOJT458|E AOJT458|E AOJT458|E AOJT458|PIHEN|PIHEN"
+            ],
+            [
+                "kiss-daniel",
+                "Kiss Dániel",
+                "F + É|F + É|F É|F + É|F + É|F + É|F + É"
+            ],
+            [
+                "hanuszka-daniel",
+                "Hanuszka Dániel",
+                "PIHEN|PIHEN|C|C|C + TÉ|C + TÉ|C + TÉ"
+            ],
+            [
+                "pokorny-patrik",
+                "Pokorny Patrik",
+                "T|T + TÉ|T|T|T|T|T"
+            ],
+            [
+                "csolle-daniel",
+                "Csölle Dániel",
+                "||||||"
+            ],
+            [
+                "miklos-daniel",
+                "Miklós Dániel",
+                "C|C|F||||"
+            ]
+        ]
+    }
+];
+
+export const scheduleDays = [...new Set(scheduleReleases.flatMap(release => release.days))].sort();
+export const schedulePeople = [];
+for (const release of scheduleReleases) {
+    for (const [id, name, values] of release.people) {
+        let person = schedulePeople.find(item => item.id === id);
+        if (!person) { person = { id, name, cells: Array(scheduleDays.length).fill('') }; schedulePeople.push(person); }
+        person.name = name;
+        const cells = values.split('|');
+        release.days.forEach((date, index) => { person.cells[scheduleDays.indexOf(date)] = cells[index] || ''; });
+    }
+}
+
+export function scheduleWeek(date) {
+    const day = new Date(date + 'T12:00:00Z');
+    day.setUTCDate(day.getUTCDate() - (day.getUTCDay() + 6) % 7);
+    return Array.from({ length: 7 }, (_, index) => {
+        const next = new Date(day); next.setUTCDate(next.getUTCDate() + index);
+        return next.toISOString().slice(0, 10);
+    });
+}
 
 export function parseShift(cell) {
     if (!cell) return { status: 'unknown' };
@@ -39,7 +255,10 @@ export function initSchedule() {
     const el = id => document.getElementById(id);
     const storageKey = 'alzafutar-person-v1';
     const periodFormat = new Intl.DateTimeFormat('hu-HU', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Europe/Budapest' });
-    el('schedule-period').textContent = periodFormat.format(new Date(scheduleDays[0] + 'T12:00:00Z')) + ' – ' + periodFormat.format(new Date(scheduleDays[scheduleDays.length - 1] + 'T12:00:00Z'));
+    const weeks = [...new Set(scheduleDays.map(date => scheduleWeek(date)[0]))];
+    const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Budapest' }).format(new Date());
+    let weekIndex = weeks.indexOf(scheduleWeek(today)[0]);
+    if (weekIndex < 0) weekIndex = today < weeks[0] ? 0 : weeks.length - 1;
     let personId = null;
     try {
         const saved = localStorage.getItem(storageKey);
@@ -66,7 +285,12 @@ export function initSchedule() {
         el('schedule-person').textContent = person.name;
         el('schedule-cards').replaceChildren();
         const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Budapest' }).format(new Date());
-        scheduleDays.forEach((date, index) => {
+        const days = scheduleWeek(weeks[weekIndex]);
+        el('schedule-period').textContent = periodFormat.format(new Date(days[0] + 'T12:00:00Z')) + ' – ' + periodFormat.format(new Date(days[6] + 'T12:00:00Z'));
+        el('schedule-prev').disabled = weekIndex === 0;
+        el('schedule-next').disabled = weekIndex === weeks.length - 1;
+        days.forEach(date => {
+            const index = scheduleDays.indexOf(date);
             const shift = parseShift(person.cells[index]);
             const card = document.createElement('article');
             card.className = 'shift-card shift-' + shift.status;
@@ -122,6 +346,8 @@ export function initSchedule() {
         if (!personId) choosePerson('schedule');
         else { renderSchedule(); showView('schedule'); }
     });
+    el('schedule-prev').addEventListener('click', () => { if (weekIndex > 0) { weekIndex--; renderSchedule(); } });
+    el('schedule-next').addEventListener('click', () => { if (weekIndex < weeks.length - 1) { weekIndex++; renderSchedule(); } });
     el('current-person').addEventListener('click', () => choosePerson());
     el('person-form').addEventListener('submit', event => {
         event.preventDefault();

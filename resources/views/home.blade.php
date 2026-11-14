@@ -12,24 +12,24 @@
         <button id="current-person" type="button" aria-haspopup="dialog">Személy kiválasztása</button>
     </header>
     <nav class="view-navigation" aria-label="Fő navigáció">
-        <button id="route-tab" type="button" aria-label="Útvonal" title="Útvonal" aria-pressed="true" aria-controls="route-view">
-            <i class="fi fi-rr-route" aria-hidden="true">
-            </i>
-        </button>
         <button id="schedule-tab" type="button" aria-label="Beosztás" title="Beosztás" aria-pressed="false" aria-controls="schedule-view">
             <i class="fi fi-rr-calendar" aria-hidden="true">
-            </i>
-        </button>
-        <button id="search-tab" type="button" aria-label="Keresés" title="Keresés" aria-pressed="false" aria-controls="search-view">
-            <i class="fi fi-rr-search" aria-hidden="true">
             </i>
         </button>
         <button id="fuel-tab" type="button" aria-label="Tankolás" title="Tankolás" aria-pressed="false" aria-controls="fuel-view">
             <i class="fi fi-rr-gas-pump" aria-hidden="true">
             </i>
         </button>
+        <button id="route-tab" type="button" aria-label="Útvonal" title="Útvonal" aria-pressed="true" aria-controls="route-view">
+            <i class="fi fi-rr-route" aria-hidden="true">
+            </i>
+        </button>
         <button id="qr-tab" type="button" aria-label="QR-kód" title="QR-kód" aria-pressed="false" aria-controls="qr-view">
             <i class="fi fi-rr-qrcode" aria-hidden="true"></i>
+        </button>
+        <button id="search-tab" type="button" aria-label="Keresés" title="Keresés" aria-pressed="false" aria-controls="search-view">
+            <i class="fi fi-rr-search" aria-hidden="true">
+            </i>
         </button>
     </nav>
     <section id="schedule-view" aria-labelledby="schedule-person" hidden>
@@ -40,9 +40,11 @@
                 </p>
             </div>
         </div>
-        <p id="schedule-period" class="schedule-period">
-        </p>
-        <p class="schedule-info">Csak a kiadott időszak látható. Az üres napokra még nincs megadott beosztás.</p>
+        <div class="week-switcher">
+            <button id="schedule-prev" class="ramp-button btn-sm" type="button" aria-label="Előző hét">‹</button>
+            <p id="schedule-period" class="schedule-period" aria-live="polite"></p>
+            <button id="schedule-next" class="ramp-button btn-sm" type="button" aria-label="Következő hét">›</button>
+        </div>
         <p id="person-save-status" role="status">
         </p>
         <div id="schedule-cards" class="schedule-cards">
@@ -55,8 +57,8 @@
                     Megállók <span id="list-count">12</span>
                 </h1>
                 <div class="route-actions">
-                    <button id="reset" class="reset-button" type="button">↻ Újrakezdés</button>
-                    <button id="clear-exempt" class="reset-button" type="button">Mentesítés törlése</button>
+                    <button id="reset" class="reset-button btn-sm" type="button">↻ Újrakezdés</button>
+                    <button id="clear-exempt" class="reset-button btn-sm" type="button">Mentesítés törlése</button>
                 </div>
             </div>
             <div class="list-toolbar">
