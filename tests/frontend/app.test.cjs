@@ -370,3 +370,19 @@ test('weekly navigation preserves old shifts and missing days', () => {
     assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-12')), ['Szalai Zsolt']);
     assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-18')), ['Mag Richárd']);
 });
+
+test('navigation switches between Waze and Google Maps and saves the preference', () => {
+    const {elements:e, context, store} = boot(null);
+    const original = new URL(e.stops.children[0].children[2].href).searchParams.get('q');
+    e['navigation-app'].events.change({target:{value:'google'}});
+    const url = new URL(e.stops.children[0].children[2].href);
+    assert.equal(url.hostname, 'www.google.com');
+    assert.equal(url.searchParams.get('destination'), original);
+    assert.equal(url.searchParams.get('api'), '1');
+    assert.equal(store.extra['alzafutar-navigation'], 'google');
+    e.tour.events.change({target:{value:'V'}});
+    assert.equal(new URL(e.stops.children[0].children[2].href).hostname, 'www.google.com');
+    context.localStorage.setItem = () => {throw Error('blocked');};
+    e['navigation-app'].events.change({target:{value:'waze'}});
+    assert.equal(new URL(e.stops.children[0].children[2].href).hostname, 'waze.com');
+});

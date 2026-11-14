@@ -4,12 +4,15 @@
 
 <main>
     <header class="fixed-toolbar">
+        <button id="current-person" type="button" aria-haspopup="dialog">
+            <i class="fi fi-rr-user" aria-hidden="true"></i>
+            Személy kiválasztása
+        </button>
         <div>
-            <label for="tour">Útvonal</label>
+            
             <select id="tour" aria-label="Aktív útvonal">
             </select>
         </div>
-        <button id="current-person" type="button" aria-haspopup="dialog">Személy kiválasztása</button>
     </header>
     <nav class="view-navigation" aria-label="Fő navigáció">
         <button id="schedule-tab" type="button" aria-label="Beosztás" title="Beosztás" aria-pressed="false" aria-controls="schedule-view">
@@ -66,7 +69,10 @@
                     <input id="remaining-only" type="checkbox">
                     <span>Csak a fennmaradók</span>
                 </label>
-                <span class="waze-hint">Címre koppintva Waze ↗</span>
+                <select id="navigation-app" aria-label="Navigációs alkalmazás">
+                    <option value="waze">Waze</option>
+                    <option value="google">Google Maps</option>
+                </select>
             </div>
             <ol id="stops" class="stops">
             </ol>

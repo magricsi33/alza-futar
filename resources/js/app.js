@@ -4,6 +4,8 @@ import { tours } from './tours';
 import { initMobile } from './mobile';
 const key = 'uton-state-v1';
 const $ = id => document.getElementById(id);
+let navigationApp = 'waze';
+try { if (localStorage.getItem('alzafutar-navigation') === 'google') navigationApp = 'google'; } catch {}
 const notes = {};
 let notesRequest = 0;
 async function loadNotes() {
@@ -82,6 +84,7 @@ function save() {
     catch { $('save-note').textContent = 'A böngésző nem engedi a mentést. A haladás most csak a lap bezárásáig marad meg.'; }
 }
 function render() {
+    $('navigation-app').value = navigationApp;
     const tour = tours.find(t => t.id === state.tour);
     renderFuel(tour);
     renderRamp();
@@ -112,9 +115,12 @@ function render() {
         label.append(checkbox);
         const number = document.createElement('span'); number.className = 'stop-number'; number.textContent = String(index + 1).padStart(2, '0');
         const link = document.createElement('a'); link.className = 'stop-link';
-        link.href = 'https://waze.com/ul?q=' + encodeURIComponent(address.replace(/–/g, '-') + ', ' + city + ', Magyarország') + '&navigate=yes';
+        const destination = encodeURIComponent(address.replace(/–/g, '-') + ', ' + city + ', Magyarország');
+        link.href = navigationApp === 'google'
+            ? 'https://www.google.com/maps/dir/?api=1&destination=' + destination + '&travelmode=driving'
+            : 'https://waze.com/ul?q=' + destination + '&navigate=yes';
         link.target = '_blank'; link.rel = 'noopener noreferrer';
-        link.setAttribute('aria-label', address + ', ' + city + ' — megnyitás Waze-ben');
+        link.setAttribute('aria-label', address + ', ' + city + ' — megnyitás: ' + (navigationApp === 'google' ? 'Google Maps' : 'Waze'));
         const text = document.createElement('span');
         const title = document.createElement('strong'); title.textContent = address;
         const subtitle = document.createElement('span'); subtitle.className = 'stop-city'; subtitle.textContent = city;
@@ -170,6 +176,11 @@ function renderRamp() {
 }
 $('tour').addEventListener('change', e => { state.tour = e.target.value; save(); render(); loadNotes(); });
 $('remaining-only').addEventListener('change', e => { state.remainingOnly = e.target.checked; save(); render(); });
+$('navigation-app').addEventListener('change', event => {
+    navigationApp = event.target.value === 'google' ? 'google' : 'waze';
+    try { localStorage.setItem('alzafutar-navigation', navigationApp); } catch {}
+    render();
+});
 let resetTour;
 $('reset').addEventListener('click', () => {
     resetTour = state.tour;

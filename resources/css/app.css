@@ -383,3 +383,5 @@ button.btn-xs { min-height: 28px; padding: 4px 7px; font-size: 10px; border-radi
 #route-view .section-heading .page-title { margin: 0; font-size: 22px; }
 #route-view .route-actions { margin: 0 0 0 auto; flex-wrap: nowrap; gap: 5px; }
 #route-view .route-actions button { white-space: normal; }
+
+#navigation-app { min-height: 40px; max-width: 145px; padding: 7px 25px 7px 10px; border: 1px solid #cbd6bf; border-radius: 8px; background: #fff; color: #203b33; font-size: 16px; font-weight: 500; }
