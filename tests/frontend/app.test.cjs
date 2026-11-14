@@ -124,7 +124,7 @@ test('ramp section follows the active tour and distinguishes warehouse loading',
 test('all addresses have correctly encoded Waze navigation links', () => {
     const {elements} = boot(null);
     const expected = {A:15, B:17, C:16, D:14, E:11, F:22, O:22, Q:16, S:14, T:16, U:15, V:11};
-    assert.equal(elements.tour.children.length, 12);
+    assert.equal(elements.tour.children.length, 13);
     const allIds = new Set();
     let total = 0;
     for (const [tour, count] of Object.entries(expected)) {
@@ -405,4 +405,25 @@ test('address search supports accents, box identifiers and switching back to rou
     e['search-mode'].events.change();
     assert.equal(e['address-search-fields'].hidden, true);
     assert.equal(e['search-results'].children.length, 1);
+});
+
+test('exempt route gathers source routes, survives reload and removes revoked exemptions', async () => {
+    const saved = JSON.stringify({tour:'exempt', remainingOnly:true, exempt:{S:['AB9087'],V:['AB9705']}});
+    const {elements:e, store} = boot(saved);
+    assert.equal(e.tour.value, 'exempt');
+    assert.equal(e.stops.children.length, 2);
+    assert.equal(e['remaining-only'].disabled, true);
+    const restored = boot(store.value);
+    assert.equal(restored.elements.stops.children.length, 2);
+    const row = e.stops.children.find(row => row.dataset.stop === 'AB9087');
+    await row.children[3].events.click();
+    e['info-exempt'].events.click();
+    assert.equal(e.stops.children.length, 1);
+    assert.equal(e.stops.children[0].dataset.stop, 'AB9705');
+    assert.equal(JSON.parse(store.value).exempt.S.length, 0);
+    e['clear-exempt'].events.click();
+    e['clear-exempt-dialog'].returnValue = 'confirm';
+    e['clear-exempt-dialog'].events.close();
+    assert.equal(e.stops.children.length, 0);
+    assert.match(e.empty.textContent, /Még nincs mentesített/);
 });
