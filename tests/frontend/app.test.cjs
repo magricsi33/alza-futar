@@ -156,8 +156,8 @@ test('person selection persists, reopens directly and can be changed without res
     assert.equal(e['schedule-view'].hidden, false);
     assert.equal(e['route-view'].hidden, true);
     assert.equal(e['schedule-person'].textContent, 'Mag Richárd');
-    assert.equal(e['schedule-cards'].children.length, 5);
-    assert.equal(e['schedule-cards'].children[0].children[1].textContent, 'Pihenőnap');
+    assert.equal(e['schedule-cards'].children.length, 7);
+    assert.equal(e['schedule-cards'].children[1].children[1].textContent, 'Pihenőnap');
     assert.equal(e['schedule-cards'].children[4].children[2].children[1].children[1].textContent, 'AELW962');
 
     const second = boot(first.store.value, false, first.store.person);
@@ -180,7 +180,7 @@ test('empty schedule differs from rest and unknown saved person prompts again', 
     assert.equal(e['person-dialog'].open, true);
     e['person-select'].value = 'csolle-daniel';
     e['person-form'].events.submit({preventDefault() {}});
-    assert.equal(e['schedule-cards'].children.length, 5);
+    assert.equal(e['schedule-cards'].children.length, 7);
     for (const card of e['schedule-cards'].children) {
         assert.equal(card.children[1].textContent, 'Nincs megadott beosztás');
         assert.equal(card.children.length, 2);
@@ -192,12 +192,12 @@ test('all schedule rows cover exactly the published dates', () => {
     vm.createContext(context);
     vm.runInContext(fs.readFileSync('resources/js/schedule.js','utf8').replace(/export /g,'') + '\nthis.people = schedulePeople; this.days = scheduleDays; this.parse = parseShift;', context);
     assert.equal(context.people.length, 19);
-    assert.equal(context.days.length, 5);
-    assert.equal(context.days[0], '2026-11-11');
-    assert.equal(context.days[4], '2026-11-15');
+    assert.equal(context.days.length, 7);
+    assert.equal(context.days[0], '2026-11-16');
+    assert.equal(context.days[6], '2026-11-22');
     assert.equal(context.people.find(p => p.id === 'mag-richard').cells[4], 'S AELW962');
     assert.equal(context.people.find(p => p.id === 'takacs-istvan').cells[2], 'Q AADV156');
-    assert.equal(context.people.find(p => p.id === 'toth-boglarka').cells[0], 'V AOBL104');
+    assert.equal(context.people.find(p => p.id === 'toth-boglarka').cells[0], '');
     assert.equal(new Set(context.people.map(p => p.id)).size, 19);
     for (const person of context.people) assert.equal(person.cells.length, context.days.length, person.name);
     assert.equal(context.parse('MENTESÍTŐ (Q-O) AOJT457').plate, 'AOJT457');
@@ -207,6 +207,10 @@ test('all schedule rows cover exactly the published dates', () => {
     assert.equal(night.route, 'T');
     assert.equal(night.plate, 'Nem ismert');
     assert.equal(night.note, 'csak éjszaka');
+    const extra = context.parse(context.people.find(p => p.id === 'szalai-zsolt').cells[2]);
+    assert.equal(extra.route, 'B');
+    assert.equal(extra.plate, 'AICD394');
+    assert.equal(extra.note, '+ T ÉJSZAKA AOBL104');
 });
 
 test('updated fuel table includes O and Q while C F T remain unavailable', () => {
@@ -308,9 +312,9 @@ test('bottom tabs and header person selection preserve the active view', () => {
 
 test('route search uses the requested day and distinguishes missing schedules', () => {
     const {context} = boot(null);
-    assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-12')), ['Szalai Zsolt']);
-    assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-13')), ['Mag Richárd']);
-    assert.deepEqual(Array.from(context.routeDrivers('D', '2026-11-14')), ['Kollár János']);
+    assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-17')), ['Szalai Zsolt']);
+    assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-18')), ['Mag Richárd']);
+    assert.deepEqual(Array.from(context.routeDrivers('D', '2026-11-19')), ['Szikszai Bettina']);
     assert.equal(context.routeDrivers('S', '2026-12-01'), null);
 });
 
