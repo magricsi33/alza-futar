@@ -103,6 +103,10 @@ function save() {
 }
 function render() {
     $('navigation-app').value = navigationApp;
+    const warehouse = encodeURIComponent('Bevásárló utca 1, 2310 Szigetszentmiklós, Magyarország');
+    $('return-warehouse').href = navigationApp === 'google'
+        ? 'https://www.google.com/maps/dir/?api=1&destination=' + warehouse + '&travelmode=driving'
+        : 'https://waze.com/ul?q=' + warehouse + '&navigate=yes';
     const tour = selectedTour();
     renderFuel(tour);
     renderRamp();

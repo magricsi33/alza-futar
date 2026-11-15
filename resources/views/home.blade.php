@@ -74,6 +74,7 @@
             </div>
             <ol id="stops" class="stops">
             </ol>
+            <a id="return-warehouse" class="ramp-button return-warehouse" target="_blank" rel="noopener noreferrer">Vissza a raktárba</a>
             <p id="notes-status" role="status">
             </p>
             <div id="empty" class="empty" hidden>

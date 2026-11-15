@@ -427,3 +427,14 @@ test('exempt route gathers source routes, survives reload and removes revoked ex
     assert.equal(e.stops.children.length, 0);
     assert.match(e.empty.textContent, /Még nincs mentesített/);
 });
+
+test('return to warehouse uses the selected navigation app and the verified shop address', () => {
+    const {elements:e} = boot(null);
+    const waze = new URL(e['return-warehouse'].href);
+    assert.equal(waze.hostname, 'waze.com');
+    assert.equal(waze.searchParams.get('q'), 'Bevásárló utca 1, 2310 Szigetszentmiklós, Magyarország');
+    e['navigation-app'].events.change({target:{value:'google'}});
+    const google = new URL(e['return-warehouse'].href);
+    assert.equal(google.hostname, 'www.google.com');
+    assert.equal(google.searchParams.get('destination'), waze.searchParams.get('q'));
+});
