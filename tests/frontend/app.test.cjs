@@ -179,10 +179,10 @@ test('empty schedule differs from rest and unknown saved person prompts again', 
     const {elements:e} = boot(null, false, 'deleted-person');
     e['schedule-tab'].events.click();
     assert.equal(e['person-dialog'].open, true);
-    e['person-select'].value = 'csolle-daniel';
+    e['person-select'].value = 'hegyes-laszlo';
     e['person-form'].events.submit({preventDefault() {}});
     assert.equal(e['schedule-cards'].children.length, 7);
-    for (const card of e['schedule-cards'].children) {
+    for (const card of e['schedule-cards'].children.filter((_, index) => index !== 1)) {
         assert.equal(card.children[1].textContent, 'Nincs megadott beosztás');
         assert.equal(card.children.length, 2);
     }
@@ -192,14 +192,14 @@ test('all schedule rows cover exactly the published dates', () => {
     const context = {};
     vm.createContext(context);
     vm.runInContext(fs.readFileSync('resources/js/schedule.js','utf8').replace(/export /g,'') + '\nthis.people = schedulePeople; this.days = scheduleDays; this.parse = parseShift;', context);
-    assert.equal(context.people.length, 19);
+    assert.equal(context.people.length, 20);
     assert.equal(context.days.length, 12);
     assert.equal(context.days[0], '2026-11-11');
     assert.equal(context.days[11], '2026-11-22');
     assert.equal(context.people.find(p => p.id === 'mag-richard').cells[9], 'S AELW962');
     assert.equal(context.people.find(p => p.id === 'takacs-istvan').cells[7], 'Q AADV156');
     assert.equal(context.people.find(p => p.id === 'toth-boglarka').cells[5], '');
-    assert.equal(new Set(context.people.map(p => p.id)).size, 19);
+    assert.equal(new Set(context.people.map(p => p.id)).size, 20);
     for (const person of context.people) assert.equal(person.cells.length, context.days.length, person.name);
     assert.equal(context.parse('MENTESÍTŐ (Q-O) AOJT457').plate, 'AOJT457');
     assert.equal(context.parse('MENTESÍTŐ (Q-O)').task, 'Mentesítő (Q–O)');
@@ -313,7 +313,7 @@ test('bottom tabs and header person selection preserve the active view', () => {
 
 test('route search uses the requested day and distinguishes missing schedules', () => {
     const {context} = boot(null);
-    assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-17')), ['Szalai Zsolt']);
+    assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-17')), ['Hegyes László']);
     assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-18')), ['Mag Richárd']);
     assert.deepEqual(Array.from(context.routeDrivers('D', '2026-11-19')), ['Szikszai Bettina']);
     assert.equal(context.routeDrivers('S', '2026-12-01'), null);
@@ -437,4 +437,20 @@ test('return to warehouse uses the selected navigation app and the verified shop
     const google = new URL(e['return-warehouse'].href);
     assert.equal(google.hostname, 'www.google.com');
     assert.equal(google.searchParams.get('destination'), waze.searchParams.get('q'));
+});
+
+test('revised roster updates only supplied dates while preserving history', () => {
+    const {elements:e, context} = boot(null, false, 'toth-boglarka');
+    assert.equal(e['person-select'].children.some(option => option.value === 'toth-boglarka'), false);
+    assert.equal(e['person-select'].children.some(option => option.value === 'hegyes-laszlo'), true);
+    e['schedule-tab'].events.click();
+    assert.equal(e['person-dialog'].open, true);
+    e['person-select'].value = 'csolle-daniel';
+    e['person-form'].events.submit({preventDefault() {}});
+    assert.equal(e['schedule-cards'].children[1].children[2].children[1].children[1].textContent, 'TEX047');
+    assert.equal(context.parseShift('SZADA').task, 'SZADA');
+    assert.deepEqual(Array.from(context.routeDrivers('D', '2026-11-16')), ['Horváth Angéla']);
+    assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-17')), ['Hegyes László']);
+    assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-19')), ['Mag Richárd']);
+    assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-12')), ['Szalai Zsolt']);
 });

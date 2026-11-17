@@ -214,6 +214,110 @@ export const scheduleReleases = [
                 "C|C|F||||"
             ]
         ]
+    },
+    {
+        "days": [
+            "2026-11-16",
+            "2026-11-17",
+            "2026-11-18"
+        ],
+        "people": [
+            [
+                "takacs-istvan",
+                "Takács István",
+                "O AOGG683|PIHEN|Q AADV156"
+            ],
+            [
+                "kollar-janos",
+                "Kollár János",
+                "PIHEN|O AOGG683|O AOGG683"
+            ],
+            [
+                "balla-laszlo",
+                "Balla László",
+                "A AAIJ346|U AICD597|V AOJT457"
+            ],
+            [
+                "vegh-krisztian",
+                "Végh Krisztián",
+                "U AICD597|PIHEN|U AICD597"
+            ],
+            [
+                "szikszai-bettina",
+                "Szikszai Bettina",
+                "PIHEN|D AELW962|D AELW962"
+            ],
+            [
+                "bartos-laszlo",
+                "Bartos László",
+                "||"
+            ],
+            [
+                "joszkin-kevin",
+                "Joszkin Kevin",
+                "SZADA|A AAIJ346|A AAIJ346"
+            ],
+            [
+                "szalai-zsolt",
+                "Szalai Zsolt",
+                "T AELW962 CSAK ÉJSZAKA|PIHEN|B AICD394 + T ÉJSZAKA AOBL104"
+            ],
+            [
+                "fekete-gergely",
+                "Fekete Gergely",
+                "B AICD394|V AOJT457|PIHEN"
+            ],
+            [
+                "mag-richard",
+                "Mag Richárd",
+                "S AELW962|PIHEN|S AOBL104"
+            ],
+            [
+                "horvath-angela",
+                "Horváth Angéla",
+                "D AOJT457|B AICD394|PIHEN"
+            ],
+            [
+                "utto-norbert",
+                "Uttó Norbert",
+                "Q AADV156|Q AADV156|PIHEN"
+            ],
+            [
+                "kemecsei-balazs",
+                "Kemecsei Balázs",
+                "E AOJT458|E AOJT458|E AOJT458"
+            ],
+            [
+                "hegyes-laszlo",
+                "Hegyes László",
+                "|S AOBL104|"
+            ],
+            [
+                "kiss-daniel",
+                "Kiss Dániel",
+                "F + É|F + É|F É"
+            ],
+            [
+                "hanuszka-daniel",
+                "Hanuszka Dániel",
+                "PIHEN|PIHEN|C"
+            ],
+            [
+                "pokorny-patrik",
+                "Pokorny Patrik",
+                "T|T + TÉ|T"
+            ],
+            [
+                "miklos-daniel",
+                "Miklós Dániel",
+                "C|C|F"
+            ],
+            [
+                "csolle-daniel",
+                "Csölle Dániel",
+                "V|MENTESÍTŐ TEX047|MENTESÍTŐ TEX047"
+            ]
+        ]
     }
 ];
 
@@ -229,6 +333,8 @@ for (const release of scheduleReleases) {
     }
 }
 
+export const activeSchedulePeople = schedulePeople.filter(person => scheduleReleases[scheduleReleases.length - 1].people.some(row => row[0] === person.id));
+
 export function scheduleWeek(date) {
     const day = new Date(date + 'T12:00:00Z');
     day.setUTCDate(day.getUTCDate() - (day.getUTCDay() + 6) % 7);
@@ -242,12 +348,13 @@ export function parseShift(cell) {
     if (!cell) return { status: 'unknown' };
     if (cell === 'PIHEN') return { status: 'rest' };
     if (cell.toLowerCase() === 'oktatás') return { status: 'work', task: 'Oktatás', plate: 'Nem ismert', note: '' };
+    if (cell === 'SZADA') return { status: 'work', task: 'SZADA', plate: 'Nem ismert', note: '' };
     if (cell.startsWith('MENTESÍTŐ')) {
-        const plate = cell.match(/\b[A-Z]{4}\d{3}\b/);
-        return { status: 'work', task: 'Mentesítő (Q–O)', plate: plate ? plate[0] : 'Nem ismert', note: '' };
+        const plate = cell.match(/\b[A-Z]{3,4}\d{3}\b/);
+        return { status: 'work', task: cell.includes('(Q-O)') ? 'Mentesítő (Q–O)' : 'Mentesítő', plate: plate ? plate[0] : 'Nem ismert', note: '' };
     }
     const [route, ...tokens] = cell.split(' ');
-    const plate = tokens.find(token => /^[A-Z]{4}\d{3}$/.test(token));
+    const plate = tokens.find(token => /^[A-Z]{3,4}\d{3}$/.test(token));
     return { status: 'work', route, plate: plate || 'Nem ismert', note: tokens.filter(token => token !== plate).join(' ') };
 }
 
@@ -262,9 +369,9 @@ export function initSchedule() {
     let personId = null;
     try {
         const saved = localStorage.getItem(storageKey);
-        if (schedulePeople.some(person => person.id === saved)) personId = saved;
+        if (activeSchedulePeople.some(person => person.id === saved)) personId = saved;
     } catch {}
-    for (const person of schedulePeople) el('person-select').add(new Option(person.name, person.id));
+    for (const person of activeSchedulePeople) el('person-select').add(new Option(person.name, person.id));
 
     let activeView = 'route';
     let personTarget = 'route';
@@ -351,7 +458,7 @@ export function initSchedule() {
     el('person-form').addEventListener('submit', event => {
         event.preventDefault();
         const selected = el('person-select').value;
-        if (!schedulePeople.some(person => person.id === selected)) return;
+        if (!activeSchedulePeople.some(person => person.id === selected)) return;
         personId = selected;
         try {
             localStorage.setItem(storageKey, personId);
