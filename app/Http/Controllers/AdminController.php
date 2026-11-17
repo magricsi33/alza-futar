@@ -34,6 +34,7 @@ class AdminController extends Controller
                 'delivery_route_id' => ['Útvonal', 'routes', 'nullable|integer|exists:delivery_routes,id'],
                 'deadline_hour' => ['Befejezési idő (üres: útvonal szerint)', 'hours', 'nullable|in:9,10,11,12'],
                 'sort_order' => ['Sorszám az útvonalon', 'number', 'required|integer|min:1|max:99999'],
+                'is_exempt' => ['Mentesített cím', 'checkbox', 'boolean'],
             ]],
             'employees' => [Employee::class, 'Munkatársak', [
                 'name' => ['Név', 'text', 'required|string|max:255'], 'active' => ['Aktív a személyválasztóban', 'checkbox', 'boolean'],
@@ -67,6 +68,7 @@ class AdminController extends Controller
     }
     public function index(Request $request, $type)
     {
+        if ($type === 'shifts') return app(AdminCalendarController::class)->index($request);
         [$model, $title, $fields] = $this->definition($type);
         $q = mb_substr((string) $request->query('q'), 0, 200);
         $query = $model::query();
@@ -92,6 +94,13 @@ class AdminController extends Controller
     public function form(Request $request, $type, $id = null)
     {
         [$model, $title, $fields] = $this->definition($type);
+        if ($type === 'shifts') {
+            if ($id) {
+                $shift = Shift::findOrFail($id);
+                return redirect()->route('admin.index', ['shifts', 'week' => $shift->date, 'edit_shift' => $id]);
+            }
+            return redirect()->route('admin.index', ['shifts', 'employee_id' => $request->query('employee_id'), 'create_employee' => $request->query('employee_id')]);
+        }
         $record = $id ? $model::findOrFail($id) : new $model;
         if (!$id) {
             if ($type === 'routes') { $record->deadline_hour = 10; $record->fuel_interval = 1; }
@@ -111,6 +120,10 @@ class AdminController extends Controller
         if ($type === 'routes') $request->merge(['code' => strtoupper(trim($request->code ?? ''))]);
         if ($type === 'vehicles') $request->merge(['plate' => strtoupper(preg_replace('/[\s-]/', '', $request->plate ?? ''))]);
         if ($type === 'employees') $request->merge(['active' => $request->boolean('active')]);
+        if ($type === 'addresses') {
+            $request->merge(['is_exempt' => $request->boolean('is_exempt')]);
+            if (!$id && !$request->filled('sort_order')) $request->merge(['sort_order' => 1]);
+        }
         $rules = []; foreach ($fields as $field => $definition) $rules[$field] = $definition[2];
         $unique = ['routes' => 'code', 'addresses' => 'box_code', 'vehicles' => 'plate'];
         if (isset($unique[$type])) {
@@ -125,12 +138,22 @@ class AdminController extends Controller
             'before_or_equal' => 'A(z) :attribute nem lehet jövőbeli dátum.',
         ], $attributes);
         if ($type === 'shifts') {
+            $data += ['delivery_route_id' => null, 'vehicle_id' => null, 'task' => null, 'note' => null];
             if ($data['status'] === 'rest') { $data['delivery_route_id'] = null; $data['vehicle_id'] = null; $data['task'] = null; }
             elseif (empty($data['delivery_route_id']) && empty($data['task'])) throw ValidationException::withMessages(['task' => 'Válassz útvonalat vagy adj meg egyéb feladatot.']);
         }
         if ($type === 'routes' && strtolower($data['code']) === 'exempt') throw ValidationException::withMessages(['code' => 'Ez a kód a Mentesített gyűjtőútvonal számára fenntartott.']);
-        $relations = $type === 'routes' ? $request->validate(['address_ids' => 'nullable|array', 'address_ids.*' => 'integer|distinct|exists:delivery_addresses,id', 'orders' => 'nullable|array', 'orders.*' => 'integer|min:1|max:99999']) : [];
-        DB::transaction(function () use ($record, $data, $type, $relations) {
+        if ($type === 'shifts') {
+            $request->validate(['revision' => ($request->expectsJson() && $id ? 'required|' : 'nullable|').'integer|min:1']);
+            $record = app(\App\Services\ShiftEditor::class)->save($data, $id, $request->input('revision'));
+            return $request->expectsJson() ? response()->json($record->load(['employee', 'route', 'vehicle'])) : redirect()->route('admin.index', ['shifts', 'week' => $record->date])->with('status', 'Mentve.');
+        }
+        $relations = $type === 'routes' ? $request->validate(['address_ids' => 'nullable|array', 'address_ids.*' => 'integer|distinct|exists:delivery_addresses,id', 'orders' => 'nullable|array', 'orders.*' => 'integer|min:1|max:99999', 'exempt_ids' => 'nullable|array', 'exempt_ids.*' => 'integer|distinct|exists:delivery_addresses,id']) : [];
+        DB::transaction(function () use ($record, $data, $type, $relations, $request) {
+            if ($type === 'addresses' && !$record->exists && $request->expectsJson()) {
+                if (!empty($data['delivery_route_id'])) DeliveryRoute::whereKey($data['delivery_route_id'])->lockForUpdate()->firstOrFail();
+                $data['sort_order'] = DeliveryAddress::where('delivery_route_id', $data['delivery_route_id'] ?? null)->max('sort_order') + 1;
+            }
             if ($type === 'employees' && !$record->exists) $record->slug = 'employee-'.Str::uuid();
             $record->fill($data)->save();
             if ($type === 'routes') {
@@ -141,14 +164,24 @@ class AdminController extends Controller
                 }
                 DeliveryAddress::where('delivery_route_id', $record->id)->whereNotIn('id', $ids)->update(['delivery_route_id' => null]);
                 foreach ($addresses as $address) $address->update(['delivery_route_id' => $record->id, 'sort_order' => $relations['orders'][$address->id] ?? $address->sort_order]);
+                if ($request->boolean('exempt_selection')) {
+                    $exempt = $relations['exempt_ids'] ?? [];
+                    DeliveryAddress::where('delivery_route_id', $record->id)->update(['is_exempt' => false]);
+                    DeliveryAddress::where('delivery_route_id', $record->id)->whereIn('id', $exempt)->update(['is_exempt' => true]);
+                }
             }
         });
+        if ($request->expectsJson()) return response()->json($record, $id ? 200 : 201);
         return redirect()->route('admin.edit', [$type, $record->id])->with('status', 'Mentve.');
     }
-    public function destroy($type, $id)
+    public function destroy(Request $request, $type, $id)
     {
         [$model] = $this->definition($type);
-        $model::findOrFail($id)->delete();
+        if ($type === 'shifts') {
+            $request->validate(['revision' => ($request->expectsJson() ? 'required|' : 'nullable|').'integer|min:1']);
+            app(\App\Services\ShiftEditor::class)->delete($id, $request->input('revision'));
+        } else $model::findOrFail($id)->delete();
+        if ($request->expectsJson()) return response()->json(['deleted' => true]);
         return redirect()->route('admin.index', $type)->with('status', 'Törölve.');
     }
 }

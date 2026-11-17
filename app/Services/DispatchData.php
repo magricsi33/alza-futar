@@ -38,7 +38,9 @@ class DispatchData
                     })->all()];
             })->all(),
             'days' => $days, 'people' => $people, 'fuel' => $fuel, 'ramps' => $ramps, 'intervals' => $intervals,
+            'exempt' => $routes->mapWithKeys(function ($route) { return [$route->code => $route->addresses->where('is_exempt', true)->pluck('box_code')->values()->all()]; })->all(),
             'vehicles' => Vehicle::orderBy('plate')->get(['id', 'plate'])->toArray(),
+            'exempt' => app(\App\Http\Controllers\ExemptionController::class)->data()['exempt'],
         ];
     }
 }

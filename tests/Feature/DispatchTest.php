@@ -46,8 +46,13 @@ class DispatchTest extends TestCase
         $this->import();
         foreach (['routes' => DeliveryRoute::class, 'addresses' => DeliveryAddress::class, 'employees' => Employee::class, 'vehicles' => Vehicle::class, 'shifts' => Shift::class] as $type => $model) {
             $this->get('/admin/'.$type)->assertOk();
-            $this->get('/admin/'.$type.'/create')->assertOk();
-            $this->get('/admin/'.$type.'/'.$model::first()->id.'/edit')->assertOk();
+            if ($type === 'shifts') {
+                $this->get('/admin/shifts/create')->assertRedirect();
+                $this->get('/admin/shifts/'.$model::first()->id.'/edit')->assertRedirect();
+            } else {
+                $this->get('/admin/'.$type.'/create')->assertOk();
+                $this->get('/admin/'.$type.'/'.$model::first()->id.'/edit')->assertOk();
+            }
         }
         $this->post('/admin/logout')->assertRedirect('/admin/login');
         $this->get('/admin/shifts')->assertRedirect('/admin/login');

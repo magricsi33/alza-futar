@@ -28,6 +28,25 @@ function boot(saved, blocked = false, person = null) {
         querySelector: selector => selector === '.install-panel' ? new Element() : null,
     };
     const context = {
+        fetch: async (url, options = {}) => {
+            if (url === '/address-info/session') return {ok:true,json:async()=>({token:'test'})};
+            if (url.startsWith('/dispatch/exemptions')) {
+                let server = {};
+                try { server = JSON.parse(store.value)?.exempt || {}; } catch {}
+                const payload = options.body ? JSON.parse(options.body) : {};
+                if (options.method === 'PUT') {
+                    const box = url.split('/').pop(), tour = fixture.tours.find(tour => tour.stops.some(stop => stop[0] === box));
+                    server[tour.id] = payload.is_exempt ? [...new Set([...(server[tour.id] || []), box])] : (server[tour.id] || []).filter(id => id !== box);
+                } else if (options.method === 'DELETE') {
+                    const code = url.split('/').pop();
+                    if (code === 'exempt') server = {}; else server[code] = [];
+                }
+                return {ok:true,json:async()=>JSON.parse(JSON.stringify({exempt:server}))};
+            }
+            if (url.startsWith('/address-info/notes')) return {ok:true,json:async()=>({})};
+            if (url.startsWith('/address-info/')) return {ok:true,json:async()=>({id:url.split('/').pop(),note:'',photos:[],revision:0})};
+            throw Error('offline');
+        },
         document,
         Date: class extends Date { constructor(...args) { super(...(args.length ? args : ["2026-11-18T12:00:00Z"])); } },
         Option: function(text, value) { this.text = text; this.value = value; },
@@ -240,7 +259,7 @@ test('exemptions persist independently of completion and clear only the active r
     await e.stops.children[0].children[3].events.click();
     assert.equal(e['info-meta'].textContent, 'AB9087 · Central Passage');
     assert.equal(e['info-deadline'].textContent, 'Befejezési határidő: 10:00');
-    e['info-exempt'].events.click();
+    await e['info-exempt'].events.click();
     assert.match(e.stops.children[0].className, /is-exempt/);
     assert.equal(e.stops.children[0].children[0].children[0].disabled, true);
     e.reset.events.click();
@@ -252,10 +271,10 @@ test('exemptions persist independently of completion and clear only the active r
     const restored = boot(store.value);
     e['clear-exempt'].events.click();
     e['clear-exempt-dialog'].returnValue = 'cancel';
-    e['clear-exempt-dialog'].events.close();
+    await e['clear-exempt-dialog'].events.close();
     e['clear-exempt'].events.click();
     e['clear-exempt-dialog'].returnValue = 'confirm';
-    e['clear-exempt-dialog'].events.close();
+    await e['clear-exempt-dialog'].events.close();
     assert.equal(JSON.parse(store.value).exempt.V[0], 'AB9705');
 });
 
@@ -427,13 +446,13 @@ test('exempt route gathers source routes, survives reload and removes revoked ex
     assert.equal(restored.elements.stops.children.length, 2);
     const row = e.stops.children.find(row => row.dataset.stop === 'AB9087');
     await row.children[3].events.click();
-    e['info-exempt'].events.click();
+    await e['info-exempt'].events.click();
     assert.equal(e.stops.children.length, 1);
     assert.equal(e.stops.children[0].dataset.stop, 'AB9705');
     assert.equal(JSON.parse(store.value).exempt.S.length, 0);
     e['clear-exempt'].events.click();
     e['clear-exempt-dialog'].returnValue = 'confirm';
-    e['clear-exempt-dialog'].events.close();
+    await e['clear-exempt-dialog'].events.close();
     assert.equal(e.stops.children.length, 0);
     assert.match(e.empty.textContent, /Még nincs mentesített/);
 });
@@ -463,4 +482,17 @@ test('revised roster updates only supplied dates while preserving history', () =
     assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-17')), ['Hegyes László']);
     assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-19')), ['Mag Richárd']);
     assert.deepEqual(Array.from(context.routeDrivers('S', '2026-11-12')), ['Szalai Zsolt']);
+});
+
+test('server exemptions are visible on load and failed changes preserve them', async () => {
+    fixture.exempt = {S:['AB9087']};
+    try {
+        const {elements:e, context} = boot(JSON.stringify({tour:'S',exemptImported:true,exempt:{S:[]}}));
+        assert.match(e.stops.children[0].className, /is-exempt/);
+        await context.syncExemptions();
+        context.fetch = async () => {throw Error('offline');};
+        await e.stops.children[0].children[3].events.click();
+        await e['info-exempt'].events.click();
+        assert.match(e['info-status'].textContent, /nem menthető/);
+    } finally { delete fixture.exempt; }
 });

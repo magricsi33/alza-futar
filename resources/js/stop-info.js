@@ -113,10 +113,12 @@ export function initStopInfo({ isExempt, toggleExempt, onSaved = () => {} }) {
     el('info-files').addEventListener('change', addPhotos);
     el('info-camera').addEventListener('change', addPhotos);
     el('info-save').addEventListener('click', () => record && persist(record.photos));
-    el('info-exempt').addEventListener('click', () => {
+    el('info-exempt').addEventListener('click', async () => {
         if (busy) return;
-        toggleExempt(routeId, el('info-dialog').dataset.stop);
-        updateExempt();
+        setBusy(true);
+        try { await toggleExempt(routeId, el('info-dialog').dataset.stop); updateExempt(); el('info-status').textContent = 'Mentesítés mentve.'; }
+        catch (error) { el('info-status').textContent = 'A mentesítés nem menthető. ' + error.message; }
+        finally { setBusy(false); }
     });
     function close() {
         if (busy) return;

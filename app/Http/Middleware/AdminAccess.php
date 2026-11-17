@@ -8,7 +8,7 @@ class AdminAccess
 {
     public function handle($request, Closure $next)
     {
-        if (!$request->session()->get('dispatch_admin')) return redirect()->route('admin.login');
+        if (!$request->session()->get('dispatch_admin')) return $request->expectsJson() ? response()->json(['message' => 'Admin belépés szükséges.'], 401) : redirect()->route('admin.login');
         return $next($request)->header('Cache-Control', 'no-store, private');
     }
 }

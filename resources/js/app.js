@@ -66,6 +66,7 @@ try {
     if (saved && typeof saved === 'object') {
         if (saved.tour === exemptRouteId || tours.some(t => t.id === saved.tour)) state.tour = saved.tour;
         state.remainingOnly = saved.remainingOnly === true;
+        state.exemptImported = saved.exemptImported === true;
         for (const tour of tours) {
             const ids = saved.completed?.[tour.id];
             state.completed[tour.id] = Array.isArray(ids) ? [...new Set(ids.filter(id => tour.stops.some(s => s[0] === id)))] : [];
@@ -74,6 +75,36 @@ try {
         }
     }
 } catch { /* Invalid or unavailable storage: use a clean state. */ }
+if (window.dispatchData?.exempt) {
+    for (const tour of tours) state.exempt[tour.id] = state.exemptImported ? (window.dispatchData.exempt[tour.id] || []) : [...new Set([...(state.exempt[tour.id] || []), ...(window.dispatchData.exempt[tour.id] || [])])];
+}
+let exemptionVersion = 0;
+let exemptionSyncPromise = null;
+async function exemptionRequest(url, method = 'GET', payload) {
+    ++exemptionVersion;
+    const headers = { Accept: 'application/json' };
+    if (method !== 'GET') {
+        const session = await fetch('/address-info/session', { credentials: 'same-origin', cache: 'no-store', headers }).then(response => response.json());
+        headers['X-CSRF-TOKEN'] = session.token; headers['Content-Type'] = 'application/json';
+    }
+    const response = await fetch(url, { method, credentials: 'same-origin', cache: 'no-store', headers, ...(payload ? { body: JSON.stringify(payload) } : {}) });
+    if (!response.ok) throw Error('Ellenőrizd az internetkapcsolatot, majd próbáld újra.');
+    return response.json();
+}
+function syncExemptions() {
+    if (exemptionSyncPromise) return exemptionSyncPromise;
+    exemptionSyncPromise = (async () => {
+    try {
+        const boxes = !state.exemptImported ? [...new Set(Object.values(state.exempt).flat())] : [];
+        const request = exemptionRequest(boxes.length ? '/dispatch/exemptions/import' : '/dispatch/exemptions', boxes.length ? 'POST' : 'GET', boxes.length ? { boxes } : undefined);
+        const version = exemptionVersion;
+        const data = await request;
+        if (version !== exemptionVersion) return;
+        state.exempt = data.exempt; state.exemptImported = true; save(); render();
+    } catch { /* Az utolsó ismert mentesítések offline is láthatók. */ }
+    })().finally(() => { exemptionSyncPromise = null; });
+    return exemptionSyncPromise;
+}
 function save() {
     try { localStorage.setItem(key, JSON.stringify(state)); $('save-note').textContent = ''; }
     catch { $('save-note').textContent = 'A böngésző nem engedi a mentést. A haladás most csak a lap bezárásáig marad meg.'; }
@@ -152,10 +183,10 @@ function render() {
 const stopInfo = initStopInfo({
     onSaved: record => { notesRequest++; notes[record.id] = record.note; render(); },
     isExempt: (route, id) => (state.exempt[route] || []).includes(id),
-    toggleExempt: (route, id) => {
-        const ids = new Set(state.exempt[route] || []);
-        ids.has(id) ? ids.delete(id) : ids.add(id);
-        state.exempt[route] = [...ids]; save(); render();
+    toggleExempt: async (route, id) => {
+        if (exemptionSyncPromise) await exemptionSyncPromise;
+        const data = await exemptionRequest('/dispatch/exemptions/' + encodeURIComponent(id), 'PUT', { is_exempt: !(state.exempt[route] || []).includes(id) });
+        state.exempt = data.exempt; state.exemptImported = true; save(); render();
     },
 });
 let clearExemptRoute;
@@ -164,9 +195,13 @@ $('clear-exempt').addEventListener('click', () => {
     $('clear-exempt-description').textContent = 'A ' + selectedTour(clearExemptRoute).name + ' útvonal összes mentesítését töröljük. A megjegyzések, képek és teljesítési pipák megmaradnak.';
     $('clear-exempt-dialog').showModal();
 });
-$('clear-exempt-dialog').addEventListener('close', () => {
-    if ($('clear-exempt-dialog').returnValue === 'confirm') { if (clearExemptRoute === exemptRouteId) { for (const tour of tours) state.exempt[tour.id] = []; }
-        else state.exempt[clearExemptRoute] = []; save(); render(); }
+$('clear-exempt-dialog').addEventListener('close', async () => {
+    if ($('clear-exempt-dialog').returnValue !== 'confirm') return;
+    try {
+        if (exemptionSyncPromise) await exemptionSyncPromise;
+        const data = await exemptionRequest('/dispatch/exemptions/' + encodeURIComponent(clearExemptRoute), 'DELETE');
+        state.exempt = data.exempt; state.exemptImported = true; save(); render();
+    } catch (error) { $('save-note').textContent = 'A mentesítések nem törölhetők. ' + error.message; }
 });
 for (const tour of tours) $('tour').add(new Option(tour.name, tour.id));
 $('tour').add(new Option('Mentesített', exemptRouteId));
@@ -210,6 +245,9 @@ window.addEventListener('appinstalled', () => { document.querySelector('.install
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => { if ($('connection')) $('connection').textContent = 'Offline mód nem elérhető'; }));
 render(); save(); connection();
 
+syncExemptions();
+window.addEventListener('focus', syncExemptions);
+window.addEventListener('online', syncExemptions);
 initSchedule();
 initMobile({ tours, ramps: rampAssignments, currentRoute: () => state.tour });
 loadNotes();

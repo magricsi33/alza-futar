@@ -18,7 +18,7 @@
             <h2>{{ $record->name }} <span class="badge">{{ $record->code }}</span></h2>
             <p>{{ $record->ramp ? $record->ramp.'. rámpa' : 'Raktárban pakol' }} · Határidő {{ sprintf('%02d:00', $record->deadline_hour) }}</p>
         @elseif($type === 'addresses')
-            <h2>{{ $record->address }}</h2><p>{{ $record->city }} · {{ $record->box_code }} · {{ $choices['routes'][$record->delivery_route_id] ?? 'Nincs útvonalhoz rendelve' }}</p>
+            <h2>{{ $record->address }} @if($record->is_exempt)<span class="badge">Mentesített</span>@endif</h2><p>{{ $record->city }} · {{ $record->box_code }} · {{ $choices['routes'][$record->delivery_route_id] ?? 'Nincs útvonalhoz rendelve' }}</p>
         @elseif($type === 'employees')
             <h2>{{ $record->name }}</h2><p>{{ $record->active ? 'Aktív munkatárs' : 'Inaktív – az előzmények megmaradnak' }}</p>
         @elseif($type === 'vehicles')

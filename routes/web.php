@@ -23,12 +23,22 @@ Route::get('/dispatch/data', function () {
 });
 Route::get('/dispatch/fuel/{code}', [\App\Http\Controllers\FuelController::class, 'show']);
 Route::post('/dispatch/fuel/{code}', [\App\Http\Controllers\FuelController::class, 'store']);
+Route::get('/dispatch/exemptions', [\App\Http\Controllers\ExemptionController::class, 'index']);
+Route::post('/dispatch/exemptions/import', [\App\Http\Controllers\ExemptionController::class, 'import']);
+Route::put('/dispatch/exemptions/{box}', [\App\Http\Controllers\ExemptionController::class, 'update']);
+Route::delete('/dispatch/exemptions/{code}', [\App\Http\Controllers\ExemptionController::class, 'clear']);
+Route::get('/dispatch/exemptions', [\App\Http\Controllers\ExemptionController::class, 'index']);
+Route::post('/dispatch/exemptions/import', [\App\Http\Controllers\ExemptionController::class, 'import']);
+Route::post('/dispatch/exemptions/{box}', [\App\Http\Controllers\ExemptionController::class, 'update']);
+Route::delete('/dispatch/exemptions/{code}', [\App\Http\Controllers\ExemptionController::class, 'clear']);
 
 Route::get('/admin/login', [\App\Http\Controllers\AdminLoginController::class, 'show'])->name('admin.login');
 Route::post('/admin/login', [\App\Http\Controllers\AdminLoginController::class, 'login'])->middleware('throttle:5,1');
 Route::prefix('admin')->middleware(\App\Http\Middleware\AdminAccess::class)->group(function () {
     Route::get('/', function () { return redirect()->route('admin.index', 'routes'); });
     Route::post('/logout', [\App\Http\Controllers\AdminLoginController::class, 'logout'])->name('admin.logout');
+    Route::get('/calendar/data', [\App\Http\Controllers\AdminCalendarController::class, 'week']);
+    Route::get('/calendar/availability', [\App\Http\Controllers\AdminCalendarController::class, 'availability']);
     Route::get('/{type}', [\App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
     Route::get('/{type}/create', [\App\Http\Controllers\AdminController::class, 'form'])->name('admin.create');
     Route::post('/{type}', [\App\Http\Controllers\AdminController::class, 'save'])->name('admin.store');
