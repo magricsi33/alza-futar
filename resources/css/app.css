@@ -408,7 +408,7 @@ button.btn-xs { min-height: 28px; padding: 4px 7px; font-size: 10px; border-radi
 #notification-count { position:absolute; top:-6px; right:-6px; min-width:20px; height:20px; padding:0 4px; display:grid; place-items:center; border:2px solid #00275b; border-radius:12px; background:#f45757; color:#fff; font-size:10px; font-weight:750; line-height:1; }
 #notifications-tab.has-unread { animation:notice-pulse 3s ease-in-out infinite; }
 @keyframes notice-pulse { 0%,100% { box-shadow:0 0 0 0 #8cbaff00; } 45% { box-shadow:0 0 0 5px #8cbaff50; } 70% { box-shadow:0 0 0 9px #8cbaff00; } }
-.route-subheader { position:sticky; top:calc(72px + env(safe-area-inset-top)); z-index:15; display:flex; align-items:center; gap:10px; margin:0 0 20px; padding:9px 14px; border-radius:10px; background:#00275b; color:#fff; box-shadow:0 3px 12px #001c3810; }
+.route-subheader { display:flex; align-items:center; gap:10px; margin:0 0 20px; padding:9px 14px; border-radius:10px; background:#00275b; color:#fff; box-shadow:0 3px 12px #001c3810; }
 .route-subheader label { font-size:12px; font-weight:600; }
 .route-subheader select { flex:1; min-width:0; width:100%; min-height:42px; font-size:18px; color:#fff; background:#00275b; }
 .notifications-list { display:grid; gap:14px; margin:20px 0; }
