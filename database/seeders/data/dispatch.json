@@ -1442,8 +1442,8 @@
         "O AOGG683",
         "O AOGG683",
         "O AOGG683",
+        "MENTESÍTŐ",
         "PIHEN",
-        "O AOGG683",
         "O AOGG683"
       ]
     },
@@ -1458,11 +1458,11 @@
         "PIHEN",
         "A AAIJ346",
         "U AICD597",
-        "V AOJT457",
+        "V AELW962",
         "PIHEN",
         "PIHEN",
-        "S AELW962",
-        "V AOBL104"
+        "MENTESÍTŐ",
+        "V AELW962"
       ]
     },
     {
@@ -1494,11 +1494,11 @@
         "D AADN204",
         "PIHEN",
         "D AELW962",
-        "D AELW962",
-        "D AADN204",
-        "PIHEN",
-        "D AADN204",
-        "D AADN204"
+        "D AOJT457",
+        "D AOJT457",
+        "V AELW962 CSAK ÉJSZAKA",
+        "D AOJT457",
+        "D AOJT457"
       ]
     },
     {
@@ -1534,7 +1534,7 @@
         "A AAIJ346",
         "A AAIJ346",
         "PIHEN",
-        "PIHEN"
+        "oktatás"
       ]
     },
     {
@@ -1549,10 +1549,10 @@
         "T AELW962 CSAK ÉJSZAKA",
         "PIHEN",
         "B AICD394 + T ÉJSZAKA AOBL104",
-        "V AOBL104 + T ÉJSZAKA",
-        "V AOBL104",
-        "V AOBL104",
-        "PIHEN"
+        "MENTESÍTŐ AELW962 + T ÉJSZAKA",
+        "V AELW962",
+        "O AOGG683 + V ÉJSZAKA AELW",
+        "V AELW962 CSAK ÉJSZAKA"
       ]
     },
     {
@@ -1603,10 +1603,10 @@
         "S AELW962",
         "PIHEN",
         "S AOBL104",
-        "S AELW962",
-        "S AELW962",
-        "PIHEN",
-        "S AELW962"
+        "S AOBL104",
+        "S AOBL104",
+        "V AELW962",
+        "PIHEN"
       ]
     },
     {
@@ -1622,7 +1622,7 @@
         "B AICD394",
         "PIHEN",
         "B AICD394",
-        "D AADN204",
+        "D AOJT457",
         "E AOJT458",
         "PIHEN"
       ]
@@ -1729,10 +1729,10 @@
         "V",
         "MENTESÍTŐ TEX047",
         "MENTESÍTŐ TEX047",
-        "",
-        "",
-        "",
-        ""
+        "V",
+        "PIHEN",
+        "PIHEN",
+        "PIHEN"
       ]
     },
     {
@@ -1750,7 +1750,7 @@
         "",
         "",
         "",
-        ""
+        "MENTESÍTŐ"
       ]
     },
     {
@@ -1767,8 +1767,8 @@
         "",
         "",
         "",
-        "",
-        ""
+        "S AOBL104",
+        "S AOBL104"
       ]
     }
   ],
@@ -1796,57 +1796,62 @@
   "fuel": {
     "A": {
       "code": "HU14A",
-      "km": 289,
-      "liters": 31,
-      "amount": 21454
+      "km": 314,
+      "liters": 33,
+      "amount": 23079
     },
     "B": {
       "code": "HU15B",
-      "km": 237,
-      "liters": 26,
-      "amount": 17594
+      "km": 233,
+      "liters": 24,
+      "amount": 17126
     },
     "D": {
       "code": "HU17D",
-      "km": 257,
-      "liters": 28,
-      "amount": 19078
+      "km": 293,
+      "liters": 31,
+      "amount": 21536
     },
     "E": {
       "code": "HU18E",
-      "km": 137,
-      "liters": 15,
-      "amount": 10170
+      "km": 133,
+      "liters": 14,
+      "amount": 9776
     },
     "S": {
       "code": "HU32S",
-      "km": 106,
-      "liters": 12,
-      "amount": 7869
+      "km": 101,
+      "liters": 11,
+      "amount": 7424
     },
     "U": {
       "code": "HU34U",
       "km": 69,
       "liters": 8,
-      "amount": 5122
+      "amount": 5072
     },
     "V": {
       "code": "HU35V",
-      "km": 44,
-      "liters": 5,
-      "amount": 3266
+      "km": 51,
+      "liters": 6,
+      "amount": 3749
     },
     "O": {
       "code": "HU22O",
-      "km": 316,
-      "liters": 35,
-      "amount": 23458
+      "km": 292,
+      "liters": 31,
+      "amount": 21462
     },
     "Q": {
       "code": "HU18Q",
-      "km": 306,
-      "liters": 34,
-      "amount": 22716
+      "km": 298,
+      "liters": 32,
+      "amount": 21903
+    },
+    "exempt": {
+      "km": 175,
+      "liters": 19,
+      "amount": 12863
     }
   },
   "ramps": {

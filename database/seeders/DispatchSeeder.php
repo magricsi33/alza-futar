@@ -32,6 +32,13 @@ class DispatchSeeder extends Seeder
                     ]);
                 }
             }
+            if (isset($data['fuel']['exempt'])) {
+                $fuel = $data['fuel']['exempt'];
+                DeliveryRoute::firstOrCreate(['code' => 'exempt'], [
+                    'name' => 'Mentesítő', 'deadline_hour' => 10, 'fuel_interval' => 1,
+                    'km' => $fuel['km'], 'fuel_liters' => $fuel['liters'], 'fuel_amount' => $fuel['amount'],
+                ]);
+            }
             foreach ($data['people'] as $person) {
                 $employee = Employee::where('slug', $person['id'])->firstOrFail();
                 foreach ($data['days'] as $index => $date) {
@@ -42,7 +49,8 @@ class DispatchSeeder extends Seeder
                     $routeCode = explode(' ', $cell)[0];
                     $route = DeliveryRoute::where('code', $routeCode)->first();
                     $task = $route || $cell === 'PIHEN' ? null : ($routeCode === 'MENTESÍTŐ' ? (strpos($cell, '(Q-O)') !== false ? 'Mentesítő (Q–O)' : 'Mentesítő') : $cell);
-                    $note = trim($route ? substr($cell, strlen($routeCode)) : '');
+                    $note = trim($route || $routeCode === 'MENTESÍTŐ' ? substr($cell, strlen($routeCode)) : '');
+                    if ($routeCode === 'MENTESÍTŐ') $note = trim(str_replace('(Q-O)', '', $note));
                     if ($plate) $note = trim(preg_replace('/'.preg_quote($plate[0], '/').'/', '', $note, 1));
                     Shift::firstOrCreate(['employee_id' => $employee->id, 'date' => $date], [
                         'status' => $cell === 'PIHEN' ? 'rest' : 'work', 'delivery_route_id' => $route ? $route->id : null,

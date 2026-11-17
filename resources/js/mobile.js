@@ -74,7 +74,7 @@ export function initMobile({ tours, ramps, currentRoute }) {
     async function refreshFuel() {
         const token = ++fuelGeneration;
         const route = currentRoute();
-        const valid = tours.some(tour => tour.id === route);
+        const valid = tours.some(tour => tour.id === route) || (route === 'exempt' && !!window.dispatchData?.fuel?.exempt);
         el('last-fuel-button').disabled = !valid;
         if (!valid) { el('last-fuel').textContent = 'A tankolás egy konkrét útvonalhoz rögzíthető.'; return; }
         el('last-fuel').textContent = 'Tankolási adatok betöltése…';
@@ -89,8 +89,9 @@ export function initMobile({ tours, ramps, currentRoute }) {
     let fuelRoute;
     el('last-fuel-button').addEventListener('click', () => {
         fuelRoute = currentRoute();
-        if (!tours.some(tour => tour.id === fuelRoute)) return;
-        el('fuel-dialog-route').textContent = tours.find(tour => tour.id === fuelRoute).name;
+        const tour = tours.find(tour => tour.id === fuelRoute);
+        if (!tour && !(fuelRoute === 'exempt' && window.dispatchData?.fuel?.exempt)) return;
+        el('fuel-dialog-route').textContent = tour ? tour.name : 'Mentesítő';
         const day = scheduleDays.indexOf(todayDate());
         const plates = [...new Set(schedulePeople.map(person => parseShift(person.cells[day])).filter(shift => shift.route === fuelRoute && shift.plate !== 'Nem ismert').map(shift => shift.plate))];
         const vehicle = plates.length === 1 ? vehicles.find(vehicle => vehicle.plate === plates[0]) : null;

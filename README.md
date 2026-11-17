@@ -82,3 +82,9 @@ Az olvasottság a kiválasztott munkatárshoz, adatbázisba mentődik, minden es
 Az útvonallapon a címek Szerkesztés gombja friss adatokkal nyitja a címmodalt. A mentés az adott sort cseréli, az útvonal még nem mentett sorrendje és címhozzárendelése megmarad. Az adminmenü Flaticon ikonokat használ.
 
 Ehhez a kiadáshoz új értesítési migráció tartozik: git pull után php artisan migrate --force és php artisan view:clear szükséges; seed nem kell. PWA-frissítéskor zárd be az összes megnyitott példányt, majd nyisd újra az alkalmazást.
+
+## 2026. november 17-i adatfrissítés
+
+A `2026_11_17_030000_update_fuel_and_november_schedule` adatmigráció a képek szerinti tankolási kereteket és a november 17–22-i beosztáscellákat vezeti át. A korábbi dátumok, a képen nem szereplő személyek, a tankolási gyakoriságok és a legutóbbi tankolási dátumok megmaradnak. A képen üres cellák az adott személy adott napi beosztását törlik. A változó cellák revíziója nő, az azonosak változatlanok maradnak. Visszagörgetés nem állítja vissza a régi, már felülbírált adatokat.
+
+A Mentesített gyűjtőútvonal tankolási kerete külön `exempt` adatbázisrekordba kerül (175 km, 19 liter, 12 863 Ft), saját címlista nélkül. Tankolása a többi útvonaléhoz hasonlóan közösen rögzíthető. A friss seeder is az új értékeket tartalmazza, de meglévő telepítésnél elegendő a `php artisan migrate --force`; újraimportálás nem kell.

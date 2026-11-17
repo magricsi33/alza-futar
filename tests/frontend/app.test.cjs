@@ -105,9 +105,9 @@ test('malformed, stale and blocked storage recover safely', () => {
 });
 test('fuel summary follows restored and changed tours without leaking previous values', () => {
     const {elements: e} = boot(JSON.stringify({tour:'V'}));
-    assert.equal(e['fuel-km'].textContent, '44 km');
-    assert.equal(e['fuel-liters'].textContent, '5 liter');
-    assert.equal(e['fuel-amount'].textContent.replace(/\s/g, ''), '3266Ft');
+    assert.equal(e['fuel-km'].textContent, '51 km');
+    assert.equal(e['fuel-liters'].textContent, '6 liter');
+    assert.equal(e['fuel-amount'].textContent.replace(/\s/g, ''), '3749Ft');
     assert.equal(e['fuel-frequency'].textContent, 'Tankolás 5 naponta');
 
     e.tour.events.change({target:{value:'C'}});
@@ -119,11 +119,20 @@ test('fuel summary follows restored and changed tours without leaking previous v
     e.tour.events.change({target:{value:'E'}});
     assert.equal(e['fuel-values'].hidden, false);
     assert.equal(e['fuel-empty'].hidden, true);
-    assert.equal(e['fuel-km'].textContent, '137 km');
-    assert.equal(e['fuel-liters'].textContent, '15 liter');
-    assert.equal(e['fuel-amount'].textContent.replace(/\s/g, ''), '10170Ft');
+    assert.equal(e['fuel-km'].textContent, '133 km');
+    assert.equal(e['fuel-liters'].textContent, '14 liter');
+    assert.equal(e['fuel-amount'].textContent.replace(/\s/g, ''), '9776Ft');
     assert.equal(e['fuel-frequency'].textContent, 'Tankolás 2 naponta');
 });
+test('exempt route fuel allowance supports opening the shared refueling dialog', () => {
+    const {elements: e} = boot(JSON.stringify({tour:'exempt'}));
+    assert.equal(e['fuel-km'].textContent, '175 km');
+    assert.equal(e['last-fuel-button'].disabled, false);
+    e['last-fuel-button'].events.click();
+    assert.equal(e['fuel-dialog'].open, true);
+    assert.equal(e['fuel-dialog-route'].textContent, 'Mentesítő');
+});
+
 test('ramp section follows the active tour and distinguishes warehouse loading', () => {
     const {elements: e} = boot(JSON.stringify({tour:'S'}));
     assert.equal(e['ramp-tour'].textContent, 'Budapest S');
@@ -181,7 +190,7 @@ test('person selection persists, reopens directly and can be changed without res
     assert.equal(e['current-person-name'].textContent, 'Mag Richárd');
     assert.equal(e['schedule-cards'].children.length, 7);
     assert.equal(e['schedule-cards'].children[1].children[1].textContent, 'Pihenőnap');
-    assert.equal(e['schedule-cards'].children[4].children[2].children[1].children[1].textContent, 'AELW962');
+    assert.equal(e['schedule-cards'].children[4].children[2].children[1].children[1].textContent, 'AOBL104');
 
     const second = boot(first.store.value, false, first.store.person);
     second.elements['schedule-tab'].events.click();
@@ -204,7 +213,7 @@ test('empty schedule differs from rest and unknown saved person prompts again', 
     e['person-select'].value = 'hegyes-laszlo';
     e['person-form'].events.submit({preventDefault() {}});
     assert.equal(e['schedule-cards'].children.length, 7);
-    for (const card of e['schedule-cards'].children.filter((_, index) => index !== 1)) {
+    for (const card of e['schedule-cards'].children.filter((_, index) => ![1, 5, 6].includes(index))) {
         assert.equal(card.children[1].textContent, 'Nincs megadott beosztás');
         assert.equal(card.children.length, 2);
     }
@@ -218,13 +227,14 @@ test('all schedule rows cover exactly the published dates', () => {
     assert.equal(context.days.length, 12);
     assert.equal(context.days[0], '2026-11-11');
     assert.equal(context.days[11], '2026-11-22');
-    assert.equal(context.people.find(p => p.id === 'mag-richard').cells[9], 'S AELW962');
+    assert.equal(context.people.find(p => p.id === 'mag-richard').cells[9], 'S AOBL104');
     assert.equal(context.people.find(p => p.id === 'takacs-istvan').cells[7], 'Q AADV156');
     assert.equal(context.people.find(p => p.id === 'toth-boglarka').cells[5], '');
     assert.equal(new Set(context.people.map(p => p.id)).size, 20);
     for (const person of context.people) assert.equal(person.cells.length, context.days.length, person.name);
     assert.equal(context.parse('MENTESÍTŐ (Q-O) AOJT457').plate, 'AOJT457');
     assert.equal(context.parse('MENTESÍTŐ (Q-O)').task, 'Mentesítő (Q–O)');
+    assert.equal(context.parse('MENTESÍTŐ AELW962 + T ÉJSZAKA').note, '+ T ÉJSZAKA');
     assert.equal(context.parse('oktatás').task, 'Oktatás');
     const night = context.parse('T csak éjszaka');
     assert.equal(night.route, 'T');
@@ -239,9 +249,9 @@ test('all schedule rows cover exactly the published dates', () => {
 test('updated fuel table includes O and Q while C F T remain unavailable', () => {
     const {elements:e} = boot(null);
     for (const [route, km, liters, amount] of [
-        ['A', 289, 31, 21454], ['B', 237, 26, 17594], ['D', 257, 28, 19078],
-        ['E', 137, 15, 10170], ['S', 106, 12, 7869], ['U', 69, 8, 5122],
-        ['V', 44, 5, 3266], ['O', 316, 35, 23458], ['Q', 306, 34, 22716],
+        ['A', 314, 33, 23079], ['B', 233, 24, 17126], ['D', 293, 31, 21536],
+        ['E', 133, 14, 9776], ['S', 101, 11, 7424], ['U', 69, 8, 5072],
+        ['V', 51, 6, 3749], ['O', 292, 31, 21462], ['Q', 298, 32, 21903], ['exempt', 175, 19, 12863],
     ]) {
         e.tour.events.change({target:{value:route}});
         assert.equal(e['fuel-km'].textContent, km + ' km');

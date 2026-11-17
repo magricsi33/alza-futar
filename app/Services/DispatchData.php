@@ -31,7 +31,7 @@ class DispatchData
             $intervals[$route->code] = $route->fuel_interval;
         }
         return [
-            'tours' => $routes->map(function ($route) {
+            'tours' => $routes->reject(function ($route) { return $route->code === 'exempt'; })->values()->map(function ($route) {
                 return ['id' => $route->code, 'name' => $route->name, 'employeeId' => $route->employee_id,
                     'stops' => $route->addresses->map(function ($address) use ($route) {
                         return [$address->box_code, $address->address, $address->city, $address->location ?: '', sprintf('%02d:00', $address->deadline_hour ?: $route->deadline_hour)];

@@ -20,7 +20,7 @@ class DispatchTest extends TestCase
     public function test_import_is_repeatable_and_preserves_admin_changes_and_schedule_history()
     {
         $this->import();
-        $this->assertSame(12, DeliveryRoute::count());
+        $this->assertSame(13, DeliveryRoute::count());
         $this->assertSame(189, DeliveryAddress::count());
         $this->assertSame(20, Employee::count());
         $count = Shift::count();

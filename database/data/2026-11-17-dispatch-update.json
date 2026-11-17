@@ -1,0 +1,216 @@
+{
+  "days": [
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20",
+    "2026-11-21",
+    "2026-11-22"
+  ],
+  "fuel": {
+    "A": [
+      314,
+      33,
+      23079
+    ],
+    "B": [
+      233,
+      24,
+      17126
+    ],
+    "D": [
+      293,
+      31,
+      21536
+    ],
+    "E": [
+      133,
+      14,
+      9776
+    ],
+    "O": [
+      292,
+      31,
+      21462
+    ],
+    "Q": [
+      298,
+      32,
+      21903
+    ],
+    "S": [
+      101,
+      11,
+      7424
+    ],
+    "U": [
+      69,
+      8,
+      5072
+    ],
+    "V": [
+      51,
+      6,
+      3749
+    ],
+    "exempt": [
+      175,
+      19,
+      12863
+    ]
+  },
+  "people": {
+    "takacs-istvan": [
+      "PIHEN",
+      "Q AADV156",
+      "Q AADV156",
+      "O AOGG683",
+      "PIHEN",
+      "E AOJT458"
+    ],
+    "kollar-janos": [
+      "O AOGG683",
+      "O AOGG683",
+      "O AOGG683",
+      "MENTESÍTŐ",
+      "PIHEN",
+      "O AOGG683"
+    ],
+    "balla-laszlo": [
+      "U AICD597",
+      "V AELW962",
+      "PIHEN",
+      "PIHEN",
+      "MENTESÍTŐ",
+      "V AELW962"
+    ],
+    "vegh-krisztian": [
+      "PIHEN",
+      "U AICD597",
+      "U AICD597",
+      "U AICD597",
+      "U AICD597",
+      "U AICD597"
+    ],
+    "szikszai-bettina": [
+      "D AELW962",
+      "D AOJT457",
+      "D AOJT457",
+      "V AELW962 CSAK ÉJSZAKA",
+      "D AOJT457",
+      "D AOJT457"
+    ],
+    "bartos-laszlo": [
+      "",
+      "",
+      "",
+      "",
+      "A AAIJ346",
+      "A AAIJ346"
+    ],
+    "joszkin-kevin": [
+      "A AAIJ346",
+      "A AAIJ346",
+      "A AAIJ346",
+      "A AAIJ346",
+      "PIHEN",
+      "oktatás"
+    ],
+    "szalai-zsolt": [
+      "PIHEN",
+      "B AICD394 + T ÉJSZAKA AOBL104",
+      "MENTESÍTŐ AELW962 + T ÉJSZAKA",
+      "V AELW962",
+      "O AOGG683 + V ÉJSZAKA AELW",
+      "V AELW962 CSAK ÉJSZAKA"
+    ],
+    "fekete-gergely": [
+      "V AOJT457",
+      "PIHEN",
+      "PIHEN",
+      "B AICD394",
+      "B AICD394",
+      "B AICD394"
+    ],
+    "mag-richard": [
+      "PIHEN",
+      "S AOBL104",
+      "S AOBL104",
+      "S AOBL104",
+      "V AELW962",
+      "PIHEN"
+    ],
+    "horvath-angela": [
+      "B AICD394",
+      "PIHEN",
+      "B AICD394",
+      "D AOJT457",
+      "E AOJT458",
+      "PIHEN"
+    ],
+    "utto-norbert": [
+      "Q AADV156",
+      "PIHEN",
+      "PIHEN",
+      "Q AADV156",
+      "Q AADV156",
+      "Q AADV156"
+    ],
+    "kemecsei-balazs": [
+      "E AOJT458",
+      "E AOJT458",
+      "E AOJT458",
+      "E AOJT458",
+      "PIHEN",
+      "PIHEN"
+    ],
+    "hegyes-laszlo": [
+      "S AOBL104",
+      "",
+      "",
+      "",
+      "S AOBL104",
+      "S AOBL104"
+    ],
+    "kiss-daniel": [
+      "F + É",
+      "F É",
+      "F + É",
+      "F + É",
+      "F + É",
+      "F + É"
+    ],
+    "hanuszka-daniel": [
+      "PIHEN",
+      "C",
+      "C",
+      "C + TÉ",
+      "C + TÉ",
+      "C + TÉ"
+    ],
+    "pokorny-patrik": [
+      "T + TÉ",
+      "T",
+      "T",
+      "T",
+      "T",
+      "T"
+    ],
+    "miklos-daniel": [
+      "C",
+      "F",
+      "",
+      "",
+      "",
+      "MENTESÍTŐ"
+    ],
+    "csolle-daniel": [
+      "MENTESÍTŐ TEX047",
+      "MENTESÍTŐ TEX047",
+      "V",
+      "PIHEN",
+      "PIHEN",
+      "PIHEN"
+    ]
+  }
+}

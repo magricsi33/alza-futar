@@ -18,7 +18,8 @@ export function parseShift(cell) {
     if (cell === 'SZADA') return { status: 'work', task: 'SZADA', plate: 'Nem ismert', note: '' };
     if (cell.toLocaleUpperCase('hu-HU').startsWith('MENTESÍTŐ')) {
         const plate = cell.match(/\b[A-Z]{3,4}\d{3}\b/);
-        return { status: 'work', task: /\(Q[–-]O\)/.test(cell) ? 'Mentesítő (Q–O)' : 'Mentesítő', plate: plate ? plate[0] : 'Nem ismert', note: '' };
+        const note = cell.replace(/^MENTESÍTŐ\s*/i, '').replace(/\(Q[–-]O\)/, '').replace(plate ? plate[0] : /$^/, '').trim();
+        return { status: 'work', task: /\(Q[–-]O\)/.test(cell) ? 'Mentesítő (Q–O)' : 'Mentesítő', plate: plate ? plate[0] : 'Nem ismert', note };
     }
     const [route, ...tokens] = cell.split(' ');
     const plate = tokens.find(token => /^[A-Z]{3,4}\d{3}$/.test(token));
