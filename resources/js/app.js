@@ -42,48 +42,25 @@ async function loadNotes() {
     }
 }
 // A megadott táblázat értékei, átszámítás nélkül.
-const fuelData = {
-    A: { code: 'HU14A', km: 289, liters: 31, amount: 21454 },
-    B: { code: 'HU15B', km: 237, liters: 26, amount: 17594 },
-    D: { code: 'HU17D', km: 257, liters: 28, amount: 19078 },
-    E: { code: 'HU18E', km: 137, liters: 15, amount: 10170 },
-    S: { code: 'HU32S', km: 106, liters: 12, amount: 7869 },
-    U: { code: 'HU34U', km: 69, liters: 8, amount: 5122 },
-    V: { code: 'HU35V', km: 44, liters: 5, amount: 3266 },
-    O: { code: 'HU22O', km: 316, liters: 35, amount: 23458 },
-    Q: { code: 'HU18Q', km: 306, liters: 34, amount: 22716 },
-};
-const fuelIntervals = { V: 5, U: 3, S: 2, E: 2 };
+const fuelData = window.dispatchData?.fuel || {};
+const fuelIntervals = window.dispatchData?.intervals || {};
 const formatNumber = new Intl.NumberFormat('hu-HU');
 
 function renderFuel(tour) {
     const data = fuelData[tour.id];
     const days = fuelIntervals[tour.id] || 1;
 
-    $('fuel-tour').textContent = data ? tour.name + ' · ' + data.code : tour.name;
+    $('fuel-tour').textContent = data?.code ? tour.name + ' · ' + data.code : tour.name;
     $('fuel-values').hidden = !data;
     $('fuel-empty').hidden = !!data;
-    $('fuel-km').textContent = data ? formatNumber.format(data.km) + ' km' : '';
-    $('fuel-liters').textContent = data ? formatNumber.format(data.liters) + ' liter' : '';
-    $('fuel-amount').textContent = data ? formatNumber.format(data.amount) + ' Ft' : '';
+    $('fuel-km').textContent = data ? (data.km === null ? 'Nincs adat' : formatNumber.format(data.km) + ' km') : '';
+    $('fuel-liters').textContent = data ? (data.liters === null ? 'Nincs adat' : formatNumber.format(data.liters) + ' liter') : '';
+    $('fuel-amount').textContent = data ? (data.amount === null ? 'Nincs adat' : formatNumber.format(data.amount) + ' Ft') : '';
     $('fuel-frequency').textContent = days === 1 ? 'Tankolás minden nap' : 'Tankolás ' + days + ' naponta';
 }
 // A kapott rámpakiosztás alapján. A páros oszlopokban a felső útvonal indul előbb.
-const rampAssignments = {
-    A: { ramp: 82, departure: '05:30' },
-    B: { ramp: 82, departure: '05:30' },
-    C: { ramp: 81, departure: '05:30' },
-    D: { ramp: 80, departure: '05:30' },
-    E: { ramp: 79, departure: '05:30' },
-    F: { ramp: 78, departure: '05:30' },
-    T: { ramp: 77, departure: '05:30' },
-    S: { ramp: 77, departure: '06:00' },
-    V: { ramp: 76, departure: '05:30' },
-    U: { ramp: 76, departure: '06:00' },
-    O: { ramp: null, departure: '05:30' },
-    Q: { ramp: null, departure: '05:30' },
-};
-let state = { tour: 'S', remainingOnly: false, completed: {}, exempt: {} };
+const rampAssignments = window.dispatchData?.ramps || {};
+let state = { tour: tours.some(t => t.id === 'S') ? 'S' : tours[0]?.id || exemptRouteId, remainingOnly: false, completed: {}, exempt: {} };
 try {
     const saved = JSON.parse(localStorage.getItem(key));
     if (saved && typeof saved === 'object') {

@@ -20,6 +20,7 @@
         <link rel="stylesheet" href="/vendor/flaticon/icons.css">
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
+        <script>window.dispatchData = @json($dispatchData ?? null);</script>
         <script defer src="{{ mix('js/app.js') }}"></script>
     </head>
 

@@ -2,6 +2,8 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
+const fixture = JSON.parse(fs.readFileSync('database/seeders/data/dispatch.json', 'utf8'));
+fixture.people.forEach(person => { person.active = fixture.active.includes(person.id); });
 class Element {
     constructor() { this.children = []; this.events = {}; this.dataset = {}; this.value = ''; }
     append(...items) { this.children.push(...items); }
@@ -38,7 +40,7 @@ function boot(saved, blocked = false, person = null) {
                 else store.extra[key] = value;
             },
         },
-        window: { addEventListener() {}, matchMedia: () => ({ matches: false }) },
+        window: { dispatchData: fixture, addEventListener() {}, matchMedia: () => ({ matches: false }) },
         navigator: { onLine: true },
         URL,
     };
@@ -189,7 +191,7 @@ test('empty schedule differs from rest and unknown saved person prompts again', 
 });
 
 test('all schedule rows cover exactly the published dates', () => {
-    const context = {};
+    const context = {window: {dispatchData: fixture}};
     vm.createContext(context);
     vm.runInContext(fs.readFileSync('resources/js/schedule.js','utf8').replace(/export /g,'') + '\nthis.people = schedulePeople; this.days = scheduleDays; this.parse = parseShift;', context);
     assert.equal(context.people.length, 20);
@@ -319,22 +321,30 @@ test('route search uses the requested day and distinguishes missing schedules', 
     assert.equal(context.routeDrivers('S', '2026-12-01'), null);
 });
 
-test('fuel dates are device local, route-specific and reject future dates', () => {
-    const {elements:e, store} = boot(null);
+test('fuel dates are shared by the API, route-specific and reject future dates', async () => {
+    const {elements:e, context, store} = boot(null);
+    const dates = {}; let fail = false;
+    context.fetch = async (url, options = {}) => {
+        if (fail) throw Error('offline');
+        if (url.includes('/session')) return {ok:true,json:async()=>({token:'csrf'})};
+        const route = url.split('/').pop();
+        if (options.method === 'POST') dates[route] = JSON.parse(options.body).date;
+        return {ok:true,json:async()=>({date:dates[route] || null})};
+    };
     e['last-fuel-button'].events.click();
     e['fuel-date'].value = '2026-01-02';
-    e['fuel-form'].events.submit({preventDefault() {}});
-    assert.equal(store.extra['alzafutar-last-fuel-S'], '2026-01-02');
+    await e['fuel-form'].events.submit({preventDefault() {}});
+    assert.equal(dates.S, '2026-01-02');
+    assert.equal(store.extra['alzafutar-last-fuel-S'], undefined);
     assert.equal(e['last-fuel'].textContent, 'Legutóbbi tankolás: 2026. 01. 02.');
-    e.tour.events.change({target:{value:'V'}});
-    assert.match(e['last-fuel'].textContent, /Még nincs/);
-    e['last-fuel-button'].events.click();
-    e['fuel-date'].value = '2999-01-01';
-    e['fuel-form'].events.submit({preventDefault() {}});
+    await e.tour.events.change({target:{value:'V'}});
+    e['last-fuel-button'].events.click(); e['fuel-date'].value = '2999-01-01';
+    await e['fuel-form'].events.submit({preventDefault() {}});
     assert.match(e['fuel-status'].textContent, /nem jövőbeli/);
-    assert.equal(store.extra['alzafutar-last-fuel-V'], undefined);
-    e['fuel-today'].events.click();
-    assert.match(store.extra['alzafutar-last-fuel-V'], /^\d{4}-\d{2}-\d{2}$/);
+    assert.equal(dates.V, undefined);
+    fail = true; e['fuel-date'].value = '2026-01-03';
+    await e['fuel-form'].events.submit({preventDefault() {}});
+    assert.match(e['fuel-status'].textContent, /Nem sikerült menteni/);
 });
 
 test('QR upload stays on the device, can be replaced and preserves old code on failed save', async () => {

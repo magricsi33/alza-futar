@@ -1,49 +1,64 @@
-# Úton – futár címkezelő
+# AlzaFutár
 
-## Belső használat és keresőrobotok
-A robots.txt minden útvonal feltérképezését tiltja. A HTML robots metát, a Laravel válaszok X-Robots-Tag fejlécet kapnak (noindex, nofollow, noarchive, nosnippet, noimageindex). Apache mod_headers és IIS alatt a statikus fájlokra is be van állítva a fejléc. Nginx esetén a szerverkonfigurációban is szükséges: `add_header X-Robots-Tag "noindex, nofollow, noarchive, nosnippet, noimageindex" always;`.
-Ezek keresőrobotoknak szóló jelzések, nem hozzáférés-védelem. A robots.txt tiltása miatt a kereső nem feltétlenül tudja kiolvasni a noindex jelzést; egy máshonnan ismert URL ettől még megjelenhet a találatokban. Korábban indexelt oldal eltávolítását külön kell intézni. Valóban belső eléréshez a tárhelyen VPN/IP-korlátozás vagy HTTP-hitelesítés szükséges. A Referrer-Policy megakadályozza az oldal címének továbbküldését külső navigációkor.
+Mobilra optimalizált Laravel 8 futárfelület, MySQL-adatbázissal és PIN-kóddal védett adminisztrációval.
 
-Mobilra optimalizált Laravel 8 alkalmazás, felhasználó és adatbázis nélkül.
+## Telepítés / frissítés szerveren
 
-## Indítás
-Windows alatt a `start-all.bat` indítja a Laravel szervert és a buildfigyelőt a háttérben. A foglalt portokat kihagyja, és kiírja a tényleges elérési címet (alapból 127.0.0.1:3000). Csak működő HTTP-válasz után jelez sikert. Ismételt indításkor a saját, már működő példányt használja. Leállítás: `stop-all.bat`. Naplók: `storage/logs/local-*.log`. A `scripts/local-dev.ps1` végzi az indítást; a PHP és Node legyen elérhető a PATH-ban.
-Az önálló `start-server.bat` továbbra is a 8000-es portot használja; foglalt portnál hibával megáll. A `start-watch.bat` ehhez a porthoz kapcsolódik. Automatikus portválasztáshoz mindig a `start-all.bat` fájlt használd.
+A webszerver dokumentumgyökere a public könyvtár. A storage és bootstrap/cache legyen írható a PHP számára. A PHP PDO MySQL, fileinfo és mbstring bővítmény szükséges.
 
-A meglévő függőségekkel: npm run production, majd php artisan serve.
-A helyi cím: http://127.0.0.1:8000. A webszerver dokumentumgyökere élesben a public könyvtár legyen.
+1. Kód frissítése: git pull.
+2. Függőségek: composer install --no-dev --optimize-autoloader.
+3. A .env DB_CONNECTION, DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD értékeit a céladatbázishoz állítsd be. A fejlesztői adatbázis neve project_alza_futar. Élesben APP_ENV=production, APP_DEBUG=false és helyes HTTPS APP_URL szükséges.
+4. php artisan config:clear
+5. php artisan migrate --force
+6. Az első átálláskor: php artisan db:seed --class=DispatchSeeder --force
+7. php artisan view:clear
+8. php artisan config:cache
 
-## Címek és mentés
-### Címinformációk és mentesítés
-A címsor jobb szélén lévő információ gomb megnyitja a cím adatait, az AB-azonosítót és a helyszín nevét. A megjegyzés a Mentés gombbal menthető. A képkiválasztás és a telefonos Fotó készítése mező automatikusan menti a kiválasztott képeket és az aktuális megjegyzést. A kamera megnyitását a telefon böngészője kezeli; asztali böngészőben fájlválasztó jelenhet meg. Címenként legfeljebb 12, egyenként 20 MB-os kép tárolható. Nem támogatott képformátumnál az előnézet helyett a fájl megnyitása érhető el.
-A képek és megjegyzések közösen, a szerver storage/app/address-info könyvtárában tárolódnak, AB-azonosító szerint, adatbázis nélkül. Minden eszköz a modalt megnyitva a szerver aktuális adatait tölti be. Internetkapcsolat szükséges; egyidejű szerkesztésnél a korábbi verzió mentését elutasítjuk. A könyvtár legyen írható a PHP számára, telepítéskor megőrzendő és mentendő. Nem kell storage:link vagy adatbázis-migráció. A PHP upload_max_filesize legalább 20M legyen; több kép egyidejű feltöltéséhez a post_max_size és a webszerver kérésméret-korlátja is legyen megfelelő (12 nagy képhez 256M). A korábban csak böngészőben tárolt képeket újra hozzá kell adni a közös tároláshoz.
-A mentesítések útvonalanként az eddigi localStorage állapot `exempt` mezőjébe kerülnek. A mentesített cím halványan, Mentesítve jelzéssel látszik, és a fennmaradó szűrőből, illetve a hátralévő darabszámból kimarad. A haladás a teljesített és mentesített címek együttes számát mutatja, dupla számolás nélkül. Az Újrakezdés csak a pipákat törli; a Mentesítés törlése megerősítés után csak az aktuális útvonal mentesítéseit törli. A megjegyzések és képek mindkét esetben megmaradnak.
+A public/css és public/js kiadási buildjei a repositoryban vannak. Forrásmódosításkor npm ci, majd npm run production szükséges.
 
-### Beosztás
-A resources/js/schedule.js a 2026. november 16–22-i beosztást tartalmazza. A képen szereplő 17 személy mellett a két hiányzó korábbi személy (Csölle Dániel, Tóth Boglárka) üres beosztással marad választható. Az üres cella hiányzó adat, a PIHEN pihenőnap. A mentesítő és oktatás külön feladatként jelenik meg, a rendszám nélküli cellákban Nem ismert szerepel. Frissítés után npm run production szükséges.
-A személyválasztást a böngésző `alzafutar-person-v1` localStorage kulcsa menti, az útvonal haladásától külön. Ez kényelmi választó, nem bejelentkezés. A Telepítés blokk mindkét nézet legalján található.
+Az import a database/seeders/data/dispatch.json pillanatképből tölti be a 12 útvonalat, 189 címet, munkatársakat, rendszámokat és a november 11–22-i beosztást a november 16–18-i javításokkal. Ismételt futtatáskor a meglévő rekordokat nem módosítja. Az importot csak az átálláskor használd: később az adminban kezeld az adatokat; egy törölt rekordot az import újra létrehozhat. A normál db:seed is ezt az importot futtatja.
 
-A resources/js/tours.js a 2026. november 12-i képek szerinti 12 útvonalat tartalmazza, összesen 189 megállóval: A (15), B (17), C (16), D (14), E (11), F (22), O (22), Q (16), S (14), T (16), U (15), V (11). A megállók ötödik mezője a befejezési határidő; ez az információs modalban jelenik meg. Az AB-azonosítók megmaradtak, így a szerveren tárolt képek és megjegyzések az áthelyezett boxokhoz is kapcsolódnak. Az O útvonal AB9264 címe a forrás szerint: 2823/1, 2730 Albertirsa.
-Minden cím adatai: azonosító, utca/házszám, irányítószám/település, helyszín neve. Módosítás után npm run production szükséges.
-A pipák túránként, a kiválasztott túra és a fennmaradó-szűrő a localStorage uton-state-v1 kulcsába kerülnek. Az adatok ezen az eszközön és böngészőben maradnak. Böngészőadatok törlése törli a haladást. Az újrakezdés megerősítés után csak a kiválasztott túrát nullázza.
-A címek Waze keresési/navigációs linkek, nem ellenőrzött GPS-koordináták.
+## Admin
 
-## PWA
-Manifest, 192/512 px ikonok, maskable ikon, Apple kezdőképernyő-ikon és service worker a public könyvtárban.
-Telepítéshez és offline működéshez HTTPS (fejlesztéskor localhost) szükséges. Telefonról egyszerű HTTP LAN-címen a PWA nem működik.
-Első sikeres online megnyitás és a service worker települése után a lista offline is használható. A Waze külön alkalmazás, működése hálózattól és saját offline képességeitől függ.
-Androidon a Telepítés gomb vagy böngészőmenü; iPhone-on Safari → Megosztás → Főképernyőhöz adás.
-Kiadáskor a public/sw.js CACHE verzióját növelni kell, és az új builddel együtt feltölteni. A várakozó frissítés minden régi alkalmazásablak bezárása után aktiválódik.
+Elérés: /admin. A belépés a megbeszélt hatjegyű PIN-nel történik; hibás próbálkozásból IP-címenként öt engedélyezett percenként. A PIN ellenőrzéséhez csak bcrypt hash szerepel a konfigurációban. Saját PIN-hez az ADMIN_PIN_HASH környezeti változóban adhatsz meg új, bcrypt hash-t, egyes idézőjelek között; utána php artisan config:cache.
 
-## Mobil navigáció és helyi adatok
-A felső fix sávban az útvonal és a személy választható; alul az Útvonal, Beosztás, Keresés, Tankolás és QR-kód ikonok váltják a nézeteket. A keresés az Europe/Budapest szerinti mai dátumra dolgozik, a kiadott időszakon kívül nem talál ki sofőrt. A rámpakiosztás ettől függetlenül látható.
+Oldalak:
+- Útvonalak: keresés, létrehozás, szerkesztés, törlés; munkatárs hozzárendelése, 09/10/11/12 órás befejezés, rámpa és indulás, km/liter/Ft és tankolási gyakoriság.
+- Címek: létrehozás, keresés, szerkesztés, törlés. A boxazonosító AB és 3–6 számjegy. Egy cím egyetlen útvonalhoz kapcsolódhat; másikhoz rendelés előtt az eredeti útvonalon válaszd le. Az útvonallapon meglévő szabad címek csatolhatók, leválaszthatók és sorszámozhatók. Az új cím közvetlenül az útvonallapról is létrehozható. A cím saját határideje felülírja az útvonal általános határidejét.
+- Munkatársak: létrehozás, keresés, szerkesztés, törlés, beosztás létrehozása és szűrt listája. Inaktív munkatárs nem jelenik meg a futár személyválasztójában, az előzmények megmaradnak. Törléskor a munkatárs beosztása is törlődik.
+- Beosztás: egy munkatárs egy napjára egy bejegyzés. Útvonal, jármű, egyéb feladat és megjegyzés állítható. Pihenőnapnál az útvonal/jármű/feladat törlődik. Hiányzó rekord = nincs megadott beosztás. Az új napok nem törlik a korábbiakat.
+- Gépjárművek: rendszám alapján keresés, létrehozás, szerkesztés, törlés, legutóbbi tankolás. A 3 vagy 4 betű + 3 szám formátum támogatott; a beírt szóköz és kötőjel normalizálódik.
 
-A QR-kép csak az adott böngésző localStorage tárolójába kerül (alzafutar-device-qr-v1), nem töltődik fel a szerverre. PNG/JPG/WebP, legfeljebb 2 MB; a csere csak sikeres képbetöltés és mentés után lép életbe. A tankolási dátum szintén helyi, útvonalanként külön kulccsal (alzafutar-last-fuel-S stb.). A böngészőadatok törlése ezeket törli.
+Útvonal törlésekor a címek megmaradnak, útvonal nélküli címekké válnak. Jármű vagy útvonal törlése az előzménybejegyzések kapcsolását megszünteti, ezért a törlési megerősítést figyelmesen olvasd el.
 
-A címlista a megjegyzéseket a GET /address-info/notes végpontról kötegelt lekéréssel tölti be, útvonalváltáskor, lapfókuszkor és a kapcsolat visszatérésekor frissíti. A modal mentése azonnal frissíti a listát is. A QR-kép és a tankolási dátum mentéséhez nincs szükség internetkapcsolatra.
+## Futárfelület és közös tankolás
 
-Flaticon Uicons 4.0.0 regular-rounded: a CSS és WOFF2 helyben, a public/vendor/flaticon könyvtárban található, a service worker az offline használathoz gyorsítótárazza. Forrás és használati útmutató: https://www.flaticon.com/uicons/get-started/ . Az alkalmazás alján szerepel az előírt Flaticon forrásmegjelölés.
+A címek, útvonalak, rámpák, tankolási keretek, munkatársak és heti beosztás a Laravel által adatbázisból kerülnek a futárfelületre. Adminmódosítás után frissítsd az alkalmazást; adatváltoztatáshoz nem kell JavaScript-build. Az első útvonal alapértelmezetten S, ha létezik. A felső személyválasztó kényelmi választás, nem felhasználói belépés.
 
-A beosztás kiadásai a scheduleReleases tömbbe kerülnek, a korábbi blokkokat meg kell őrizni. Új feltöltésnél új blokk adható hozzá; az azonos személy azonos dátumú celláját a későbbi kiadás felülírja. Jelenleg november 11–15. és november 16–22. is elérhető. A heti lapozó hétfő–vasárnap bontású, a hiányzó napokat is jelzi. A gombméretek: alapértelmezett / btn-standard, btn-sm, btn-xs.
+A tankolás az adott útvonalhoz közös szerveres adat. A modalban jármű is választható: az aznapi útvonal egyértelmű rendszáma előre kiválasztódik, a rögzítés az útvonal és a kiválasztott gépjármű legutóbbi tankolását is frissíti. Ismeretlen rendszámnál csak az útvonal frissül. Korábbi dátum rögzítése nem írja felül az újabb legutóbbi tankolást. Dátumjavítás az adminban lehetséges. Előzménylista nincs. A futárfelület tankoláskor, nézet- és útvonalváltáskor, lapfókuszkor és kapcsolat-visszatéréskor a szervert kéri le. Offline tankolás nem rögzíthető, sikertelen kérés nem jelez mentést. A korábbi eszközön tárolt dátumokat nem importáljuk.
 
-A november 16–18-i javított kiadás külön blokkban szerepel. Az aktuális személyválasztó a legutolsó kiadás névsorát használja, miközben a korábbi személyek és napok a beosztástörténetben megmaradnak. A SZADA külön feladat, a mentesítő hárombetűs rendszámmal (például TEX047) is megjeleníthető.
+A QR-kód továbbra is csak az adott eszközön marad. A haladás, a mentesítések, a Waze/Google Maps választás és a kiválasztott személy szintén helyi adat. Az összes mentesített címet a Mentesített gyűjtőútvonal mutatja. Ezeket a böngészőadatok törlése törli.
+
+## Címinformációk és fotók
+
+A megjegyzések és képek közösen a storage/app/address-info könyvtárban maradnak, AB-azonosítóhoz kötve; ezt a funkciót az adatbázisra váltás nem törli. A könyvtárat telepítéskor őrizd meg és mentsd az adatbázissal együtt. A boxazonosító módosítása új információs kulcsot jelent.
+
+Címenként legfeljebb 12, egyenként 20 MB-os kép tárolható. PHP upload_max_filesize legalább 20M, több nagy képhez post_max_size és a webszerver kérésméretkorlátja pl. 256M. Nem kell storage:link. A kamera megnyitását a telefon kezeli. A lista megjegyzései kötegelt kérésből töltődnek, a modal minden megnyitáskor friss adatot kér.
+
+## Helyi indítás és tesztek
+
+Windows: start-all.bat / stop-all.bat. A scriptek háttérben indítják a Laravel szervert és a buildfigyelőt, a foglalt portokat kihagyják. Az adatbázist előtte hozd létre, majd futtasd a migrációt és az első importot. Az önálló start-server.bat a 8000-es portot használja.
+
+Frontend: node --test tests/frontend/app.test.cjs
+Szerver: php vendor/phpunit/phpunit/phpunit
+
+A szervertesztek a phpunit.xml alapján kizárólag SQLite :memory: adatbázist használnak, a .env MySQL-adatbázisát nem módosítják. A helyi C:\php7 környezetben: C:\php7\php.exe -d extension=pdo_sqlite vendor/phpunit/phpunit/phpunit. A tesztadatok minden teszt után visszaállnak.
+
+## PWA és belső használat
+
+A telepítés HTTPS-t igényel (fejlesztéskor localhost is jó). iPhone: Safari → Megosztás → Főképernyőhöz adás. A PWA az utolsó sikeres online címlistát/beosztást offline is megnyitja; a tankolás és a közös címinformációk internetkapcsolatot igényelnek. Az admin és a /dispatch API nem kerül a service worker gyorsítótárába. Kiadáskor a public/sw.js CACHE verzióját növelni kell; frissítéshez zárd be az összes régi alkalmazásablakot.
+
+A robots.txt, robots meta és X-Robots-Tag tiltja az indexelést. Ez nem hozzáférés-védelem: a futárfelület belépés nélkül elérhető, az admin PIN-nel védett. A Referrer-Policy megakadályozza az oldal címének továbbküldését.
+
+Flaticon Uicons 4.0.0 regular-rounded: CSS és WOFF2 a public/vendor/flaticon könyvtárban. Az alkalmazás alján szerepel a forrásmegjelölés. Útmutató: https://www.flaticon.com/uicons/get-started/

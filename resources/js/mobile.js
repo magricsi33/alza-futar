@@ -17,7 +17,7 @@ export function routeDrivers(route, date) {
 export function initMobile({ tours, ramps, currentRoute }) {
     const el = id => document.getElementById(id);
     for (const tour of tours) el('route-search').add(new Option(tour.name, tour.id));
-    el('route-search').value = currentRoute();
+    el('route-search').value = tours.some(tour => tour.id === currentRoute()) ? currentRoute() : tours[0]?.id || '';
     const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('hu-HU');
     function search() {
         const addressMode = el('search-mode').value === 'address';
@@ -65,36 +65,68 @@ export function initMobile({ tours, ramps, currentRoute }) {
     el('search-tab').addEventListener('click', search);
     window.addEventListener('focus', search);
 
-    const fuelKey = route => 'alzafutar-last-fuel-' + route;
-    function refreshFuel() {
-        let date = null;
-        try { date = localStorage.getItem(fuelKey(currentRoute())); } catch {}
-        el('last-fuel').textContent = /^\d{4}-\d{2}-\d{2}$/.test(date || '') ? 'Legutóbbi tankolás: ' + displayDate(date) : 'Még nincs rögzített tankolás.';
+    let fuelGeneration = 0;
+    async function fuelJson(response) {
+        const data = await response.json();
+        if (!response.ok) throw Error(response.status === 422 ? 'Ellenőrizd a dátumot és a gépjárművet.' : 'A szerver nem érhető el. Próbáld újra.');
+        return data;
     }
+    async function refreshFuel() {
+        const token = ++fuelGeneration;
+        const route = currentRoute();
+        const valid = tours.some(tour => tour.id === route);
+        el('last-fuel-button').disabled = !valid;
+        if (!valid) { el('last-fuel').textContent = 'A tankolás egy konkrét útvonalhoz rögzíthető.'; return; }
+        el('last-fuel').textContent = 'Tankolási adatok betöltése…';
+        try {
+            const data = await fuelJson(await fetch('/dispatch/fuel/' + encodeURIComponent(route), { credentials: 'same-origin', cache: 'no-store', headers: { Accept: 'application/json' } }));
+            if (token !== fuelGeneration) return;
+            el('last-fuel').textContent = data.date ? 'Legutóbbi tankolás: ' + displayDate(data.date) : 'Még nincs rögzített tankolás.';
+        } catch { if (token === fuelGeneration) el('last-fuel').textContent = 'A közös tankolási adatok nem érhetők el. Ellenőrizd az internetkapcsolatot.'; }
+    }
+    const vehicles = window.dispatchData?.vehicles || [];
+    for (const vehicle of vehicles) el('fuel-vehicle').add(new Option(vehicle.plate, vehicle.id));
     let fuelRoute;
     el('last-fuel-button').addEventListener('click', () => {
         fuelRoute = currentRoute();
-        el('fuel-dialog-route').textContent = 'Budapest ' + fuelRoute;
+        if (!tours.some(tour => tour.id === fuelRoute)) return;
+        el('fuel-dialog-route').textContent = tours.find(tour => tour.id === fuelRoute).name;
+        const day = scheduleDays.indexOf(todayDate());
+        const plates = [...new Set(schedulePeople.map(person => parseShift(person.cells[day])).filter(shift => shift.route === fuelRoute && shift.plate !== 'Nem ismert').map(shift => shift.plate))];
+        const vehicle = plates.length === 1 ? vehicles.find(vehicle => vehicle.plate === plates[0]) : null;
+        el('fuel-vehicle').value = vehicle ? String(vehicle.id) : '';
         el('fuel-date').value = todayDate(); el('fuel-date').max = todayDate();
         el('fuel-status').textContent = ''; el('fuel-dialog').showModal();
     });
-    function saveFuel(date) {
+    let fuelBusy = false;
+    async function saveFuel(date) {
+        if (fuelBusy) return;
         const parsed = new Date(date + 'T12:00:00Z');
         if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date || date > todayDate()) {
             el('fuel-status').textContent = 'Érvényes, nem jövőbeli dátumot adj meg.'; return;
         }
+        fuelBusy = true;
+        ['fuel-today', 'fuel-submit', 'fuel-close', 'fuel-date', 'fuel-vehicle'].forEach(id => { el(id).disabled = true; });
+        el('fuel-status').textContent = 'Mentés…';
         try {
-            localStorage.setItem(fuelKey(fuelRoute), date);
-            refreshFuel(); el('fuel-dialog').close();
-        } catch { el('fuel-status').textContent = 'A dátum nem menthető ezen az eszközön.'; }
+            const session = await fuelJson(await fetch('/address-info/session', { credentials: 'same-origin', cache: 'no-store', headers: { Accept: 'application/json' } }));
+            await fuelJson(await fetch('/dispatch/fuel/' + encodeURIComponent(fuelRoute), {
+                method: 'POST', credentials: 'same-origin', headers: { Accept: 'application/json', 'Content-Type': 'application/json', 'X-CSRF-TOKEN': session.token },
+                body: JSON.stringify({ date, vehicle_id: el('fuel-vehicle').value || null }),
+            }));
+            await refreshFuel(); el('fuel-dialog').close();
+        } catch (error) { el('fuel-status').textContent = 'Nem sikerült menteni. ' + error.message; }
+        finally { fuelBusy = false; ['fuel-today', 'fuel-submit', 'fuel-close', 'fuel-date', 'fuel-vehicle'].forEach(id => { el(id).disabled = false; }); }
     }
     el('fuel-today').addEventListener('click', () => saveFuel(todayDate()));
-    el('fuel-form').addEventListener('submit', event => { event.preventDefault(); saveFuel(el('fuel-date').value); });
-    el('fuel-close').addEventListener('click', () => el('fuel-dialog').close());
+    el('fuel-form').addEventListener('submit', event => { event.preventDefault(); return saveFuel(el('fuel-date').value); });
+    el('fuel-close').addEventListener('click', () => { if (!fuelBusy) el('fuel-dialog').close(); });
+    el('fuel-dialog').addEventListener('cancel', event => { if (fuelBusy) event.preventDefault(); });
     el('tour').addEventListener('change', refreshFuel);
     el('fuel-tab').addEventListener('click', refreshFuel);
+    window.addEventListener('focus', refreshFuel);
+    window.addEventListener('online', refreshFuel);
     refreshFuel();
-
     const qrKey = 'alzafutar-device-qr-v1';
     function showQr(value) {
         const valid = /^data:image\/(png|jpeg|webp);base64,/.test(value || '');

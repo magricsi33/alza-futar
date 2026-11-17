@@ -155,6 +155,7 @@
     </section>
     <p class="icon-credit">Uicons by <a href="https://www.flaticon.com/uicons" rel="noopener noreferrer">Flaticon</a>
     </p>
+    <p class="icon-credit"><a href="/admin">Adminisztráció</a></p>
     <noscript>
         <p>A címkezelő használatához engedélyezd a JavaScriptet.</p>
     </noscript>
@@ -169,9 +170,11 @@
     </p>
     <button id="fuel-today" type="button" class="ramp-button">A mai napon</button>
     <form id="fuel-form">
+        <label for="fuel-vehicle">Gépjármű</label>
+        <select id="fuel-vehicle"><option value="">Nem ismert / csak az útvonalhoz rögzítés</option></select>
         <label for="fuel-date">Tankolás dátuma</label>
         <input id="fuel-date" type="date" required>
-        <button type="submit" class="ramp-button">Rögzítés</button>
+        <button id="fuel-submit" type="submit" class="ramp-button">Rögzítés</button>
     </form>
     <p id="fuel-status" role="status">
     </p>

@@ -6,6 +6,7 @@ use Tests\TestCase;
 
 class PreventIndexingTest extends TestCase
 {
+    use \Illuminate\Foundation\Testing\RefreshDatabase;
     public function test_home_discourages_indexing_and_does_not_send_referrers()
     {
         $response = $this->get('/');

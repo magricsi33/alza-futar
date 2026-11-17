@@ -15,7 +15,26 @@ use App\Http\Controllers\AddressInfoController;
 */
 
 Route::get('/', function () {
-    return view('home');
+    return view('home', ['dispatchData' => app(\App\Services\DispatchData::class)->get()]);
+});
+
+Route::get('/dispatch/data', function () {
+    return response()->json(app(\App\Services\DispatchData::class)->get())->header('Cache-Control', 'no-store, private');
+});
+Route::get('/dispatch/fuel/{code}', [\App\Http\Controllers\FuelController::class, 'show']);
+Route::post('/dispatch/fuel/{code}', [\App\Http\Controllers\FuelController::class, 'store']);
+
+Route::get('/admin/login', [\App\Http\Controllers\AdminLoginController::class, 'show'])->name('admin.login');
+Route::post('/admin/login', [\App\Http\Controllers\AdminLoginController::class, 'login'])->middleware('throttle:5,1');
+Route::prefix('admin')->middleware(\App\Http\Middleware\AdminAccess::class)->group(function () {
+    Route::get('/', function () { return redirect()->route('admin.index', 'routes'); });
+    Route::post('/logout', [\App\Http\Controllers\AdminLoginController::class, 'logout'])->name('admin.logout');
+    Route::get('/{type}', [\App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
+    Route::get('/{type}/create', [\App\Http\Controllers\AdminController::class, 'form'])->name('admin.create');
+    Route::post('/{type}', [\App\Http\Controllers\AdminController::class, 'save'])->name('admin.store');
+    Route::get('/{type}/{id}/edit', [\App\Http\Controllers\AdminController::class, 'form'])->whereNumber('id')->name('admin.edit');
+    Route::put('/{type}/{id}', [\App\Http\Controllers\AdminController::class, 'save'])->whereNumber('id')->name('admin.update');
+    Route::delete('/{type}/{id}', [\App\Http\Controllers\AdminController::class, 'destroy'])->whereNumber('id')->name('admin.destroy');
 });
 
 Route::get('/address-info/session', function () {
