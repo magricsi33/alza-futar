@@ -87,7 +87,7 @@
 
     </div>
     <img id="qr-image" alt="Saját QR-kód" hidden>
-    <p id="qr-empty">Még nincs feltöltött QR-kód.</p>
+    <p id="qr-empty">Még nincs feltöltött QR-kód. Saját QR-kódot a <a href="https://phoenix.alza.cz/alza-box-driver/login-to-alza-box" target="_blank" rel="noopener noreferrer">Phoenix oldalán</a> tudsz generálni, majd itt feltölteni.</p>
     <button id="qr-upload" type="button" class="ramp-button file-button">QR-kód feltöltése / cseréje</button>
     <input id="qr-file" type="file" accept="image/png,image/jpeg,image/webp" hidden>
     <p id="qr-status" role="status">
