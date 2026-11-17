@@ -61,7 +61,7 @@ function boot(saved, blocked = false, person = null) {
         },
         window: { dispatchData: fixture, addEventListener() {}, matchMedia: () => ({ matches: false }) },
         navigator: { onLine: true },
-        URL,
+        URL, URLSearchParams,
     };
     vm.createContext(context);
     const data = fs.readFileSync('resources/js/tours.js', 'utf8').replace('export const', 'const');
@@ -69,8 +69,9 @@ function boot(saved, blocked = false, person = null) {
     const schedule = fs.readFileSync('resources/js/schedule.js', 'utf8').replace(/export /g, '');
     const info = fs.readFileSync('resources/js/stop-info.js', 'utf8').replace(/export /g, '');
     const mobile = fs.readFileSync('resources/js/mobile.js', 'utf8').replace(/^import .*;\r?\n/gm, '').replace(/export /g, '');
-    vm.runInContext(data + '\n' + schedule + '\n' + info + '\n' + mobile + '\n' + app, context);
-    return { elements, store, context };
+    const notifications = fs.readFileSync('resources/js/notifications.js','utf8').replace(/^import .*;\r?\n/gm,'').replace(/export /g,'');
+    vm.runInContext(data + '\n' + schedule + '\n' + info + '\n' + mobile + '\n' + notifications + '\n' + app, context);
+    return { elements, store, context, notifications: vm.runInContext('notificationCenter', context) };
 }
 test('completion, filter, reload, tour isolation and reset', () => {
     let {elements: e, store} = boot(null);
@@ -177,7 +178,7 @@ test('person selection persists, reopens directly and can be changed without res
     assert.equal(e['person-dialog'].open, false);
     assert.equal(e['schedule-view'].hidden, false);
     assert.equal(e['route-view'].hidden, true);
-    assert.equal(e['current-person'].textContent, 'Mag Richárd');
+    assert.equal(e['current-person-name'].textContent, 'Mag Richárd');
     assert.equal(e['schedule-cards'].children.length, 7);
     assert.equal(e['schedule-cards'].children[1].children[1].textContent, 'Pihenőnap');
     assert.equal(e['schedule-cards'].children[4].children[2].children[1].children[1].textContent, 'AELW962');
@@ -185,7 +186,7 @@ test('person selection persists, reopens directly and can be changed without res
     const second = boot(first.store.value, false, first.store.person);
     second.elements['schedule-tab'].events.click();
     assert.equal(second.elements['person-dialog'], undefined);
-    assert.equal(second.elements['current-person'].textContent, 'Mag Richárd');
+    assert.equal(second.elements['current-person-name'].textContent, 'Mag Richárd');
     second.elements['current-person'].events.click();
     assert.equal(second.elements['person-dialog'].open, true);
     second.elements['person-select'].value = 'kiss-daniel';
@@ -309,7 +310,7 @@ test('address notes and camera photos save together, remain address-specific and
 
 test('bottom tabs and header person selection preserve the active view', () => {
     const {elements:e} = boot(null, false, 'mag-richard');
-    assert.equal(e['current-person'].textContent, 'Mag Richárd');
+    assert.equal(e['current-person-name'].textContent, 'Mag Richárd');
     e['search-tab'].events.click();
     assert.equal(e['search-view'].hidden, false);
     e['route-search'].value = 'Q';
@@ -320,7 +321,7 @@ test('bottom tabs and header person selection preserve the active view', () => {
     e['current-person'].events.click();
     e['person-select'].value = 'kollar-janos';
     e['person-form'].events.submit({preventDefault() {}});
-    assert.equal(e['current-person'].textContent, 'Kollár János');
+    assert.equal(e['current-person-name'].textContent, 'Kollár János');
     assert.equal(e['search-view'].hidden, false);
     e['fuel-tab'].events.click();
     assert.equal(e['fuel-view'].hidden, false);
@@ -495,4 +496,38 @@ test('server exemptions are visible on load and failed changes preserve them', a
         await e['info-exempt'].events.click();
         assert.match(e['info-status'].textContent, /nem menthető/);
     } finally { delete fixture.exempt; }
+});
+
+test('notification badge, read action and employee change use shared read state', async () => {
+    const {elements:e, context, notifications, store} = boot(null, false, 'mag-richard');
+    const read = {};
+    context.fetch = async (url, options = {}) => {
+        if (url === '/address-info/session') return {ok:true,json:async()=>({token:'csrf'})};
+        if (url === '/dispatch/notifications/read') { const body = JSON.parse(options.body); read[body.employee] = true; return {ok:true,json:async()=>({saved:true})}; }
+        const person = new URL(url, 'http://localhost').searchParams.get('employee');
+        return {ok:true,json:async()=>({items:[{id:1,title:'Új beosztás',kind:'text',body:'Nézd meg!',created_at:'2026-11-17T10:00:00Z',read_at:read[person]?'now':null}],unread_count:read[person]?0:1,latest_id:1,next_page:null})};
+    };
+    await notifications.refresh();
+    assert.equal(e['notification-count'].textContent, '1');
+    assert.equal(e['notification-count'].hidden, false);
+    assert.equal(e['notifications-tab'].className, 'has-unread');
+    await e['notifications-tab'].events.click();
+    assert.equal(e['notifications-view'].hidden, false);
+    assert.equal(e['route-view'].hidden, true);
+    await e['notifications-list'].children[0].children[4].events.click();
+    assert.equal(e['notification-count'].hidden, true);
+    assert.equal(read['mag-richard'], true);
+    store.person = 'kollar-janos';
+    await notifications.refresh();
+    assert.equal(e['notification-count'].textContent, '1');
+    assert.equal(e['notification-count'].hidden, false);
+});
+
+test('fuel route selector stays synchronized with the route page', async () => {
+    const {elements:e} = boot(null);
+    e['fuel-route'].events.change({target:{value:'V'}});
+    assert.equal(e.tour.value, 'V');
+    assert.equal(e['fuel-tour'].textContent, 'Budapest V · HU35V');
+    e.tour.events.change({target:{value:'S'}});
+    assert.equal(e['fuel-route'].value, 'S');
 });

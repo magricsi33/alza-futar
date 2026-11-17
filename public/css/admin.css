@@ -63,3 +63,26 @@ dialog .wide { grid-column:1/-1; }
     .calendar-scroll { max-height:70dvh; }
     .modal-actions button { flex:1; }
 }
+
+/* Ikonos adminnavigáció és modalos címszerkesztés. */
+.admin-nav a { display:flex; align-items:center; gap:8px; }
+.admin-nav .fi { display:inline-flex; font-size:16px; }
+.admin-credit { padding:12px 20px 22px; text-align:center; font-size:10px; color:#61758c; }
+.admin-credit a { color:inherit; }
+.address-option { grid-template-columns:40px 24px minmax(0,1fr) auto auto; }
+.address-edit-button { min-height:36px; padding:7px 10px; font-size:12px; }
+.related-notices { margin-top:24px; }
+.notice-body { white-space:pre-wrap; overflow-wrap:anywhere; }
+.notify-status { color:#8e3d26; font-size:13px; }
+.notify-status:empty { display:none; }
+.notify-form input:not([type=hidden]), .notify-form textarea { display:block; width:100%; padding:10px 12px; border:1px solid #cbd6e4; border-radius:8px; font-size:16px; }
+.notify-form label { display:block; font-size:13px; font-weight:600; margin-bottom:6px; }
+.page-heading:has(#calendar-notify-open) { flex-wrap:wrap; }
+.page-heading:has(#calendar-notify-open)>div { margin-right:auto; }
+@media(max-width:760px) {
+    .address-option { grid-template-columns:34px 18px minmax(0,1fr) 36px; }
+    .address-edit-button { grid-column:4; grid-row:1; padding:7px; }
+    .address-edit-button span { display:none; }
+    .address-option .exempt-toggle { grid-column:3 / -1; }
+    #calendar-notify-open { width:100%; order:3; font-size:12px; }
+}

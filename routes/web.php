@@ -18,6 +18,9 @@ Route::get('/', function () {
     return view('home', ['dispatchData' => app(\App\Services\DispatchData::class)->get()]);
 });
 
+Route::get('/dispatch/notifications', [\App\Http\Controllers\NoticeController::class, 'index']);
+Route::post('/dispatch/notifications/read', [\App\Http\Controllers\NoticeController::class, 'read']);
+
 Route::get('/dispatch/data', function () {
     return response()->json(app(\App\Services\DispatchData::class)->get())->header('Cache-Control', 'no-store, private');
 });
@@ -37,6 +40,9 @@ Route::post('/admin/login', [\App\Http\Controllers\AdminLoginController::class, 
 Route::prefix('admin')->middleware(\App\Http\Middleware\AdminAccess::class)->group(function () {
     Route::get('/', function () { return redirect()->route('admin.index', 'routes'); });
     Route::post('/logout', [\App\Http\Controllers\AdminLoginController::class, 'logout'])->name('admin.logout');
+    Route::get('/notifications', [\App\Http\Controllers\NoticeController::class, 'admin'])->name('admin.notifications');
+    Route::post('/notifications', [\App\Http\Controllers\NoticeController::class, 'store']);
+    Route::get('/address-data/{id}', [\App\Http\Controllers\AdminController::class, 'addressData'])->whereNumber('id');
     Route::get('/calendar/data', [\App\Http\Controllers\AdminCalendarController::class, 'week']);
     Route::get('/calendar/availability', [\App\Http\Controllers\AdminCalendarController::class, 'availability']);
     Route::get('/{type}', [\App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');

@@ -7,7 +7,8 @@
     <meta name="robots" content="noindex,nofollow,noarchive">
     <meta name="referrer" content="no-referrer">
     <title>{{ $title ?? 'Belépés' }} · AlzaFutár admin</title>
-    <link rel="stylesheet" href="/css/admin.css?v=2">
+    <link rel="stylesheet" href="/vendor/flaticon/icons.css">
+    <link rel="stylesheet" href="/css/admin.css?v=3">
 </head>
 <body>
 <header class="admin-header">
@@ -18,8 +19,9 @@
 </header>
 @if(session('dispatch_admin'))
 <nav class="admin-nav" aria-label="Admin navigáció">
-    @foreach(['routes' => 'Útvonalak', 'addresses' => 'Címek', 'employees' => 'Munkatársak', 'shifts' => 'Beosztás', 'vehicles' => 'Gépjárművek'] as $key => $label)
-        <a href="{{ route('admin.index', $key) }}" @if(($type ?? '') === $key) aria-current="page" @endif>{{ $label }}</a>
+    @foreach(['routes' => 'Útvonalak', 'addresses' => 'Címek', 'employees' => 'Munkatársak', 'shifts' => 'Beosztás', 'vehicles' => 'Gépjárművek', 'notifications' => 'Értesítések'] as $key => $label)
+        @php($icon = ['routes'=>'route', 'addresses'=>'marker', 'employees'=>'users', 'shifts'=>'calendar', 'vehicles'=>'car', 'notifications'=>'bell'][$key])
+        <a href="{{ route('admin.index', $key) }}" @if(($type ?? '') === $key) aria-current="page" @endif><i class="fi fi-rr-{{ $icon }}" aria-hidden="true"></i> {{ $label }}</a>
     @endforeach
 </nav>
 @endif
@@ -28,7 +30,8 @@
     @if($errors->any())<div class="error" role="alert"><strong>A mentés nem sikerült.</strong><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
     @yield('content')
 </main>
-<script src="/js/admin.js?v=3" defer></script>
+<footer class="admin-credit">Uicons by <a href="https://www.flaticon.com/uicons" rel="noopener noreferrer">Flaticon</a></footer>
+<script src="/js/admin.js?v=4" defer></script>
 @stack('scripts')
 </body>
 </html>

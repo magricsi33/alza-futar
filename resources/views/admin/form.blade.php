@@ -38,6 +38,7 @@
                 <span class="order-number" data-order-number>{{ $loop->iteration }}</span>
                 <label class="address-attach"><input type="checkbox" name="address_ids[]" value="{{ $address->id }}" @if(in_array($address->id, old('address_ids', session()->hasOldInput() ? [] : ($record->exists && $address->delivery_route_id == $record->id ? [$address->id] : [])))) checked @endif><span><strong>{{ $address->address }}</strong><small>{{ $address->box_code }} · {{ $address->city }}</small></span></label>
                 <label class="exempt-toggle"><input type="checkbox" name="exempt_ids[]" value="{{ $address->id }}" @if(in_array($address->id, old('exempt_ids', session()->hasOldInput() ? [] : ($address->is_exempt ? [$address->id] : [])))) checked @endif> Mentesített</label>
+                <button type="button" class="secondary address-edit-button" data-edit-address="{{ $address->id }}" aria-label="{{ $address->box_code }} szerkesztése"><i class="fi fi-rr-edit" aria-hidden="true"></i> <span>Szerkesztés</span></button>
                 <input type="hidden" name="orders[{{ $address->id }}]" value="{{ old('orders.'.$address->id, $address->sort_order) }}">
             </div>
         @endforeach

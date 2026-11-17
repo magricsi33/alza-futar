@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
 {
+    public function addressData($id) { return response()->json(DeliveryAddress::findOrFail($id)); }
     private function definition($type)
     {
         $definitions = [

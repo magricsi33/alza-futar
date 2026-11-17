@@ -28,7 +28,7 @@ export function parseShift(cell) {
     return { status: 'work', route, plate: plate || 'Nem ismert', note: tokens.filter(token => token !== plate).join(' ') };
 }
 
-export function initSchedule() {
+export function initSchedule({ onPersonChanged = () => {} } = {}) {
     const el = id => document.getElementById(id);
     const storageKey = 'alzafutar-person-v1';
     const periodFormat = new Intl.DateTimeFormat('hu-HU', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Europe/Budapest' });
@@ -48,13 +48,13 @@ export function initSchedule() {
     let personTarget = 'route';
     function showView(view) {
         activeView = view;
-        for (const name of ['route', 'schedule', 'search', 'fuel', 'qr']) {
+        for (const name of ['route', 'schedule', 'search', 'fuel', 'qr', 'notifications']) {
             el(name + '-view').hidden = name !== view;
             el(name + '-tab').setAttribute('aria-pressed', String(name === view));
         }
     }
     function showPerson() {
-        el('current-person').textContent = schedulePeople.find(person => person.id === personId)?.name || 'Személy kiválasztása';
+        el('current-person-name').textContent = schedulePeople.find(person => person.id === personId)?.name || 'Személy kiválasztása';
     }
     showPerson();
     function renderSchedule() {
@@ -119,6 +119,7 @@ export function initSchedule() {
     el('search-tab').addEventListener('click', () => showView('search'));
     el('fuel-tab').addEventListener('click', () => showView('fuel'));
     el('qr-tab').addEventListener('click', () => showView('qr'));
+    el('notifications-tab').addEventListener('click', () => showView('notifications'));
     el('schedule-tab').addEventListener('click', () => {
         if (!personId) choosePerson('schedule');
         else { renderSchedule(); showView('schedule'); }
@@ -140,8 +141,15 @@ export function initSchedule() {
         el('person-dialog').close();
         renderSchedule();
         showPerson();
+        onPersonChanged();
         showView(personTarget);
         if (personTarget === 'schedule') el('schedule-title').focus();
     });
     el('person-cancel').addEventListener('click', () => el('person-dialog').close());
+    const params = new URLSearchParams(window.location?.search || '');
+    if (params.get('view') === 'schedule') {
+        const requestedWeek = weeks.indexOf(params.get('week'));
+        if (requestedWeek >= 0) weekIndex = requestedWeek;
+        if (personId) { renderSchedule(); showView('schedule'); } else choosePerson('schedule');
+    }
 }

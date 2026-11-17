@@ -1,6 +1,6 @@
 @extends('admin.layout')
 @section('content')
-<div class="page-heading"><div><p class="eyebrow">HETI TERVEZÉS</p><h1>Beosztás</h1></div><button type="button" id="calendar-today" class="secondary">Aktuális hét</button></div>
+<div class="page-heading"><div><p class="eyebrow">HETI TERVEZÉS</p><h1>Beosztás</h1></div><button type="button" id="calendar-notify-open"><i class="fi fi-rr-bell" aria-hidden="true"></i> Beosztás módosítási értesítés küldése</button><button type="button" id="calendar-today" class="secondary">Aktuális hét</button></div>
 <div class="calendar-toolbar">
     <div class="calendar-week-switch"><button type="button" id="calendar-prev" class="secondary" aria-label="Előző hét">←</button><h2 id="calendar-period" aria-live="polite"></h2><button type="button" id="calendar-next" class="secondary" aria-label="Következő hét">→</button></div>
     <div><label for="calendar-search">Keresés munkatársra, útvonalra vagy rendszámra</label><input id="calendar-search" type="search" value="{{ request('q') }}" placeholder="Név, útvonal, rendszám…"></div>
@@ -24,8 +24,9 @@
         <div class="modal-actions"><button type="button" class="danger" id="shift-delete" hidden>Beosztás törlése</button><button id="shift-save" type="submit">Mentés</button></div>
     </form>
 </dialog>
+@include('admin.schedule-notification-modal')
 @endsection
 @push('scripts')
 <script>window.adminCalendar = @json($calendar);</script>
-<script defer src="/js/admin-calendar.js?v=2"></script>
+<script defer src="/js/admin-calendar.js?v=3"></script>
 @endpush

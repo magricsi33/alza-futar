@@ -123,6 +123,7 @@ export function initMobile({ tours, ramps, currentRoute }) {
     el('fuel-close').addEventListener('click', () => { if (!fuelBusy) el('fuel-dialog').close(); });
     el('fuel-dialog').addEventListener('cancel', event => { if (fuelBusy) event.preventDefault(); });
     el('tour').addEventListener('change', refreshFuel);
+    el('fuel-route').addEventListener('change', refreshFuel);
     el('fuel-tab').addEventListener('click', refreshFuel);
     window.addEventListener('focus', refreshFuel);
     window.addEventListener('online', refreshFuel);

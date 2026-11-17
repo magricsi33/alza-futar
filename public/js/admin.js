@@ -96,30 +96,85 @@ if (addressList) {
         const exemptBox = document.createElement('input'); exemptBox.type = 'checkbox'; exemptBox.name = 'exempt_ids[]'; exemptBox.value = address.id; exemptBox.checked = address.is_exempt;
         exempt.append(exemptBox, document.createTextNode(' Mentesített'));
         const position = document.createElement('input'); position.type = 'hidden'; position.name = 'orders[' + address.id + ']'; position.value = address.sort_order;
-        row.append(handle, order, attach, exempt, position); return row;
+        const edit = document.createElement('button'); edit.type = 'button'; edit.className = 'secondary address-edit-button'; edit.dataset.editAddress = address.id; const editIcon = document.createElement('i'); editIcon.className = 'fi fi-rr-edit'; editIcon.setAttribute('aria-hidden', 'true'); const editText = document.createElement('span'); editText.textContent = 'Szerkesztés'; edit.append(editIcon, editText); edit.setAttribute('aria-label', address.box_code + ' szerkesztése');
+        row.append(handle, order, attach, exempt, edit, position); return row;
     }
     const opener = document.getElementById('address-create-open');
     if (opener) {
         const dialog = document.getElementById('address-create-dialog');
         const form = document.getElementById('address-create-form');
+        let editId = null, originalOrder = 1;
+        const title = document.getElementById('address-create-title');
+        const submit = form.querySelector('button[type=submit]');
         opener.addEventListener('click', () => {
-            form.reset(); document.getElementById('address-create-status').textContent = ''; dialog.showModal();
+            editId = null; form.reset(); form.elements.delivery_route_id.value = form.dataset.routeId;
+            title.textContent = 'Új cím'; submit.textContent = 'Cím létrehozása'; submit.disabled = false;
+            document.getElementById('address-create-status').textContent = ''; dialog.showModal();
+        });
+        addressList.addEventListener('click', async event => {
+            const button = event.target.closest('[data-edit-address]'); if (!button) return;
+            editId = button.dataset.editAddress; form.reset();
+            title.textContent = 'Cím szerkesztése'; submit.textContent = 'Cím mentése';
+            const status = document.getElementById('address-create-status'); status.textContent = 'Adatok betöltése…';
+            dialog.showModal(); dialog.dataset.busy = 'true'; dialog.querySelectorAll('button').forEach(button => { button.disabled = true; });
+            try {
+                const address = await window.adminRequest('/admin/address-data/' + editId);
+                for (const name of ['box_code','address','city','location','deadline_hour','delivery_route_id']) form.elements[name].value = address[name] ?? '';
+                form.elements.is_exempt.checked = address.is_exempt; originalOrder = address.sort_order; status.textContent = '';
+                submit.disabled = false;
+            } catch (error) { status.textContent = error.message; }
+            finally {
+                dialog.dataset.busy = 'false';
+                dialog.querySelectorAll('[data-close-dialog]').forEach(button => { button.disabled = false; });
+            }
         });
         form.addEventListener('submit', async event => {
             event.preventDefault();
             if (dialog.dataset.busy === 'true') return;
             const payload = Object.fromEntries(new FormData(form)); payload.is_exempt = form.elements.is_exempt.checked;
+            if (editId) payload.sort_order = originalOrder;
             dialog.dataset.busy = 'true';
             dialog.querySelectorAll('button').forEach(button => { button.disabled = true; });
             const status = document.getElementById('address-create-status'); status.textContent = 'Mentés…';
             try {
-                const address = await window.adminRequest('/admin/addresses', { method: 'POST', body: JSON.stringify(payload) });
-                addressList.append(newAddressRow(address)); renumber();
+                const address = await window.adminRequest('/admin/addresses' + (editId ? '/' + editId : ''), { method: editId ? 'PUT' : 'POST', body: JSON.stringify(payload) });
+                const row = newAddressRow(address);
+                if (editId) {
+                    const old = addressList.querySelector('[data-address-id="' + editId + '"]');
+                    row.querySelector('input[name="address_ids[]"]').checked = old.querySelector('input[name="address_ids[]"]').checked;
+                    row.querySelector('input[name^="orders["]').value = old.querySelector('input[name^="orders["]').value;
+                    row.querySelector('[data-order-number]').textContent = old.querySelector('[data-order-number]').textContent;
+                    old.replaceWith(row);
+                } else { addressList.append(row); renumber(); }
                 addressFilter.value = ''; filterAddresses(); document.getElementById('address-list-empty').hidden = true;
-                document.getElementById('address-order-status').textContent = 'Új cím létrehozva. Az útvonal további módosításait a Mentés gombbal rögzítheted.';
+                document.getElementById('address-order-status').textContent = (editId ? 'Cím módosítva.' : 'Új cím létrehozva.') + ' Az útvonal további módosításait a Mentés gombbal rögzítheted.';
                 dialog.close();
             } catch (error) { status.textContent = error.message; }
             finally { dialog.dataset.busy = 'false'; dialog.querySelectorAll('button').forEach(button => { button.disabled = false; }); }
         });
     }
 }
+document.querySelectorAll('.notify-form').forEach(form => {
+    form.addEventListener('submit', async event => {
+        if (event.defaultPrevented) return;
+        event.preventDefault();
+        if (form.dataset.busy === 'true') return;
+        const payload = Object.fromEntries(new FormData(form));
+        const dialog = form.closest('dialog'), status = form.querySelector('.notify-status');
+        form.dataset.busy = 'true'; if (dialog) dialog.dataset.busy = 'true';
+        const controls = dialog || form;
+        controls.querySelectorAll('button').forEach(button => { button.disabled = true; });
+        status.textContent = 'Küldés…';
+        try {
+            await window.adminRequest('/admin/notifications', {method:'POST', body:JSON.stringify(payload)});
+            status.textContent = 'Értesítés elküldve.';
+            form.elements.request_id.value = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, char => { const value = Math.floor(Math.random() * 16); return (char === 'x' ? value : (value & 3) | 8).toString(16); });
+            if (dialog) { dialog.close(); document.getElementById('calendar-status').textContent = 'Beosztás módosítási értesítés elküldve.'; }
+            if (form.dataset.reload === 'true') window.location.reload();
+        } catch (error) { status.textContent = error.message; }
+        finally {
+            form.dataset.busy = 'false'; if (dialog) dialog.dataset.busy = 'false';
+            controls.querySelectorAll('button').forEach(button => { button.disabled = false; });
+        }
+    });
+});

@@ -2,6 +2,7 @@ import { initSchedule } from './schedule';
 import { initStopInfo } from './stop-info';
 import { tours } from './tours';
 import { initMobile } from './mobile';
+import { initNotifications } from './notifications';
 const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
 if (standalone) {
     document.querySelector('meta[name="viewport"]')?.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover');
@@ -123,6 +124,7 @@ function render() {
     const exempt = aggregate ? tour.stops.map(stop => stop[0]) : state.exempt[tour.id] || [];
     const total = tour.stops.length;
     $('tour').value = tour.id;
+    $('fuel-route').value = tour.id;
     $('remaining-only').checked = state.remainingOnly;
     $('reset').disabled = aggregate || completed.length === 0;
     $('remaining-only').disabled = aggregate;
@@ -203,7 +205,7 @@ $('clear-exempt-dialog').addEventListener('close', async () => {
         state.exempt = data.exempt; state.exemptImported = true; save(); render();
     } catch (error) { $('save-note').textContent = 'A mentesítések nem törölhetők. ' + error.message; }
 });
-for (const tour of tours) $('tour').add(new Option(tour.name, tour.id));
+for (const tour of tours) { $('tour').add(new Option(tour.name, tour.id)); $('fuel-route').add(new Option(tour.name, tour.id)); }
 $('tour').add(new Option('Mentesített', exemptRouteId));
 function renderRamp() {
     const tour = selectedTour();
@@ -217,6 +219,10 @@ function renderRamp() {
     $('ramp-departure').setAttribute('datetime', assignment ? assignment.departure : '');
 }
 $('tour').addEventListener('change', e => { state.tour = e.target.value; save(); render(); loadNotes(); });
+$('fuel-route').addEventListener('change', e => { state.tour = e.target.value; save(); render(); loadNotes(); });
+$('fuel-tab').addEventListener('click', () => {
+    if (state.tour === exemptRouteId && tours.length) { state.tour = tours[0].id; save(); render(); loadNotes(); }
+});
 $('remaining-only').addEventListener('change', e => { state.remainingOnly = e.target.checked; save(); render(); });
 $('navigation-app').addEventListener('change', event => {
     navigationApp = event.target.value === 'google' ? 'google' : 'waze';
@@ -248,7 +254,9 @@ render(); save(); connection();
 syncExemptions();
 window.addEventListener('focus', syncExemptions);
 window.addEventListener('online', syncExemptions);
-initSchedule();
+let notificationCenter;
+initSchedule({ onPersonChanged: () => notificationCenter?.refresh() });
+notificationCenter = initNotifications();
 initMobile({ tours, ramps: rampAssignments, currentRoute: () => state.tour });
 loadNotes();
 window.addEventListener('focus', loadNotes);

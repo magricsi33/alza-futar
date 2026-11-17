@@ -165,6 +165,14 @@
         } catch (error) { el('shift-dialog-status').textContent = error.message; }
         finally { setBusy(false); }
     });
+    el('calendar-notify-open').addEventListener('click', () => {
+        const dialog = el('schedule-notify-dialog');
+        dialog.querySelector('[name="week_start"]').value = data.days[0];
+        dialog.querySelector('[name="body"]').value = '';
+        dialog.querySelector('.notify-status').textContent = '';
+        el('schedule-notify-week').textContent = dateLabel(data.days[0]) + ' – ' + dateLabel(data.days[6]);
+        dialog.showModal();
+    });
     render();
     const editId = new URL(window.location.href).searchParams.get('edit_shift');
     if (editId) {

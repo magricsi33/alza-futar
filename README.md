@@ -71,3 +71,14 @@ A foglaltságot a szerver tranzakcióban, naponkénti zárolással ellenőrzi; a
 A mentesítések a delivery_addresses.is_exempt mezőben vannak. A futárfelület első sikeres online kapcsolódáskor a régi helyi mentesítéseket egyszer importálja, utána a közös állapotot mutatja, lapfókuszkor és kapcsolat-visszatéréskor is frissítve. Offline az utolsó ismert állapot látható, mentesítés mentéséhez vagy törléséhez kapcsolat szükséges. Adminban módosított jelölés is bekerül a Mentesített gyűjtőútvonalra. Aki a mentesítéseket törli, a közös állapotot módosítja.
 
 Ehhez a kiadáshoz új migráció tartozik: frissítéskor php artisan migrate --force és php artisan view:clear szükséges. Újraimportálás nem szükséges.
+
+## Értesítések és felső sáv
+A futárfelület fő fejlécében bal oldalt ikonos személyválasztó, jobb oldalt értesítésikon található. Az útvonalválasztók az Útvonal és Tankolás oldal saját, görgetéskor rögzített másodlagos sávjában vannak, ugyanazt a kiválasztott útvonalat használják.
+
+Az értesítések alkalmazáson belüli, minden munkatársnak szóló üzenetek. Admin → Értesítések oldalon címmel és szöveggel hozhatók létre. A beosztásnaptár értesítésküldő gombja a megjelenített hétről küld Beosztás módosult üzenetet, megerősítő modal és opcionális megjegyzés után. A küldés ismételt kérésazonosítóval nem duplikálja az üzenetet. Az elküldött üzenetek az admin értesítésoldalon visszanézhetők.
+
+Az olvasottság a kiválasztott munkatárshoz, adatbázisba mentődik, minden eszközön közös. Kiválasztott személy nélkül az üzenetek láthatók, olvasottnak jelölni személyválasztás után lehet. Van egyenkénti és összes olvasottnak jelölés; az összes jelölés nem fogyasztja el az azóta érkezett új üzeneteket. A harang olvasatlanszámlálót és visszafogott animációt kapott, csökkentett mozgás beállításánál az animáció kikapcsol. A kliens megnyitáskor, fókuszkor, személyváltáskor és látható oldalnál percenként frissít. Ez nem operációsrendszer-szintű push szolgáltatás. A lista lapozott, a További értesítések gomb tölti a régebbi üzeneteket.
+
+Az útvonallapon a címek Szerkesztés gombja friss adatokkal nyitja a címmodalt. A mentés az adott sort cseréli, az útvonal még nem mentett sorrendje és címhozzárendelése megmarad. Az adminmenü Flaticon ikonokat használ.
+
+Ehhez a kiadáshoz új értesítési migráció tartozik: git pull után php artisan migrate --force és php artisan view:clear szükséges; seed nem kell. PWA-frissítéskor zárd be az összes megnyitott példányt, majd nyisd újra az alkalmazást.

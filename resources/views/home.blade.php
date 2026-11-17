@@ -4,15 +4,8 @@
 
 <main>
     <header class="fixed-toolbar">
-        <button id="current-person" type="button" aria-haspopup="dialog">
-            <i class="fi fi-rr-user" aria-hidden="true"></i>
-            Személy kiválasztása
-        </button>
-        <div>
-            
-            <select id="tour" aria-label="Aktív útvonal">
-            </select>
-        </div>
+        <button id="current-person" type="button" aria-haspopup="dialog"><i class="fi fi-rr-user" aria-hidden="true"></i><span id="current-person-name">Személy kiválasztása</span></button>
+        <button id="notifications-tab" type="button" aria-label="Értesítések" title="Értesítések" aria-pressed="false" aria-controls="notifications-view"><i class="fi fi-rr-bell" aria-hidden="true"></i><span id="notification-count" hidden></span></button>
     </header>
     <nav class="view-navigation" aria-label="Fő navigáció">
         <button id="schedule-tab" type="button" aria-label="Beosztás" title="Beosztás" aria-pressed="false" aria-controls="schedule-view">
@@ -52,6 +45,7 @@
         </div>
     </section>
     <div id="route-view">
+        <div class="route-subheader"><i class="fi fi-rr-route" aria-hidden="true"></i><label for="tour">Útvonal</label><select id="tour" aria-label="Aktív útvonal"></select></div>
         <section class="stops-section" aria-labelledby="stops-title">
             <div class="section-heading">
                 <h1 id="stops-title" class="page-title">
@@ -114,6 +108,7 @@
         </div>
     </section>
     <section id="fuel-view" hidden>
+        <div class="route-subheader"><i class="fi fi-rr-route" aria-hidden="true"></i><label for="fuel-route">Útvonal</label><select id="fuel-route" aria-label="Tankolás útvonala"></select></div>
         <section class="fuel-panel" aria-labelledby="fuel-title">
             <h1 id="fuel-title" class="page-title">Tankolás</h1>
             <p id="fuel-tour" class="fuel-tour">
@@ -142,6 +137,14 @@
             </p>
             <button id="last-fuel-button" type="button" class="ramp-button" aria-haspopup="dialog">Legutóbbi tankolás</button>
         </section>
+    </section>
+    <section id="notifications-view" aria-labelledby="notifications-title" hidden>
+        <h1 id="notifications-title" class="page-title" tabindex="-1">Értesítések</h1>
+        <p id="notifications-person-hint">Az olvasottság mentéséhez válaszd ki a neved a felső sávban.</p>
+        <button id="notifications-read-all" type="button" class="ramp-button">Összes olvasottnak jelölése</button>
+        <p id="notifications-status" role="status" aria-live="polite"></p>
+        <div id="notifications-list" class="notifications-list"></div>
+        <button id="notifications-more" type="button" class="ramp-button" hidden>További értesítések</button>
     </section>
     <section class="install-panel">
         <span class="install-icon" aria-hidden="true">↗</span>
