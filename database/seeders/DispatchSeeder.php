@@ -32,6 +32,12 @@ class DispatchSeeder extends Seeder
                     ]);
                 }
             }
+            foreach ($data['unassignedStops'] ?? [] as $stop) {
+                DeliveryAddress::firstOrCreate(['box_code' => $stop[0]], [
+                    'address' => $stop[1], 'city' => $stop[2], 'location' => $stop[3],
+                    'deadline_hour' => (int) $stop[4], 'sort_order' => 1,
+                ]);
+            }
             if (isset($data['fuel']['exempt'])) {
                 $fuel = $data['fuel']['exempt'];
                 DeliveryRoute::firstOrCreate(['code' => 'exempt'], [

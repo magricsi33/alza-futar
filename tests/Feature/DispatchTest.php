@@ -21,7 +21,7 @@ class DispatchTest extends TestCase
     {
         $this->import();
         $this->assertSame(13, DeliveryRoute::count());
-        $this->assertSame(189, DeliveryAddress::count());
+        $this->assertSame(194, DeliveryAddress::count());
         $this->assertSame(20, Employee::count());
         $count = Shift::count();
         $route = DeliveryRoute::where('code', 'S')->first();

@@ -88,3 +88,11 @@ Ehhez a kiadáshoz új értesítési migráció tartozik: git pull után php art
 A `2026_11_17_030000_update_fuel_and_november_schedule` adatmigráció a képek szerinti tankolási kereteket és a november 17–22-i beosztáscellákat vezeti át. A korábbi dátumok, a képen nem szereplő személyek, a tankolási gyakoriságok és a legutóbbi tankolási dátumok megmaradnak. A képen üres cellák az adott személy adott napi beosztását törlik. A változó cellák revíziója nő, az azonosak változatlanok maradnak. Visszagörgetés nem állítja vissza a régi, már felülbírált adatokat.
 
 A Mentesített gyűjtőútvonal tankolási kerete külön `exempt` adatbázisrekordba kerül (175 km, 19 liter, 12 863 Ft), saját címlista nélkül. Tankolása a többi útvonaléhoz hasonlóan közösen rögzíthető. A friss seeder is az új értékeket tartalmazza, de meglévő telepítésnél elegendő a `php artisan migrate --force`; újraimportálás nem kell.
+
+## 2026. november 19-i útvonal- és beosztásfrissítés
+
+A `2026_11_19_000000_update_routes_and_november_schedule` adatmigráció a november 19-én kapott 12 útvonallistát és a november 19–22-i beosztást vezeti át. A befagyasztott forrás a `database/data/2026-11-19-routes-and-schedule.json` fájl. Frissítés: `php artisan migrate --force`; seed futtatása meglévő telepítésen nem szükséges.
+
+A sorrend, útvonal-hozzárendelés és címenkénti határidő frissül. Öt új box kerül be (AB071, AB9131, AB9874, AB9881, AB9882); hat kikerülő box hozzárendelés nélkül megmarad az adminban (AB9071, AB9041, AB9845, AB9318, AB9638, AB9732). A meglévő boxazonosítók, adatbázis-ID-k, mentesítések, a boxokhoz tartozó megjegyzések és képek megmaradnak. A tankolási adatok és rámpák nem módosulnak. A korábbi beosztásnapok és a képen nem szereplő munkatársak megmaradnak; a képen üres cellák csak az adott személy adott napját törlik. Az ismételt futtatás nem hoz létre duplikátumot és nem növeli a változatlan beosztások revízióját. A rollback megtartja a kiadott javításokat.
+
+A friss seeder az új adatokat tartalmazza. A frontend regressziós tesztek külön, stabil történeti fixture-t használnak (`tests/frontend/fixtures/dispatch.json`), a friss importot és a migrációt a szervertesztek vetik össze.

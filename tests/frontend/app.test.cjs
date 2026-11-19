@@ -2,7 +2,8 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
-const fixture = JSON.parse(fs.readFileSync('database/seeders/data/dispatch.json', 'utf8'));
+// Stable historical input: UI regression tests should not change with each roster import.
+const fixture = JSON.parse(fs.readFileSync('tests/frontend/fixtures/dispatch.json', 'utf8'));
 fixture.people.forEach(person => { person.active = fixture.active.includes(person.id); });
 class Element {
     constructor() { this.children = []; this.events = {}; this.dataset = {}; this.value = ''; }
