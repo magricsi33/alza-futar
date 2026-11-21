@@ -1401,7 +1401,14 @@
     "2026-11-19",
     "2026-11-20",
     "2026-11-21",
-    "2026-11-22"
+    "2026-11-22",
+    "2026-11-23",
+    "2026-11-24",
+    "2026-11-25",
+    "2026-11-26",
+    "2026-11-27",
+    "2026-11-28",
+    "2026-11-29"
   ],
   "people": [
     {
@@ -1419,7 +1426,14 @@
         "Q AADV156",
         "PIHEN",
         "O AOGG683",
-        "E AOJT458"
+        "E AOJT458",
+        "O AOGG683",
+        "Q AADV156",
+        "PIHEN",
+        "PIHEN",
+        "O AOGG683",
+        "O AOGG683",
+        "A AAIJ346"
       ]
     },
     {
@@ -1436,6 +1450,13 @@
         "O AOGG683",
         "O AOGG683",
         "O AOGG683",
+        "PIHEN",
+        "O AOGG683",
+        "D AOJT457",
+        "O AOGG683",
+        "O AOGG683",
+        "O AOGG683",
+        "PIHEN",
         "PIHEN",
         "O AOGG683"
       ]
@@ -1454,8 +1475,15 @@
         "V AELW962",
         "PIHEN",
         "PIHEN",
-        "V AELW962 CSAK ÉJSZAKA",
-        "V AELW962"
+        "V AOFP411 CSAK ÉJSZAKA",
+        "V AOFP411",
+        "V AOFP411 + V ÉJSZAKA",
+        "U AICD394 + V ÉJSZAKA",
+        "PIHEN",
+        "V AOFP411 + V ÉJSZAKA",
+        "V AOFP411 + V ÉJSZAKA",
+        "V AOFP411",
+        "PIHEN"
       ]
     },
     {
@@ -1473,7 +1501,14 @@
         "U AICD597",
         "U AICD597",
         "U AICD597",
-        "U AICD597"
+        "U AICD597",
+        "U AICD394",
+        "PIHEN",
+        "U AICD394",
+        "U AICD394",
+        "U AICD394",
+        "U AICD394",
+        "U AICD394"
       ]
     },
     {
@@ -1490,6 +1525,13 @@
         "D AOJT457",
         "D AOJT457",
         "V AELW962 CSAK ÉJSZAKA",
+        "D AOJT457",
+        "D AOJT457",
+        "PIHEN",
+        "D AOJT457",
+        "PIHEN",
+        "D AOJT457",
+        "D AOJT457",
         "D AOJT457",
         "D AOJT457"
       ]
@@ -1509,7 +1551,14 @@
         "",
         "",
         "A AAIJ346",
-        "A AAIJ346"
+        "A AAIJ346",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "PIHEN",
+        "PIHEN"
       ]
     },
     {
@@ -1527,7 +1576,14 @@
         "A AAIJ346",
         "A AAIJ346",
         "PIHEN",
-        "PIHEN"
+        "oktatás",
+        "A AAIJ346",
+        "PIHEN",
+        "A AAIJ346",
+        "PIHEN",
+        "A AAIJ346",
+        "A AAIJ346",
+        "oktatás"
       ]
     },
     {
@@ -1544,8 +1600,15 @@
         "B AICD394 + T ÉJSZAKA AOBL104",
         "MENTESÍTŐ AELW962 + T ÉJSZAKA",
         "V AELW962",
-        "V AELW962",
-        "V AELW962 CSAK ÉJSZAKA"
+        "V AOFP411",
+        "V AOFP411 CSAK ÉJSZAKA",
+        "PIHEN",
+        "A AAIJ346",
+        "V AOFP411 CSAK ÉJSZAKA",
+        "A AAIJ346",
+        "Q AADV156",
+        "V AOFP411 CSAK ÉJSZAKA",
+        "V AOFP411 + V ÉJSZAKA"
       ]
     },
     {
@@ -1563,7 +1626,14 @@
         "PIHEN",
         "B AICD394",
         "B AICD394",
-        "B AICD394"
+        "B AICD394",
+        "B AABZ272",
+        "B AABZ272",
+        "B AABZ272",
+        "PIHEN",
+        "PIHEN",
+        "B AABZ272",
+        "B AABZ272"
       ]
     },
     {
@@ -1575,6 +1645,13 @@
         "PIHEN",
         "PIHEN",
         "PIHEN",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
         "",
         "",
         "",
@@ -1599,7 +1676,14 @@
         "S AOBL104",
         "S AOBL104",
         "PIHEN",
-        "PIHEN"
+        "PIHEN",
+        "S AOBL104",
+        "V AOFP411",
+        "V AOFP411",
+        "PIHEN",
+        "PIHEN",
+        "S AOBL104",
+        "S AOBL104"
       ]
     },
     {
@@ -1617,7 +1701,14 @@
         "B AICD394",
         "D AOJT457",
         "E AOJT458",
-        "PIHEN"
+        "PIHEN",
+        "PIHEN",
+        "PIHEN",
+        "D AOJT457",
+        "B AABZ272",
+        "B AABZ272",
+        "E AOJT458",
+        "E AOJT458"
       ]
     },
     {
@@ -1634,6 +1725,13 @@
         "PIHEN",
         "PIHEN",
         "Q AADV156",
+        "Q AADV156",
+        "Q AADV156",
+        "Q AADV156",
+        "PIHEN",
+        "Q AADV156",
+        "Q AADV156",
+        "PIHEN",
         "Q AADV156",
         "Q AADV156"
       ]
@@ -1653,6 +1751,13 @@
         "E AOJT458",
         "E AOJT458",
         "PIHEN",
+        "PIHEN",
+        "E AOJT458",
+        "E AOJT458",
+        "E AOJT458",
+        "E AOJT458",
+        "E AOJT458",
+        "PIHEN",
         "PIHEN"
       ]
     },
@@ -1660,6 +1765,13 @@
       "id": "kiss-daniel",
       "name": "Kiss Dániel",
       "cells": [
+        "F É",
+        "F + É",
+        "F + É",
+        "F + É",
+        "F + É",
+        "F + É",
+        "F + É",
         "F É",
         "F + É",
         "F + É",
@@ -1689,7 +1801,14 @@
         "C",
         "C + TÉ",
         "C + TÉ",
-        "C + TÉ"
+        "C + TÉ",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
       ]
     },
     {
@@ -1707,7 +1826,14 @@
         "T",
         "T",
         "T",
-        "T"
+        "T",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
       ]
     },
     {
@@ -1725,7 +1851,14 @@
         "V",
         "PIHEN",
         "PIHEN",
-        "PIHEN"
+        "PIHEN",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
       ]
     },
     {
@@ -1740,6 +1873,13 @@
         "C",
         "C",
         "F",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
         "",
         "",
         "",
@@ -1761,7 +1901,14 @@
         "",
         "",
         "S AOBL104",
-        "S AOBL104"
+        "S AOBL104",
+        "PIHEN",
+        "S AOBL104",
+        "S AOBL104",
+        "S AOBL104",
+        "S AOBL104",
+        "PIHEN",
+        "PIHEN"
       ]
     }
   ],

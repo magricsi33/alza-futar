@@ -51,8 +51,13 @@ class November19MigrationTest extends TestCase
         $migration->up();
         $actual = app(DispatchData::class)->get();
         $this->assertSame($expected['tours'], $actual['tours']);
-        foreach ($expected['people'] as $person) {
-            $this->assertSame($person['cells'], collect($actual['people'])->firstWhere('id', $person['id'])['cells'], $person['name']);
+        $source = json_decode(file_get_contents(database_path('data/2026-11-19-routes-and-schedule.json')), true);
+        foreach ($source['people'] as $slug => $cells) {
+            $person = collect($actual['people'])->firstWhere('id', $slug);
+            foreach ($cells as $index => $cell) {
+                $saved = $person['cells'][array_search($source['days'][$index], $actual['days'], true)];
+                $this->assertSame(mb_strtoupper($cell), mb_strtoupper(preg_replace('/\s+/u', ' ', $saved)), $slug.' '.$source['days'][$index]);
+            }
         }
         $this->assertSame($history, Shift::where('date', '<', '2026-11-19')->orderBy('id')->get()->toArray());
         $this->assertSame('rest', $changed->fresh()->status);
